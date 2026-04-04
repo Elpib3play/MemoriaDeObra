@@ -262,6 +262,38 @@
     .dash-stats{grid-template-columns:1fr 1fr;}
   }
 
+
+  /* ===== MÓDULO COMPRAS ===== */
+  .compras-toggle{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;margin-bottom:1rem;user-select:none;}
+  .compras-toggle input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;}
+  .compras-toggle label{font-size:0.88rem;font-weight:500;color:var(--ink);cursor:pointer;}
+  .compras-toggle .hint{font-size:0.75rem;color:var(--ink3);margin-left:auto;}
+  .compras-fields{display:none;padding:1rem;background:var(--accent-light);border:1px solid #e8c9bc;border-radius:8px;margin-bottom:1rem;}
+  .compras-fields.visible{display:block;}
+  .compras-fields .form-grid{margin-bottom:0.75rem;}
+  /* Tab compras */
+  .tab-compras-badge{display:inline-block;background:var(--accent);color:#fff;font-size:0.6rem;font-weight:600;padding:0.1rem 0.4rem;border-radius:10px;margin-left:4px;vertical-align:middle;}
+  /* Timeline compras */
+  .compras-timeline{display:flex;flex-direction:column;gap:1rem;margin:1.5rem 0;}
+  .compras-step{display:flex;gap:1rem;align-items:flex-start;}
+  .compras-step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:600;flex-shrink:0;margin-top:2px;}
+  .compras-step-dot.inicio{background:var(--blue-light);color:var(--blue);}
+  .compras-step-dot.fin{background:var(--green-light);color:var(--green);}
+  .compras-step-dot.obra{background:var(--accent-light);color:var(--accent);}
+  .compras-step-content{flex:1;}
+  .compras-step-title{font-weight:500;font-size:0.88rem;color:var(--ink);}
+  .compras-step-date{font-size:0.78rem;color:var(--ink3);font-family:DM Mono,monospace;}
+  .compras-connector{width:2px;height:24px;background:var(--border);margin-left:15px;}
+  .compras-duracion-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--amber-light);color:var(--amber);padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin:1rem 0;}
+  /* Panel compras dentro de la obra */
+  .compras-panel-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;}
+  .compras-empty{text-align:center;padding:2.5rem;color:var(--ink3);font-size:0.9rem;}
+  .compras-empty-icon{font-size:2rem;margin-bottom:0.5rem;}
+  @media(max-width:600px){
+    .compras-step{gap:0.75rem;}
+    .compras-step-dot{width:28px;height:28px;font-size:0.7rem;}
+  }
+
   @media(max-width:600px){
     .form-grid,.form-grid.g3{grid-template-columns:1fr;}
     .main{padding:1rem;}
@@ -423,6 +455,7 @@
   <div class="tab" onclick="switchTab('problemas',this)">Problemas</div>
   <div class="tab" onclick="switchTab('gastos',this)">Gastos / Facturas</div>
   <div class="tab" onclick="switchTab('reporte',this)">Reporte final</div>
+  <div class="tab" onclick="switchTab('compras',this)" id="tab-compras">Compras</div>
 </div>
 
 <div class="main">
@@ -434,7 +467,7 @@
     <div class="form-card">
       <div class="editing-banner" id="lib-editing-banner">✏️ Editando registro — modificá los campos y guardá</div>
       <div class="form-grid">
-        <div class="field"><label>Fecha</label><input type="date" id="lib-fecha"></div>
+        <div class="field"><label>Fecha de visado</label><input type="date" id="lib-fecha"></div>
         <div class="field"><label>Tipo de trabajo</label>
           <select id="lib-cat">
             <option>Obra civil / infraestructura</option>
@@ -469,8 +502,8 @@
     <div class="section-title">Problemas e imprevistos</div>
     <div class="form-card">
       <div class="form-grid">
-        <div class="field"><label>Fecha</label><input type="date" id="prob-fecha"></div>
-        <div class="field"><label>Severidad</label>
+        <div class="field"><label>Fecha del problema</label><input type="date" id="prob-fecha"></div>
+        <div class="field"><label>Grado del problema</label>
           <select id="prob-sev">
             <option value="baja">Baja — No detiene la obra</option>
             <option value="media">Media — Requiere atención</option>
@@ -499,10 +532,10 @@
     <div class="section-title">Gastos y Facturas</div>
     <div class="form-card">
       <div class="form-grid">
-        <div class="field"><label>Fecha</label><input type="date" id="gasto-fecha"></div>
+        <div class="field"><label>Fecha de la factura</label><input type="date" id="gasto-fecha"></div>
         <div class="field"><label>Proveedor / descripción</label><input type="text" id="gasto-prov" placeholder="Ej: Ferretería García"></div>
         <div class="field"><label>N° Factura / Remito</label><input type="text" id="gasto-nro" placeholder="Ej: A-0001-00123456"></div>
-        <div class="field"><label>Monto ($)</label><input type="number" id="gasto-monto" placeholder="0.00" step="0.01" min="0"></div>
+        <div class="field"><label>Monto ($)</label><input type="text" id="gasto-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
         <div class="field"><label>Centro de costo</label><input type="text" id="gasto-centro" placeholder="Ej: Estructura, Terminaciones, Instalaciones..."></div>
         <div class="field full"><label>Detalle de la factura</label><textarea id="gasto-notas" placeholder="Descripción de los ítems facturados, condición de pago, observaciones..." style="min-height:65px"></textarea></div>
       </div>
@@ -514,6 +547,30 @@
     <div id="gasto-totales" style="display:none;margin-bottom:1.5rem"></div>
     <div class="entry-list" id="lista-gastos">
       <div class="empty"><div class="empty-icon">💰</div>No hay gastos registrados</div>
+    </div>
+  </div>
+
+  <!-- COMPRAS -->
+  <div class="panel" id="panel-compras">
+    <div class="section-title">Compras / Licitación <small>Proceso previo</small></div>
+    <div id="compras-contenido"></div>
+    <div id="compras-form-wrap" style="display:none">
+      <div class="compras-panel-card">
+        <div style="font-size:0.85rem;font-weight:500;color:var(--ink2);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.05em">Editar proceso de compras</div>
+        <div class="form-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Inicio gestión compras</label><input type="date" id="comp-inicio"></div>
+          <div class="field"><label>Fecha adjudicación / cierre</label><input type="date" id="comp-fin"></div>
+        </div>
+        <div class="form-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Proveedor seleccionado</label><input type="text" id="comp-proveedor" placeholder="Proveedor adjudicado"></div>
+          <div class="field"><label>Monto adjudicado ($)</label><input type="text" id="comp-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
+        </div>
+        <div class="field" style="margin-bottom:1rem"><label>Notas del proceso</label>
+          <textarea id="comp-notas" placeholder="Proveedores consultados, observaciones, condiciones..." style="min-height:80px"></textarea>
+        </div>
+        <button class="btn-primary" style="margin-top:0" onclick="guardarCompras()">Guardar proceso</button>
+        <button class="btn-secondary" style="margin-top:0" onclick="toggleFormCompras(false)">Cancelar</button>
+      </div>
     </div>
   </div>
 
@@ -596,6 +653,26 @@
         <span class="hint">Al guardar se calculará la duración total</span>
       </div>
     </div>
+
+    <div class="compras-toggle" onclick="toggleComprasModal()">
+      <input type="checkbox" id="fo-compras-check" onclick="event.stopPropagation()">
+      <label for="fo-compras-check">¿Hubo proceso de compras / licitación?</label>
+      <span class="hint">Opcional</span>
+    </div>
+    <div class="compras-fields" id="fo-compras-fields">
+      <div class="form-grid" style="margin-bottom:0.75rem">
+        <div class="field"><label>Inicio gestión compras</label><input type="date" id="fo-comp-inicio"></div>
+        <div class="field"><label>Fecha adjudicación</label><input type="date" id="fo-comp-fin"></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:0.75rem">
+        <div class="field"><label>Proveedor seleccionado</label><input type="text" id="fo-comp-proveedor" placeholder="Proveedor adjudicado"></div>
+        <div class="field"><label>Monto adjudicado ($)</label><input type="text" id="fo-comp-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
+      </div>
+      <div class="field"><label>Notas</label>
+        <textarea id="fo-comp-notas" placeholder="Observaciones del proceso..." style="min-height:60px"></textarea>
+      </div>
+    </div>
+
     <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
       <button class="btn-primary" style="margin-top:0" id="btn-guardar-obra" onclick="guardarObra()">Crear obra</button>
       <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra()">Cancelar</button>
@@ -946,6 +1023,143 @@ window.ingresarDesdePanel = async function(obraId) {
   if (!terminada) renderAll();
 };
 
+
+// ========== MÓDULO COMPRAS ==========
+window.toggleComprasModal = function() {
+  const check  = document.getElementById('fo-compras-check');
+  const fields = document.getElementById('fo-compras-fields');
+  check.checked = !check.checked;
+  fields.classList.toggle('visible', check.checked);
+};
+
+window.toggleFormCompras = function(show) {
+  document.getElementById('compras-form-wrap').style.display = show ? 'block' : 'none';
+};
+
+window.guardarCompras = async function() {
+  if (!obraActiva) return;
+  const compras = {
+    inicio:     document.getElementById('comp-inicio').value,
+    fin:        document.getElementById('comp-fin').value,
+    proveedor:  document.getElementById('comp-proveedor').value.trim(),
+    monto:      getMontoFromField('comp-monto'),
+    notas:      document.getElementById('comp-notas').value.trim(),
+  };
+  setSyncStatus('loading','Guardando...');
+  try {
+    await setDoc(doc(db,'obras',obraActiva,'compras','proceso'), compras);
+    setSyncStatus('ok','Guardado ✓');
+    toggleFormCompras(false);
+    renderCompras();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+function getMontoFromField(fieldId) {
+  const raw = (document.getElementById(fieldId).value||'').replace(/\./g,'').replace(',','.');
+  return parseFloat(raw) || 0;
+}
+
+async function cargarCompras(obraId) {
+  try {
+    const snap = await getDocs(collection(db,'obras',obraId,'compras'));
+    obras[obraId].compras = {};
+    snap.forEach(d => { obras[obraId].compras[d.id] = d.data(); });
+  } catch(e) { obras[obraId].compras = {}; }
+}
+
+function renderCompras() {
+  const el = document.getElementById('compras-contenido');
+  if (!el) return;
+  if (!obraActiva || !obras[obraActiva]) { el.innerHTML = ''; return; }
+  const comp = obras[obraActiva].compras && obras[obraActiva].compras.proceso;
+  const info = obras[obraActiva].info;
+
+  if (!comp || !comp.inicio) {
+    el.innerHTML = `<div class="compras-empty">
+      <div class="compras-empty-icon">🏗️</div>
+      <div>No se registró proceso de compras para esta obra</div>
+      <button class="btn-primary" style="margin-top:1rem" onclick="toggleFormCompras(true)">+ Registrar proceso</button>
+    </div>`;
+    return;
+  }
+
+  const dias = calcularDias(comp.inicio, comp.fin);
+  const diasObra = comp.fin && info.inicio ? calcularDias(comp.fin, info.inicio) : null;
+
+  el.innerHTML = `<div class="compras-panel-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-size:1rem;font-weight:600;color:var(--ink)">Proceso de compras registrado</div>
+      <button class="btn-secondary" style="margin-top:0;font-size:0.78rem;padding:0.3rem 0.8rem" onclick="editarCompras()">✏️ Editar</button>
+    </div>
+    ${dias!==null?`<div class="compras-duracion-badge">⏱ Proceso de compras: <strong>${dias} días</strong></div>`:''}
+    ${diasObra!==null?`<div class="compras-duracion-badge" style="background:var(--blue-light);color:var(--blue)">📋 Tiempo hasta inicio de obra: <strong>${diasObra} días</strong></div>`:''}
+    <div class="compras-timeline">
+      <div class="compras-step">
+        <div class="compras-step-dot inicio">1</div>
+        <div class="compras-step-content">
+          <div class="compras-step-title">Inicio gestión de compras</div>
+          <div class="compras-step-date">${formatFecha(comp.inicio)}</div>
+        </div>
+      </div>
+      <div class="compras-connector"></div>
+      <div class="compras-step">
+        <div class="compras-step-dot fin">2</div>
+        <div class="compras-step-content">
+          <div class="compras-step-title">Adjudicación / Cierre${comp.proveedor?' — <strong>'+comp.proveedor+'</strong>':''}</div>
+          <div class="compras-step-date">${comp.fin?formatFecha(comp.fin):'Pendiente'}${comp.monto?' · $'+fmt(comp.monto):''}</div>
+        </div>
+      </div>
+      ${info.inicio?`<div class="compras-connector"></div>
+      <div class="compras-step">
+        <div class="compras-step-dot obra">3</div>
+        <div class="compras-step-content">
+          <div class="compras-step-title">Inicio de obra</div>
+          <div class="compras-step-date">${formatFecha(info.inicio)}</div>
+        </div>
+      </div>`:''}
+    </div>
+    ${comp.notas?`<div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--surface2);border-radius:6px;font-size:0.83rem;color:var(--ink2)"><strong>Notas:</strong> ${comp.notas}</div>`:''}
+  </div>`;
+}
+
+window.editarCompras = function() {
+  if (!obraActiva) return;
+  const comp = obras[obraActiva].compras && obras[obraActiva].compras.proceso;
+  if (comp) {
+    document.getElementById('comp-inicio').value    = comp.inicio    || '';
+    document.getElementById('comp-fin').value       = comp.fin       || '';
+    document.getElementById('comp-proveedor').value = comp.proveedor || '';
+    document.getElementById('comp-notas').value     = comp.notas     || '';
+    if (comp.monto) {
+      const num = Math.round(comp.monto * 100);
+      document.getElementById('comp-monto').value = Math.floor(num/100).toLocaleString('es-AR') + ',' + String(num%100).padStart(2,'0');
+    }
+  }
+  toggleFormCompras(true);
+  document.getElementById('panel-compras').scrollIntoView({behavior:'smooth'});
+};
+
+window.formatMonto = function(input) {
+  // Sacar todo excepto dígitos
+  let val = input.value.replace(/[^0-9]/g, '');
+  if (!val) { input.value = ''; return; }
+  // Convertir a número con decimales (últimos 2 dígitos = centavos)
+  let num = parseInt(val, 10);
+  // Formatear: separador de miles = punto, decimales = coma
+  let entero = Math.floor(num / 100);
+  let cents  = num % 100;
+  let enteroFmt = entero.toLocaleString('es-AR');
+  input.value = enteroFmt + ',' + String(cents).padStart(2,'0');
+};
+
+// Obtener valor numérico del campo monto formateado
+function getMontoValue() {
+  const raw = document.getElementById('gasto-monto').value;
+  // Sacar puntos de miles, reemplazar coma por punto
+  const clean = raw.replace(/\./g,'').replace(',','.');
+  return parseFloat(clean) || 0;
+}
+
 window.toggleVerPass = function() {
   const input = document.getElementById('login-pass');
   const btn   = document.getElementById('btn-ver-pass');
@@ -1070,7 +1284,7 @@ async function cargarObras() {
     unsubObras = onSnapshot(obrasRef, async (snap) => {
       obras = {};
       snap.forEach(d => {
-        obras[d.id] = { info: d.data(), libro:[], problemas:[], gastos:[] };
+        obras[d.id] = { info: d.data(), libro:[], problemas:[], gastos:[], compras:{} };
       });
       renderObraSelect();
       // restaurar obra activa
@@ -1097,6 +1311,8 @@ async function cargarSubcolecciones(obraId) {
     unsubSubs[obraId].forEach(u => u());
   }
   unsubSubs[obraId] = [];
+  // Cargar compras (no es tiempo real, es un solo doc)
+  await cargarCompras(obraId);
 
   const secciones = ['libro','problemas','gastos'];
   for (const sec of secciones) {
@@ -1217,7 +1433,11 @@ window.abrirModalNuevaObra = function() {
   modoModal = 'nueva';
   document.getElementById('modal-obra-titulo').textContent = 'Nueva obra';
   document.getElementById('btn-guardar-obra').textContent  = 'Crear obra';
-  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
+  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel',
+   'fo-comp-inicio','fo-comp-fin','fo-comp-proveedor','fo-comp-monto','fo-comp-notas'].forEach(id => document.getElementById(id).value='');
+  const compCheck = document.getElementById('fo-compras-check');
+  if (compCheck) { compCheck.checked = false; }
+  document.getElementById('fo-compras-fields').classList.remove('visible');
   document.getElementById('fo-estado').value = 'en-curso';
   document.getElementById('obra-fin-row').classList.remove('visible');
   document.getElementById('modal-obra').style.display = 'flex';
@@ -1265,6 +1485,18 @@ window.guardarObra = async function() {
       const docRef = await addDoc(collection(db,'obras'), infoNueva);
       obraActiva = docRef.id;
       localStorage.setItem('obraActiva', obraActiva);
+      // Guardar compras si se cargaron
+      const compCheck = document.getElementById('fo-compras-check');
+      if (compCheck && compCheck.checked) {
+        const compData = {
+          inicio:    document.getElementById('fo-comp-inicio').value,
+          fin:       document.getElementById('fo-comp-fin').value,
+          proveedor: document.getElementById('fo-comp-proveedor').value.trim(),
+          monto:     getMontoFromField('fo-comp-monto'),
+          notas:     document.getElementById('fo-comp-notas').value.trim()
+        };
+        await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), compData);
+      }
       await cargarSubcolecciones(obraActiva);
       setTimeout(()=>{
         renderObraSelect();
@@ -1331,6 +1563,7 @@ window.switchTab = function(tab, el) {
   tabActual = tab;
   document.getElementById('panel-'+tab).classList.add('active');
   if (tab==='reporte') renderReporte();
+  if (tab==='compras') renderCompras();
 };
 
 function setModoSoloLectura(soloLectura) {
@@ -1339,11 +1572,13 @@ function setModoSoloLectura(soloLectura) {
   if (soloLectura) {
     // Deshabilitar todas las tabs excepto reporte
     tabs.forEach(t => {
-      const isReporte = t.getAttribute('onclick') && t.getAttribute('onclick').includes('reporte');
-      if (!isReporte) {
+      const onclick = t.getAttribute('onclick') || '';
+      const isReporte = onclick.includes('reporte');
+      const isCompras = onclick.includes('compras');
+      if (!isReporte && !isCompras) {
         t.classList.add('disabled');
         t.classList.remove('active');
-      } else {
+      } else if (isReporte) {
         t.classList.add('active');
       }
     });
@@ -1500,8 +1735,8 @@ window.agregarGasto = async function() {
   if (!obraOk()) return;
   const fecha  = document.getElementById('gasto-fecha').value;
   const prov   = document.getElementById('gasto-prov').value.trim();
-  const monto  = parseFloat(document.getElementById('gasto-monto').value);
-  if (!fecha||!prov||isNaN(monto)) { alert('Completá fecha, proveedor y monto'); return; }
+  const monto  = getMontoValue();
+  if (!fecha||!prov||!monto) { alert('Completá fecha, proveedor y monto'); return; }
   try {
     await addDoc(collection(db,'obras',obraActiva,'gastos'), {
       fecha, prov,
@@ -1659,7 +1894,25 @@ function renderReporte() {
       html+='</div>';
     }
   }
-  el.innerHTML=html;
+  // Agregar sección compras al reporte si existe
+  if (obraActiva && obras[obraActiva] && obras[obraActiva].compras && obras[obraActiva].compras.proceso) {
+    const comp = obras[obraActiva].compras.proceso;
+    const diasComp = calcularDias(comp.inicio, comp.fin);
+    const diasHastaObra = comp.fin && obras[obraActiva].info.inicio ? calcularDias(comp.fin, obras[obraActiva].info.inicio) : null;
+    html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Proceso de compras / Licitación</div>
+    <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
+      ${comp.inicio?'<span>📅 Inicio gestión: <strong style="color:var(--ink)">'+formatFecha(comp.inicio)+'</strong></span>':''}
+      ${comp.fin?'<span>✓ Adjudicación: <strong style="color:var(--ink)">'+formatFecha(comp.fin)+'</strong></span>':''}
+      ${comp.proveedor?'<span>🏢 Proveedor: <strong style="color:var(--ink)">'+comp.proveedor+'</strong></span>':''}
+      ${comp.monto?'<span>💰 Monto: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
+      ${diasComp!==null?'<span>⏱ Duración proceso: <strong style="color:var(--accent)">'+diasComp+' días</strong></span>':''}
+      ${diasHastaObra!==null?'<span>📋 Tiempo hasta inicio de obra: <strong style="color:var(--blue)">'+diasHastaObra+' días</strong></span>':''}
+      ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
+    </div>`;
+    el.innerHTML = html;
+  } else {
+    el.innerHTML = html;
+  }
   // Mostrar botón finalizar solo si la obra está en curso
   const btnFin = document.getElementById('btn-finalizar-obra');
   if (btnFin) {
@@ -1902,7 +2155,15 @@ window.editarGasto = function(id) {
   document.getElementById('gasto-fecha').value  = r.fecha  || '';
   document.getElementById('gasto-prov').value   = r.prov   || '';
   document.getElementById('gasto-nro').value    = r.nro    || '';
-  document.getElementById('gasto-monto').value  = r.monto  || '';
+  // Formatear monto al cargar para editar
+  if (r.monto) {
+    const num = Math.round(r.monto * 100);
+    const entero = Math.floor(num/100);
+    const cents  = num % 100;
+    document.getElementById('gasto-monto').value = entero.toLocaleString('es-AR') + ',' + String(cents).padStart(2,'0');
+  } else {
+    document.getElementById('gasto-monto').value = '';
+  }
   document.getElementById('gasto-centro').value = r.centro || '';
   document.getElementById('gasto-notas').value  = r.notas  || '';
   document.getElementById('btn-agregar-gasto').style.display    = 'none';
@@ -1924,8 +2185,8 @@ window.actualizarGasto = async function() {
   if (!editandoId.gastos || !obraActiva) return;
   const fecha  = document.getElementById('gasto-fecha').value;
   const prov   = document.getElementById('gasto-prov').value.trim();
-  const monto  = parseFloat(document.getElementById('gasto-monto').value);
-  if (!fecha || !prov || isNaN(monto)) { alert('Completá fecha, proveedor y monto'); return; }
+  const monto  = getMontoValue();
+  if (!fecha || !prov || !monto) { alert('Completá fecha, proveedor y monto'); return; }
   try {
     await updateDoc(doc(db,'obras',obraActiva,'gastos',editandoId.gastos), {
       fecha, prov, monto,
