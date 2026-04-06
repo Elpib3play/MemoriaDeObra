@@ -121,7 +121,7 @@
   .btn-pdf:hover{background:#3a3630;}
   .sep{height:1px;background:var(--border);margin:1.5rem 0;}
 
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
   .modal-box{background:var(--surface);border-radius:12px;padding:2rem;width:90%;max-width:560px;border:1px solid var(--border);max-height:92vh;overflow-y:auto;}
   .modal-title{font-family:DM Serif Display,serif;font-size:1.25rem;margin-bottom:1.5rem;}
 
@@ -209,9 +209,10 @@
   .obra-card.terminada{border-top:3px solid var(--green);}
   .obra-card-header{display:flex;flex-direction:column;gap:0.4rem;}
   .obra-card-nombre{font-family:'DM Serif Display',serif;font-size:1.05rem;color:var(--ink);line-height:1.3;}
-  .obra-card-badge{font-size:0.68rem;font-weight:500;padding:0.2rem 0.65rem;border-radius:20px;white-space:nowrap;align-self:flex-start;}
+  .obra-card-badge{font-size:0.68rem;font-weight:500;padding:0.25rem 0.65rem;border-radius:20px;white-space:normal;align-self:flex-start;text-align:center;line-height:1.3;width:fit-content;max-width:140px;}
   .badge-en-curso{background:var(--amber-light);color:var(--amber);}
   .badge-terminada{background:var(--green-light);color:var(--green);}
+  .badge-esperando{background:#F59E0B!important;color:#fff!important;font-weight:600!important;}
   .obra-card-meta{font-size:0.8rem;color:var(--ink2);display:flex;flex-direction:column;gap:0.3rem;}
   .obra-card-meta span{display:flex;align-items:center;gap:0.35rem;}
   .obra-card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;}
@@ -298,8 +299,10 @@
   /* Estado pendiente licitación */
   .badge-licitacion{background:#EDE9FE;color:#5B21B6;padding:0.15rem 0.6rem;border-radius:4px;font-size:0.75rem;font-weight:500;}
   .obra-card.licitacion{border-top:3px solid #7C3AED;}
+  .obra-card.esperando{border:1.5px solid #FCD34D;border-top:3px solid #F59E0B;background:linear-gradient(to bottom,#FFFDF5,var(--surface));}
   .badge-licitacion-card{background:#EDE9FE;color:#5B21B6;font-size:0.68rem;font-weight:500;padding:0.2rem 0.65rem;border-radius:20px;white-space:nowrap;}
   .dash-stat-value.purple{color:#7C3AED;}
+  .dash-stat-value.amber-dark{color:#92400E;}
   .count-licitacion{background:#EDE9FE;color:#5B21B6;}
   .anio-separador.licitacion{color:#7C3AED;border-color:#7C3AED;}
   /* Modal licitación completar */
@@ -646,6 +649,16 @@
   </div>
 </div>
 
+<!-- MODAL INFO (reemplaza alert) -->
+<div class="modal-overlay" id="modal-info">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:0.75rem" id="modal-info-icon">✅</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.75rem" id="modal-info-titulo">Listo</div>
+    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6" id="modal-info-texto"></p>
+    <button class="btn-primary" style="margin-top:0" onclick="document.getElementById('modal-info').style.display='none'">Entendido</button>
+  </div>
+</div>
+
 <!-- MODAL CONFIRMAR ELIMINAR REGISTRO -->
 <div class="modal-overlay" id="modal-confirm-reg">
   <div class="modal-box" style="max-width:380px;text-align:center">
@@ -655,6 +668,23 @@
     <div style="display:flex;gap:0.75rem;justify-content:center">
       <button class="btn-primary" style="margin-top:0;background:var(--red)" onclick="confirmarEliminarRegistro()">Sí, eliminar</button>
       <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarConfirmReg()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INICIAR OBRA -->
+<div class="modal-overlay" id="modal-iniciar-obra">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2rem;margin-bottom:0.75rem">🏗️</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Iniciar obra</div>
+    <p style="font-size:0.85rem;color:var(--ink2);margin-bottom:1.25rem">La licitación ya fue cerrada. Ingresá la fecha de inicio de obra para activarla.</p>
+    <div class="field" style="text-align:left;margin-bottom:1.5rem">
+      <label>Fecha de inicio de obra *</label>
+      <input type="date" id="iniciar-obra-fecha">
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:center">
+      <button class="btn-primary" style="margin-top:0;background:#7C3AED" onclick="confirmarIniciarObra()">✓ Iniciar obra</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="document.getElementById('modal-iniciar-obra').style.display='none'">Cancelar</button>
     </div>
   </div>
 </div>
@@ -721,7 +751,7 @@
       <button class="btn-previo-no" onclick="elegirSinCompras()">
         ➜ No, crear obra directamente
       </button>
-      <button class="btn-previo-cancel" onclick="cerrarModalPrevio()">Cancelar</button>
+      <button class="btn-previo-cancel" onclick="cerrarModalPrevio();irAlPanel()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -780,7 +810,7 @@
     <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
       <button class="btn-primary" style="margin-top:0;display:none" id="pre-btn-continuar" onclick="confirmarComprasYCrearObra()">Continuar → Crear obra</button>
       <button class="btn-primary" style="margin-top:0;background:var(--ink);display:none" id="pre-btn-pendiente" onclick="confirmarComprasYCrearObra()">Crear como Pendiente</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalComprasStandalone()">Cancelar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalComprasStandalone();irAlPanel()">Cancelar</button>
     </div>
   </div>
 </div>
@@ -789,6 +819,26 @@
 <div class="modal-overlay" id="modal-obra">
   <div class="modal-box">
     <div class="modal-title" id="modal-obra-titulo">Nueva obra</div>
+
+    <!-- Pregunta fecha inicio (solo en modo completar) -->
+    <div class="field" id="fo-inicio-pregunta" style="display:none;margin-bottom:1.25rem">
+      <label>¿Tenés fecha de inicio de obra?</label>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button type="button" id="fo-inicio-si" onclick="setTieneFecha(true)"
+          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✓ Sí
+        </button>
+        <button type="button" id="fo-inicio-no" onclick="setTieneFecha(false)"
+          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✗ No
+        </button>
+      </div>
+    </div>
+    <div class="field" id="fo-inicio-campo" style="display:none;margin-bottom:1rem">
+      <label>Fecha de inicio *</label>
+      <input type="date" id="fo-inicio">
+    </div>
+
     <div class="field" style="margin-bottom:1rem">
       <label>Nombre de la obra *</label>
       <input type="text" id="fo-nombre" placeholder="Ej: Edificio Belgrano — Planta baja">
@@ -803,7 +853,7 @@
       </div>
     </div>
     <div class="form-grid" style="margin-bottom:1rem">
-      <div class="field"><label>Fecha de inicio</label><input type="date" id="fo-inicio"></div>
+      <div id="fo-inicio-hint" style="display:none"></div>
       <div class="field"><label>Estado de obra</label>
         <select id="fo-estado" onchange="toggleFechaFinObra()">
           <option value="en-curso">En curso</option>
@@ -825,7 +875,7 @@
 
     <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
       <button class="btn-primary" style="margin-top:0" id="btn-guardar-obra" onclick="guardarObra()">Crear obra</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra()">Cancelar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra().then(()=>irAlPanel())">Cancelar</button>
     </div>
   </div>
 </div>
@@ -983,13 +1033,16 @@ window.renderDashboard = function() {
     }
   }
 
-  // Separar en tres grupos bien definidos
+  // Regla absoluta: sin fecha de inicio = Pendiente SIEMPRE
   const pendientes = lista.filter(o => !o.info.inicio && o.info.estadoObra !== 'terminado');
-  const enCurso    = lista.filter(o => o.info.inicio && o.info.estadoObra !== 'terminado');
+  const enCurso    = lista.filter(o => !!o.info.inicio && o.info.estadoObra !== 'terminado');
   const terminadas = lista.filter(o => o.info.estadoObra === 'terminado');
 
-  enCurso.sort((a,b)=>(b.info.inicio||'').localeCompare(a.info.inicio||''));
-  terminadas.sort((a,b)=>(b.info.fin||b.info.inicio||'').localeCompare(a.info.fin||a.info.inicio||''));
+  // Ordenar por fecha de creación desc (más nueva primero)
+  const sortPorCreacion = (a,b) => (b.info.creadoEn||'').localeCompare(a.info.creadoEn||'');
+  pendientes.sort(sortPorCreacion);
+  enCurso.sort(sortPorCreacion);
+  terminadas.sort(sortPorCreacion);
 
   // Stats globales siempre del total real
   const totalObras    = Object.keys(obras).length;
@@ -1072,19 +1125,30 @@ function getMesLabel3(key) {
 function buildCard(o) {
   const info       = o.info;
   const terminada  = info.estadoObra === 'terminado';
-  const licitacion = !info.inicio && info.estadoObra !== 'terminado';
+  const tieneComprasCerradas = o.compras && o.compras.proceso && o.compras.proceso.fin;
+  // Regla absoluta: sin fecha de inicio → pendiente
+  const licitacion   = !info.inicio && info.estadoObra !== 'terminado';
+  // yaLicitado = tiene adjudicación completa O pasó de licitacion pero le falta fecha
+  const yaLicitado   = licitacion && (tieneComprasCerradas || info.estadoObra === 'en-curso');
+  const enLicitacion = licitacion && !yaLicitado;
   const dias       = calcularDias(info.inicio, terminada ? info.fin : null);
   const diasEC     = calcularDias(info.inicio, null);
 
   const comp = o.compras && o.compras.proceso;
   const compInicioLabel = comp && comp.inicio ? '📋 Licitación desde: '+formatFecha(comp.inicio) : '';
 
-  let cardClass = terminada ? 'terminada' : licitacion ? 'licitacion' : 'en-curso';
-  let badgeClass = terminada ? 'badge-terminada' : licitacion ? 'badge-licitacion-card' : 'badge-en-curso';
-  let badgeText  = terminada ? 'Terminada' : licitacion ? 'En licitación' : 'En curso';
-  let btnClass   = terminada ? 'verde' : licitacion ? '' : '';
-  let btnStyle   = licitacion ? 'style="background:#7C3AED"' : '';
-  let btnText    = terminada ? 'Ver obra →' : licitacion ? 'Cerrar licitación →' : 'Ingresar →';
+  let cardClass = terminada ? 'terminada' : yaLicitado ? 'esperando' : enLicitacion ? 'licitacion' : 'en-curso';
+  let badgeClass = terminada ? 'badge-terminada' : yaLicitado ? 'badge-esperando' : enLicitacion ? 'badge-licitacion-card' : 'badge-en-curso';
+  let badgeText  = terminada ? 'Terminada'
+    : yaLicitado   ? 'Licitado — esperando<br>inicio de obra'
+    : enLicitacion ? 'En licitación'
+    : 'En curso';
+  let btnClass   = terminada ? 'verde' : '';
+  let btnStyle   = yaLicitado ? 'style="background:#D97706"' : enLicitacion ? 'style="background:#7C3AED"' : '';
+  let btnText    = terminada   ? 'Ver obra →'
+    : yaLicitado   ? 'Iniciar obra →'
+    : enLicitacion ? 'Cerrar licitación →'
+    : 'Ingresar →';
 
   return `<div class="obra-card ${cardClass}">
     <div class="obra-card-header">
@@ -1112,8 +1176,19 @@ function renderCardsSection(lista, contenedor, tipo) {
   const el = document.getElementById(contenedor);
   if (!lista.length) {
     const icons = {curso:'🏗️', term:'✅', licitacion:'⏳'};
-    const msgs  = {curso:'No hay obras en curso', term:'No hay obras terminadas', licitacion:'No hay obras en licitación'};
+    const msgs  = {curso:'No hay obras en curso', term:'No hay obras terminadas', licitacion:'No hay obras pendientes'};
     el.innerHTML = `<div class="empty-dash"><div class="empty-dash-icon">${icons[tipo]||'📋'}</div>${msgs[tipo]||'Sin registros'}</div>`;
+    return;
+  }
+  // Pendientes: todas juntas sin agrupar por año/mes
+  if (tipo === 'licitacion') {
+    const cards = lista.map(buildCard).join('');
+    el.innerHTML = `
+      <div class="mes-separador" style="color:var(--blue);border-color:var(--blue);margin-bottom:1rem">
+        🔵 Pendiente — por licitación o falta de fecha de inicio de obra
+        <span class="mes-count">${lista.length}</span>
+      </div>
+      <div class="obra-cards">${cards}</div>`;
     return;
   }
   const porAnioMes = agruparPorAnioMes(lista);
@@ -1128,7 +1203,7 @@ function renderCardsSection(lista, contenedor, tipo) {
       </div>`;
     }).join('');
     return `<div style="margin-bottom:2.5rem;width:100%;display:block">
-      <div class="anio-separador" style="${anio==='Sin fecha'?'color:var(--blue);border-color:var(--blue)':''}">${anio==='Sin fecha'?'🔵 Pendiente — por licitación o falta de fecha de inicio de obra':anio}</div>
+      <div class="anio-separador">${anio}</div>
       ${mesesHtml}
     </div>`;
   }).join('');
@@ -1144,8 +1219,38 @@ function renderListaSection(lista, contenedor, tipo) {
   const el = document.getElementById(contenedor);
   if (!lista.length) {
     const icons = {curso:'🏗️', term:'✅', licitacion:'⏳'};
-    const msgs  = {curso:'No hay obras en curso', term:'No hay obras terminadas', licitacion:'No hay obras en licitación'};
+    const msgs  = {curso:'No hay obras en curso', term:'No hay obras terminadas', licitacion:'No hay obras pendientes'};
     el.innerHTML = `<div class="empty-dash"><div class="empty-dash-icon">${icons[tipo]||'📋'}</div>${msgs[tipo]||'Sin registros'}</div>`;
+    return;
+  }
+  // Pendientes: tabla simple sin agrupar por año/mes
+  if (tipo === 'licitacion') {
+    const rows = lista.map(o => {
+      const info = o.info;
+      const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
+      const badgeCls = 'badge-licitacion-card';
+      const badgeTxt = 'Pendiente';
+      return `<tr>
+        <td class="col-obra"><strong>${info.nombre}</strong></td>
+        <td class="col-prov">${info.proveedor||'—'}</td>
+        <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
+        <td class="col-fecha">—</td>
+        <td class="col-fecha">—</td>
+        <td class="col-dur">—</td>
+        <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
+      </tr>`;
+    }).join('');
+    el.innerHTML = `<div class="obras-tabla-wrap">
+      <table class="obras-tabla">
+        <thead><tr>
+          <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
+          <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
+          <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
+          <th class="col-estado">Estado</th><th class="col-btn"></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
     return;
   }
   const porAnioMes = agruparPorAnioMes(lista);
@@ -1199,13 +1304,50 @@ function renderListaSection(lista, contenedor, tipo) {
 
 window.ingresarDesdePanel = async function(obraId) {
   const info = obras[obraId] && obras[obraId].info;
-  // Si está en licitación → abrir modal de cierre
-  if (info && info.estadoObra === 'licitacion') {
+  // Pendiente = sin fecha de inicio y no terminada
+  const esPendiente = info && !info.inicio && info.estadoObra !== 'terminado';
+  if (esPendiente) {
     obraLicitacionId = obraId;
-    // Pre-cargar datos de compras existentes
+    // Siempre recargar compras desde Firebase antes de verificar
     await cargarCompras(obraId);
-    const comp = obras[obraId].compras && obras[obraId].compras.proceso;
-    // Reset modal
+    // Esperar que se cargue
+    const comp = obras[obraId] && obras[obraId].compras && obras[obraId].compras.proceso;
+    const yaAdj = !!(comp && comp.fin && comp.proveedor);
+
+    // yaAdj = tiene fecha de adjudicación Y proveedor → ya licitado, solo falta inicio de obra
+    if (yaAdj) {
+      infoAntesDeCerrar = { ...obras[obraId].info };
+      modoModal = 'completar-licitacion';
+      document.getElementById('modal-obra-titulo').textContent = 'Completar obra';
+      document.getElementById('btn-guardar-obra').textContent  = 'Iniciar obra';
+      const infoObra = obras[obraId].info;
+      document.getElementById('fo-nombre').value    = infoObra.nombre    || '';
+      document.getElementById('fo-proveedor').value = comp.proveedor || infoObra.proveedor || '';
+      document.getElementById('fo-ubicacion').value = infoObra.ubicacion  || '';
+      document.getElementById('fo-email').value     = infoObra.email      || '';
+      document.getElementById('fo-tel').value       = infoObra.tel        || '';
+      document.getElementById('fo-inicio').value    = '';
+      document.getElementById('fo-estado').value    = 'en-curso';
+      document.getElementById('obra-fin-row').classList.remove('visible');
+      // Mostrar pregunta Sí/No y resetear botones
+      document.getElementById('fo-inicio-pregunta').style.display = 'block';
+      document.getElementById('fo-inicio-campo').style.display    = 'none';
+      document.getElementById('fo-inicio-hint').style.display     = 'none';
+      ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+        const b = document.getElementById(id);
+        b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+      });
+      // Ocultar estado de obra (se maneja automáticamente)
+      document.getElementById('fo-estado').parentElement.style.display = 'none';
+      document.getElementById('btn-guardar-obra').textContent  = 'Iniciar obra';
+      document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
+      comprasPrevias   = comp || null;
+      obraLicitacionId = obraId;
+      document.getElementById('modal-obra').style.display = 'flex';
+      return;
+    }
+
+    // Proceso abierto → modal de cierre de licitación
     ['lic-cierre-fecha','lic-cierre-proveedor','lic-cierre-monto','lic-cierre-notas'].forEach(id => document.getElementById(id).value = '');
     if (comp && comp.notas) document.getElementById('lic-cierre-notas').value = comp.notas;
     ['btn-adj-si','btn-adj-no'].forEach(id => {
@@ -1230,6 +1372,41 @@ window.ingresarDesdePanel = async function(obraId) {
   const terminada = info && info.estadoObra === 'terminado';
   setModoSoloLectura(terminada);
   if (!terminada) renderAll();
+};
+
+function mostrarInfo(icono, titulo, texto) {
+  document.getElementById('modal-info-icon').textContent  = icono;
+  document.getElementById('modal-info-titulo').textContent = titulo;
+  document.getElementById('modal-info-texto').textContent  = texto;
+  document.getElementById('modal-info').style.display = 'flex';
+}
+
+window.setTieneFecha = function(tiene) {
+  const btnSi  = document.getElementById('fo-inicio-si');
+  const btnNo  = document.getElementById('fo-inicio-no');
+  const campo  = document.getElementById('fo-inicio-campo');
+  const btnGrd = document.getElementById('btn-guardar-obra');
+  const estado = document.getElementById('fo-estado');
+
+  if (tiene) {
+    btnSi.style.background  = '#7C3AED'; btnSi.style.color='#fff'; btnSi.style.borderColor='#7C3AED';
+    btnNo.style.background  = 'var(--surface2)'; btnNo.style.color='var(--ink)'; btnNo.style.borderColor='var(--border)';
+    campo.style.display     = 'block';
+    document.getElementById('fo-inicio').value = '';
+    estado.value            = 'en-curso';
+    estado.parentElement.style.display = 'none';
+    btnGrd.textContent      = 'Iniciar obra';
+    btnGrd.style.background = 'var(--accent)';
+  } else {
+    btnNo.style.background  = 'var(--ink)'; btnNo.style.color='#fff'; btnNo.style.borderColor='var(--ink)';
+    btnSi.style.background  = 'var(--surface2)'; btnSi.style.color='var(--ink)'; btnSi.style.borderColor='var(--border)';
+    campo.style.display     = 'none';
+    document.getElementById('fo-inicio').value = '';
+    estado.value            = 'en-curso'; // se guarda como en-curso sin fecha = pendiente
+    estado.parentElement.style.display = 'none';
+    btnGrd.textContent      = 'Generar etiqueta de obra';
+    btnGrd.style.background = 'var(--ink)';
+  }
 };
 
 window.setPreAdjudicacion = function(hubo) {
@@ -1316,6 +1493,25 @@ window.guardarNotaYVolverPanel = async function() {
   renderDashboard();
 };
 
+
+window.confirmarIniciarObra = async function() {
+  const fecha = document.getElementById('iniciar-obra-fecha').value;
+  if (!fecha) { alert('La fecha de inicio es obligatoria'); return; }
+  const obraId = obraLicitacionId;
+  if (!obraId) return;
+  setSyncStatus('loading','Guardando...');
+  try {
+    const infoActual = obras[obraId].info;
+    const infoNueva  = { ...infoActual, inicio: fecha, estadoObra: 'en-curso' };
+    await setDoc(doc(db,'obras',obraId), infoNueva);
+    obras[obraId].info = infoNueva;
+    setSyncStatus('ok','Obra iniciada ✓');
+    document.getElementById('modal-iniciar-obra').style.display = 'none';
+    obraLicitacionId = null;
+    renderDashboard();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
 window.cerrarLicitacionYCrearObra = async function() {
   const fecha     = document.getElementById('lic-cierre-fecha').value;
   const proveedor = document.getElementById('lic-cierre-proveedor').value.trim();
@@ -1342,18 +1538,33 @@ window.cerrarLicitacionYCrearObra = async function() {
   comprasPrevias   = compActualizada;
   obraLicitacionId = obraId;
 
-  // Abrir form de nueva obra para completar datos — en modo "completar licitación"
+  // Guardar estado original antes de modificar
+  infoAntesDeCerrar = { ...obras[obraId].info };
   modoModal = 'completar-licitacion';
-  document.getElementById('modal-obra-titulo').textContent = 'Completar obra';
-  document.getElementById('btn-guardar-obra').textContent  = 'Crear obra';
-  ['fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
+
   // Pre-completar nombre desde la obra pendiente
   const nombreObra = obras[obraId] && obras[obraId].info && obras[obraId].info.nombre || '';
   const esNombreProvisional = nombreObra.startsWith('Pendiente —');
-  document.getElementById('fo-nombre').value    = esNombreProvisional ? '' : nombreObra;
+  const nombreFinal = esNombreProvisional ? '' : nombreObra;
+
+  // Abrir form con pregunta Sí/No fecha
+  document.getElementById('modal-obra-titulo').textContent = 'Completar obra';
+  ['fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('fo-nombre').value    = nombreFinal;
   document.getElementById('fo-proveedor').value = proveedor;
   document.getElementById('fo-estado').value    = 'en-curso';
   document.getElementById('obra-fin-row').classList.remove('visible');
+  document.getElementById('fo-inicio-hint').style.display     = 'none';
+  document.getElementById('fo-inicio-campo').style.display    = 'none';
+  document.getElementById('fo-inicio-pregunta').style.display = 'block';
+  document.getElementById('fo-estado').parentElement.style.display = 'none';
+  // Reset botones Sí/No
+  ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+    const b = document.getElementById(id);
+    b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+  });
+  document.getElementById('btn-guardar-obra').textContent      = 'Iniciar obra';
+  document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
   document.getElementById('modal-obra').style.display = 'flex';
 };
 
@@ -1399,7 +1610,7 @@ function getMontoFromField(fieldId) {
 }
 
 async function cargarCompras(obraId) {
-  if (!obras[obraId]) return;
+  if (!obras[obraId]) obras[obraId] = { info:{}, libro:[], problemas:[], gastos:[], compras:{} };
   obras[obraId].compras = {};
   try {
     const snap = await getDocs(collection(db,'obras',obraId,'compras'));
@@ -1936,22 +2147,43 @@ async function crearObraPendienteLicitacion(nombre, compData) {
     } else {
       renderDashboard();
     }
-    alert('✓ Obra creada en estado "Pendiente de licitación". Cuando se cierre la licitación, ingresá desde el panel para completarla.');
+    mostrarInfo('📋', 'Obra en estado Pendiente', 'La obra fue creada como pendiente de licitación. Cuando se cierre la licitación, ingresá desde el panel para completarla.');
   } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
 }
 
 function abrirFormNuevaObra(proveedorPrecomp, nombrePrecomp) {
   modoModal = 'nueva';
+  obraLicitacionId  = null;
+  infoAntesDeCerrar = null;
   document.getElementById('modal-obra-titulo').textContent = 'Nueva obra';
   document.getElementById('btn-guardar-obra').textContent  = 'Crear obra';
+  document.getElementById('btn-guardar-obra').style.background = '';
   ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
   document.getElementById('fo-estado').value = 'en-curso';
   document.getElementById('obra-fin-row').classList.remove('visible');
-  // Pre-completar nombre y proveedor si vienen de compras
-  if (nombrePrecomp)    document.getElementById('fo-nombre').value    = nombrePrecomp;
-  if (proveedorPrecomp) document.getElementById('fo-proveedor').value = proveedorPrecomp;
-  // Si hay compras previas, la fecha de inicio es opcional (pendiente de licitación)
-  const labelInicio = document.querySelector('label[for="fo-inicio"]') || document.querySelector('#fo-inicio')?.previousElementSibling;
+  document.getElementById('fo-inicio-hint').style.display     = 'none';
+  document.getElementById('fo-inicio-campo').style.display    = 'none';
+  document.getElementById('fo-estado').parentElement.style.display = 'block';
+
+  if (proveedorPrecomp || nombrePrecomp) {
+    // Viene de compras → mostrar pregunta Sí/No para fecha de inicio
+    if (nombrePrecomp)    document.getElementById('fo-nombre').value    = nombrePrecomp;
+    if (proveedorPrecomp) document.getElementById('fo-proveedor').value = proveedorPrecomp;
+    document.getElementById('fo-inicio-pregunta').style.display = 'block';
+    document.getElementById('fo-estado').parentElement.style.display = 'none';
+    // Reset botones Sí/No
+    ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+      const b = document.getElementById(id);
+      b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+    });
+    document.getElementById('btn-guardar-obra').textContent   = 'Iniciar obra';
+    document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
+  } else {
+    // Sin compras → ocultar pregunta, mostrar campo fecha normal
+    document.getElementById('fo-inicio-pregunta').style.display = 'none';
+    document.getElementById('btn-guardar-obra').textContent   = 'Crear obra';
+    document.getElementById('btn-guardar-obra').style.background = '';
+  }
   document.getElementById('modal-obra').style.display = 'flex';
 }
 
@@ -1973,16 +2205,42 @@ window.abrirModalEditarObra = function() {
   document.getElementById('modal-obra').style.display = 'flex';
 };
 
-window.cerrarModalObra = function() {
+let infoAntesDeCerrar = null; // backup del estado antes de completar licitación
+
+window.cerrarModalObra = async function() {
   document.getElementById('modal-obra').style.display = 'none';
+  document.getElementById('fo-inicio-hint').style.display     = 'none';
+  document.getElementById('fo-inicio-pregunta').style.display = 'none';
+  document.getElementById('fo-inicio-campo').style.display    = 'none';
+  // Restaurar visibilidad del estado de obra
+  const estadoField = document.getElementById('fo-estado');
+  if (estadoField) estadoField.parentElement.style.display = 'block';
+  // Si cancelamos completar-licitacion, restaurar estado original en Firebase
+  if (modoModal === 'completar-licitacion' && infoAntesDeCerrar && obraLicitacionId) {
+    try {
+      await setDoc(doc(db,'obras',obraLicitacionId), infoAntesDeCerrar);
+      if (obras[obraLicitacionId]) obras[obraLicitacionId].info = infoAntesDeCerrar;
+      renderDashboard();
+    } catch(e) { console.error(e); }
+    infoAntesDeCerrar = null;
+    comprasPrevias    = null;
+    obraLicitacionId  = null;
+    modoModal         = null;
+  }
 };
 
 window.guardarObra = async function() {
   const nombre = document.getElementById('fo-nombre').value.trim();
   if (!nombre) { alert('Ingresá el nombre de la obra'); return; }
-  // Fecha inicio obligatoria solo si no hay proceso de compras previo
   const inicio = document.getElementById('fo-inicio').value;
-  if (!inicio && !comprasPrevias) { alert('Ingresá la fecha de inicio de la obra'); return; }
+  // Fecha obligatoria solo cuando viene del botón "Iniciar obra" (ya tiene adjudicación)
+  const btnText = document.getElementById('btn-guardar-obra').textContent.trim();
+  const esModoIniciar = btnText === 'Iniciar obra';
+  const esModoEtiqueta = btnText === 'Generar etiqueta de obra';
+  if (!inicio && esModoIniciar && !esModoEtiqueta) {
+    alert('Ingresá la fecha de inicio de la obra');
+    return;
+  }
   const estadoObra = document.getElementById('fo-estado').value;
   const infoNueva = {
     nombre,
@@ -1992,7 +2250,8 @@ window.guardarObra = async function() {
     estadoObra,
     fin:   estadoObra==='terminado' ? document.getElementById('fo-fin').value : '',
     email: document.getElementById('fo-email').value.trim(),
-    tel:   document.getElementById('fo-tel').value.trim()
+    tel:   document.getElementById('fo-tel').value.trim(),
+    creadoEn: obras[obraActiva]?.info?.creadoEn || new Date().toISOString()
   };
   setSyncStatus('loading','Guardando...');
   try {
@@ -2015,8 +2274,22 @@ window.guardarObra = async function() {
         renderAll();
       }, 500);
     } else if (modoModal==='completar-licitacion') {
-      // Reemplazar la obra pendiente con los datos completos
       const obraId = obraLicitacionId;
+      // Si no hay fecha de inicio → guardar como pendiente y volver al panel
+      if (!infoNueva.inicio) {
+        infoNueva.estadoObra = 'en-curso';
+        await setDoc(doc(db,'obras',obraId), infoNueva);
+        if (obras[obraId]) obras[obraId].info = infoNueva;
+        infoAntesDeCerrar = null;
+        setSyncStatus('ok','Etiqueta generada ✓');
+        document.getElementById('modal-obra').style.display = 'none';
+        document.getElementById('fo-inicio-pregunta').style.display = 'none';
+        document.getElementById('fo-inicio-campo').style.display    = 'none';
+        const estadoField = document.getElementById('fo-estado');
+        if (estadoField) estadoField.parentElement.style.display = 'block';
+        irAlPanel();
+        return;
+      }
       await setDoc(doc(db,'obras',obraId), infoNueva);
       if (comprasPrevias) {
         await setDoc(doc(db,'obras',obraId,'compras','proceso'), comprasPrevias);
@@ -2072,15 +2345,12 @@ window.confirmarEliminar = async function() {
     if (unsubSubs[obraActiva]) { unsubSubs[obraActiva].forEach(u=>u()); delete unsubSubs[obraActiva]; }
     obraActiva = null;
     localStorage.removeItem('obraActiva');
-    actualizarHeaderObra();
-    mostrarBotonesObra(false);
-    document.getElementById('filtros-bar').style.display='none';
-    document.getElementById('filtro-resultado').style.display='none';
     filtroAnio=''; filtroMes='';
-    renderAll();
     setSyncStatus('ok','Eliminado');
+    // Ir al panel después de eliminar
+    cerrarConfirm();
+    irAlPanel();
   } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
-  cerrarConfirm();
 };
 
 // ========== TABS ==========
