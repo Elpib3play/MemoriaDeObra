@@ -212,7 +212,7 @@
   .obra-card-badge{font-size:0.68rem;font-weight:500;padding:0.25rem 0.65rem;border-radius:20px;white-space:normal;align-self:flex-start;text-align:center;line-height:1.3;width:fit-content;max-width:140px;}
   .badge-en-curso{background:var(--amber-light);color:var(--amber);}
   .badge-terminada{background:var(--green-light);color:var(--green);}
-  .badge-esperando{background:#F59E0B!important;color:#fff!important;font-weight:600!important;}
+  .badge-esperando{background:#EEEDFE!important;color:#3C3489!important;font-weight:600!important;}
   .obra-card-meta{font-size:0.8rem;color:var(--ink2);display:flex;flex-direction:column;gap:0.3rem;}
   .obra-card-meta span{display:flex;align-items:center;gap:0.35rem;}
   .obra-card-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem;}
@@ -299,7 +299,7 @@
   /* Estado pendiente licitación */
   .badge-licitacion{background:#EDE9FE;color:#5B21B6;padding:0.15rem 0.6rem;border-radius:4px;font-size:0.75rem;font-weight:500;}
   .obra-card.licitacion{border-top:3px solid #7C3AED;}
-  .obra-card.esperando{border:1.5px solid #FCD34D;border-top:3px solid #F59E0B;background:linear-gradient(to bottom,#FFFDF5,var(--surface));}
+  .obra-card.esperando{border:1.5px solid #AFA9EC;border-top:3px solid #7F77DD;}
   .badge-licitacion-card{background:#EDE9FE;color:#5B21B6;font-size:0.68rem;font-weight:500;padding:0.2rem 0.65rem;border-radius:20px;white-space:nowrap;}
   .dash-stat-value.purple{color:#7C3AED;}
   .dash-stat-value.amber-dark{color:#92400E;}
@@ -861,6 +861,17 @@
         </select>
       </div>
     </div>
+    <!-- Campos contratación directa (monto/notas) -->
+    <div id="fo-contratacion-directa-fields" style="display:none;margin-bottom:1rem">
+      <div class="form-grid">
+        <div class="field"><label>Monto contratado ($) <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+          <input type="text" id="fo-monto-directo" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)">
+        </div>
+        <div class="field"><label>Notas / Condiciones <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+          <input type="text" id="fo-notas-directo" placeholder="Ej: Pago en 2 cuotas">
+        </div>
+      </div>
+    </div>
     <div style="font-size:0.75rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Contacto del proveedor <span style="font-weight:400;font-style:italic">(opcional)</span></div>
     <div class="form-grid" style="margin-bottom:1rem">
       <div class="field"><label>Email</label><input type="email" id="fo-email" placeholder="contacto@empresa.com"></div>
@@ -1128,26 +1139,29 @@ function buildCard(o) {
   const tieneComprasCerradas = o.compras && o.compras.proceso && o.compras.proceso.fin;
   // Regla absoluta: sin fecha de inicio → pendiente
   const licitacion   = !info.inicio && info.estadoObra !== 'terminado';
-  // yaLicitado = tiene adjudicación completa O pasó de licitacion pero le falta fecha
-  const yaLicitado   = licitacion && (tieneComprasCerradas || info.estadoObra === 'en-curso');
-  const enLicitacion = licitacion && !yaLicitado;
+  // yaLicitado = tiene proceso de compras cerrado O fue guardado explícitamente como licitado sin inicio
+  const yaLicitado   = licitacion && (tieneComprasCerradas || info.estadoObra === 'licitado-sin-inicio');
+  const enLicitacion = licitacion && !yaLicitado && info.estadoObra === 'licitacion';
   const dias       = calcularDias(info.inicio, terminada ? info.fin : null);
   const diasEC     = calcularDias(info.inicio, null);
 
   const comp = o.compras && o.compras.proceso;
   const compInicioLabel = comp && comp.inicio ? '📋 Licitación desde: '+formatFecha(comp.inicio) : '';
 
-  let cardClass = terminada ? 'terminada' : yaLicitado ? 'esperando' : enLicitacion ? 'licitacion' : 'en-curso';
-  let badgeClass = terminada ? 'badge-terminada' : yaLicitado ? 'badge-esperando' : enLicitacion ? 'badge-licitacion-card' : 'badge-en-curso';
-  let badgeText  = terminada ? 'Terminada'
-    : yaLicitado   ? 'Licitado — esperando<br>inicio de obra'
-    : enLicitacion ? 'En licitación'
+  let cardClass = terminada ? 'terminada' : licitacion ? (enLicitacion ? 'licitacion' : 'esperando') : 'en-curso';
+  const sinLicitacion = licitacion && !tieneComprasCerradas && info.estadoObra !== 'licitacion';
+  let badgeClass = terminada ? 'badge-terminada' : licitacion ? 'badge-licitacion-card' : 'badge-en-curso';
+  let badgeText  = terminada    ? 'Terminada'
+    : enLicitacion  ? 'En licitación'
+    : yaLicitado    ? 'Licitado — sin<br>inicio de obra'
+    : sinLicitacion ? 'Contratación directa<br>— sin inicio de obra'
     : 'En curso';
   let btnClass   = terminada ? 'verde' : '';
-  let btnStyle   = yaLicitado ? 'style="background:#D97706"' : enLicitacion ? 'style="background:#7C3AED"' : '';
-  let btnText    = terminada   ? 'Ver obra →'
-    : yaLicitado   ? 'Iniciar obra →'
-    : enLicitacion ? 'Cerrar licitación →'
+  let btnStyle   = licitacion ? 'style="background:#7C3AED"' : '';
+  let btnText    = terminada    ? 'Ver obra →'
+    : enLicitacion  ? 'Cerrar licitación →'
+    : yaLicitado    ? 'Iniciar obra →'
+    : sinLicitacion ? 'Iniciar obra →'
     : 'Ingresar →';
 
   return `<div class="obra-card ${cardClass}">
@@ -1342,6 +1356,40 @@ window.ingresarDesdePanel = async function(obraId) {
       document.getElementById('btn-guardar-obra').textContent  = 'Iniciar obra';
       document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
       comprasPrevias   = comp || null;
+      obraLicitacionId = obraId;
+      document.getElementById('modal-obra').style.display = 'flex';
+      return;
+    }
+
+    // Contratación directa (sin licitación) → abrir form de obra directamente
+    if (info.estadoObra === 'pendiente') {
+      infoAntesDeCerrar = { ...obras[obraId].info };
+      modoModal = 'completar-licitacion';
+      document.getElementById('modal-obra-titulo').textContent = 'Completar obra';
+      document.getElementById('btn-guardar-obra').textContent  = 'Iniciar obra';
+      const infoObra = obras[obraId].info;
+      document.getElementById('fo-nombre').value    = infoObra.nombre    || '';
+      document.getElementById('fo-proveedor').value = infoObra.proveedor || '';
+      document.getElementById('fo-ubicacion').value = infoObra.ubicacion || '';
+      document.getElementById('fo-email').value     = infoObra.email     || '';
+      document.getElementById('fo-tel').value       = infoObra.tel       || '';
+      document.getElementById('fo-inicio').value    = '';
+      document.getElementById('fo-estado').value    = 'en-curso';
+      document.getElementById('obra-fin-row').classList.remove('visible');
+      document.getElementById('fo-inicio-pregunta').style.display = 'block';
+      document.getElementById('fo-inicio-campo').style.display    = 'none';
+      document.getElementById('fo-inicio-hint').style.display     = 'none';
+      ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+        const b = document.getElementById(id);
+        b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+      });
+      document.getElementById('fo-estado').parentElement.style.display = 'none';
+      document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
+      // Mostrar campos de contratación directa y limpiarlos
+      document.getElementById('fo-contratacion-directa-fields').style.display = 'block';
+      document.getElementById('fo-monto-directo').value = '';
+      document.getElementById('fo-notas-directo').value = '';
+      comprasPrevias   = null;
       obraLicitacionId = obraId;
       document.getElementById('modal-obra').style.display = 'flex';
       return;
@@ -1624,6 +1672,49 @@ function renderCompras() {
   if (!obraActiva || !obras[obraActiva]) { el.innerHTML = ''; return; }
   const comp = obras[obraActiva].compras && obras[obraActiva].compras.proceso;
   const info = obras[obraActiva].info;
+
+  // Contratación directa: tiene comp con tipo='directa' o simplemente no tiene comp.inicio
+  const esContratacionDirecta = info.estadoObra === 'en-curso' && (!comp || comp.tipo === 'directa') && !comp?.inicio;
+
+  if (esContratacionDirecta && info.inicio) {
+    const diasEjecucion = calcularDias(info.inicio, info.estadoObra==='terminado' && info.fin ? info.fin : null);
+    const monto = comp && comp.monto ? '$'+fmt(comp.monto) : null;
+    const notas = comp && comp.notas ? comp.notas : null;
+    el.innerHTML = `<div class="compras-panel-card">
+      <div style="font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:1.25rem">Contratación directa</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem">
+        ${diasEjecucion!==null?`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${diasEjecucion} días${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`:''}
+      </div>
+      <div class="compras-timeline">
+        <div class="compras-step">
+          <div class="compras-step-dot ejecucion">1</div>
+          <div class="compras-step-content">
+            <div class="compras-step-title">Inicio de obra</div>
+            <div class="compras-step-date">${formatFecha(info.inicio)}${monto?' · '+monto:''}</div>
+            ${notas?`<div style="font-size:0.78rem;color:var(--ink3);margin-top:0.2rem">${notas}</div>`:''}
+          </div>
+        </div>
+        ${info.estadoObra==='terminado' && info.fin ? `
+        <div style="display:flex;align-items:stretch;gap:0">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <div class="compras-connector"></div>
+          </div>
+          ${diasEjecucion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${diasEjecucion} días de ejecución</div>`:''}
+        </div>
+        <div class="compras-step">
+          <div class="compras-step-dot fin">2</div>
+          <div class="compras-step-content">
+            <div class="compras-step-title">Obra finalizada</div>
+            <div class="compras-step-date">${formatFecha(info.fin)}</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--surface2);border-radius:8px;font-size:0.85rem;font-weight:600;color:var(--ink)">
+          Total del proyecto: ${diasEjecucion} días
+        </div>` : ''}
+      </div>
+    </div>`;
+    return;
+  }
 
   if (!comp || !comp.inicio) {
     el.innerHTML = `<div class="compras-empty">
@@ -2179,9 +2270,20 @@ function abrirFormNuevaObra(proveedorPrecomp, nombrePrecomp) {
     document.getElementById('btn-guardar-obra').textContent   = 'Iniciar obra';
     document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
   } else {
-    // Sin compras → ocultar pregunta, mostrar campo fecha normal
-    document.getElementById('fo-inicio-pregunta').style.display = 'none';
-    document.getElementById('btn-guardar-obra').textContent   = 'Crear obra';
+    // Sin compras → misma pregunta Sí/No que con compras
+    document.getElementById('fo-inicio-pregunta').style.display = 'block';
+    document.getElementById('fo-inicio-campo').style.display    = 'none';
+    document.getElementById('fo-estado').parentElement.style.display = 'none';
+    // Reset botones Sí/No
+    ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+      const b = document.getElementById(id);
+      b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+    });
+    // Mostrar campos de contratación directa y limpiarlos
+    document.getElementById('fo-contratacion-directa-fields').style.display = 'block';
+    document.getElementById('fo-monto-directo').value = '';
+    document.getElementById('fo-notas-directo').value = '';
+    document.getElementById('btn-guardar-obra').textContent      = 'Crear obra';
     document.getElementById('btn-guardar-obra').style.background = '';
   }
   document.getElementById('modal-obra').style.display = 'flex';
@@ -2212,6 +2314,7 @@ window.cerrarModalObra = async function() {
   document.getElementById('fo-inicio-hint').style.display     = 'none';
   document.getElementById('fo-inicio-pregunta').style.display = 'none';
   document.getElementById('fo-inicio-campo').style.display    = 'none';
+  document.getElementById('fo-contratacion-directa-fields').style.display = 'none';
   // Restaurar visibilidad del estado de obra
   const estadoField = document.getElementById('fo-estado');
   if (estadoField) estadoField.parentElement.style.display = 'block';
@@ -2256,12 +2359,40 @@ window.guardarObra = async function() {
   setSyncStatus('loading','Guardando...');
   try {
     if (modoModal==='nueva') {
+      // Si es etiqueta (sin fecha) → guardar y volver al panel
+      if (esModoEtiqueta || !inicio) {
+        infoNueva.estadoObra = 'pendiente'; // sin fecha = pendiente (contratación directa)
+        infoNueva.creadoEn   = new Date().toISOString();
+        const docRef = await addDoc(collection(db,'obras'), infoNueva);
+        if (comprasPrevias) {
+          await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), comprasPrevias);
+          comprasPrevias = null;
+        } else {
+          const montoDirecto = getMontoFromField('fo-monto-directo');
+          const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+          if (montoDirecto || notasDirecto) {
+            await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), { tipo: 'directa', monto: montoDirecto, notas: notasDirecto });
+          }
+        }
+        setSyncStatus('ok','Etiqueta generada ✓');
+        cerrarModalObra();
+        irAlPanel();
+        return;
+      }
       const docRef = await addDoc(collection(db,'obras'), infoNueva);
       obraActiva = docRef.id;
       localStorage.setItem('obraActiva', obraActiva);
       if (comprasPrevias) {
         await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), comprasPrevias);
         comprasPrevias = null;
+      } else {
+        // Contratación directa: guardar monto/notas si los completó
+        const montoDirecto = getMontoFromField('fo-monto-directo');
+        const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+        if (montoDirecto || notasDirecto) {
+          const compDirecta = { tipo: 'directa', monto: montoDirecto, notas: notasDirecto };
+          await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), compDirecta);
+        }
       }
       await cargarSubcolecciones(obraActiva);
       setTimeout(()=>{
@@ -2275,9 +2406,9 @@ window.guardarObra = async function() {
       }, 500);
     } else if (modoModal==='completar-licitacion') {
       const obraId = obraLicitacionId;
-      // Si no hay fecha de inicio → guardar como pendiente y volver al panel
+      // Si no hay fecha de inicio → guardar como licitado sin inicio y volver al panel
       if (!infoNueva.inicio) {
-        infoNueva.estadoObra = 'en-curso';
+        infoNueva.estadoObra = 'licitado-sin-inicio';
         await setDoc(doc(db,'obras',obraId), infoNueva);
         if (obras[obraId]) obras[obraId].info = infoNueva;
         infoAntesDeCerrar = null;
@@ -2290,10 +2421,21 @@ window.guardarObra = async function() {
         irAlPanel();
         return;
       }
+      infoNueva.estadoObra = 'en-curso';
       await setDoc(doc(db,'obras',obraId), infoNueva);
       if (comprasPrevias) {
         await setDoc(doc(db,'obras',obraId,'compras','proceso'), comprasPrevias);
         comprasPrevias = null;
+      } else {
+        // Contratación directa: guardar monto/notas si los completó
+        const montoDirecto = getMontoFromField('fo-monto-directo');
+        const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+        if (montoDirecto || notasDirecto) {
+          const compDirecta = { tipo: 'directa', monto: montoDirecto, notas: notasDirecto };
+          await setDoc(doc(db,'obras',obraId,'compras','proceso'), compDirecta);
+          if (!obras[obraId].compras) obras[obraId].compras = {};
+          obras[obraId].compras.proceso = compDirecta;
+        }
       }
       obraActiva = obraId;
       obraLicitacionId = null;
@@ -2696,18 +2838,32 @@ function renderReporte() {
   // Agregar sección compras al reporte si existe
   if (obraActiva && obras[obraActiva] && obras[obraActiva].compras && obras[obraActiva].compras.proceso) {
     const comp = obras[obraActiva].compras.proceso;
-    const diasComp = calcularDias(comp.inicio, comp.fin);
-    const diasHastaObra = comp.fin && obras[obraActiva].info.inicio ? calcularDias(comp.fin, obras[obraActiva].info.inicio) : null;
-    html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Proceso de compras / Licitación</div>
-    <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
-      ${comp.inicio?'<span>📅 Inicio gestión: <strong style="color:var(--ink)">'+formatFecha(comp.inicio)+'</strong></span>':''}
-      ${comp.fin?'<span>✓ Adjudicación: <strong style="color:var(--ink)">'+formatFecha(comp.fin)+'</strong></span>':''}
-      ${comp.proveedor?'<span>🏢 Proveedor: <strong style="color:var(--ink)">'+comp.proveedor+'</strong></span>':''}
-      ${comp.monto?'<span>💰 Monto: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
-      ${diasComp!==null?'<span>⏱ Duración proceso: <strong style="color:var(--accent)">'+diasComp+' días</strong></span>':''}
-      ${diasHastaObra!==null?'<span>📋 Tiempo hasta inicio de obra: <strong style="color:var(--blue)">'+diasHastaObra+' días</strong></span>':''}
-      ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
-    </div>`;
+    const infoObra = obras[obraActiva].info;
+    if (comp.tipo === 'directa') {
+      // Contratación directa
+      const diasEjec = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
+      html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Contratación directa</div>
+      <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
+        ${infoObra.inicio?'<span>📅 Inicio de obra: <strong style="color:var(--ink)">'+formatFecha(infoObra.inicio)+'</strong></span>':''}
+        ${comp.monto?'<span>💰 Monto contratado: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
+        ${diasEjec!==null?'<span>⏱ Duración ejecución: <strong style="color:var(--accent)">'+diasEjec+' días'+(terminada?'':' (en curso)')+'</strong></span>':''}
+        ${terminada && infoObra.fin?'<span>✅ Obra finalizada: <strong style="color:var(--ink)">'+formatFecha(infoObra.fin)+'</strong></span>':''}
+        ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
+      </div>`;
+    } else {
+      const diasComp = calcularDias(comp.inicio, comp.fin);
+      const diasHastaObra = comp.fin && obras[obraActiva].info.inicio ? calcularDias(comp.fin, obras[obraActiva].info.inicio) : null;
+      html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Proceso de compras / Licitación</div>
+      <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
+        ${comp.inicio?'<span>📅 Inicio gestión: <strong style="color:var(--ink)">'+formatFecha(comp.inicio)+'</strong></span>':''}
+        ${comp.fin?'<span>✓ Adjudicación: <strong style="color:var(--ink)">'+formatFecha(comp.fin)+'</strong></span>':''}
+        ${comp.proveedor?'<span>🏢 Proveedor: <strong style="color:var(--ink)">'+comp.proveedor+'</strong></span>':''}
+        ${comp.monto?'<span>💰 Monto: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
+        ${diasComp!==null?'<span>⏱ Duración proceso: <strong style="color:var(--accent)">'+diasComp+' días</strong></span>':''}
+        ${diasHastaObra!==null?'<span>📋 Tiempo hasta inicio de obra: <strong style="color:var(--blue)">'+diasHastaObra+' días</strong></span>':''}
+        ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
+      </div>`;
+    }
     el.innerHTML = html;
   } else {
     el.innerHTML = html;
@@ -2859,9 +3015,45 @@ window.generarPDF = function() {
   }
 
   // ===== PROCESO DE COMPRAS AL FINAL =====
-  // Sección proceso de compras en PDF
   const compPDF = obras[obraActiva] && obras[obraActiva].compras && obras[obraActiva].compras.proceso;
-  if(compPDF && compPDF.inicio){
+  if(compPDF && compPDF.tipo === 'directa') {
+    // Contratación directa
+    if(y>230){doc.addPage();y=20;}
+    line();
+    txt('CONTRATACIÓN DIRECTA',M,11,'bold');nl(2);
+    const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
+    if(o.info.proveedor){txt('Proveedor: '+o.info.proveedor,M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.monto){txt('Monto contratado: $'+fmt(compPDF.monto),M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.notas){
+      const nLines=doc.splitTextToSize('Notas: '+compPDF.notas,W-M*2);
+      doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(107,100,86);
+      doc.text(nLines,M,y);y+=nLines.length*4.5;
+    }
+    nl(1);
+    const tiemposDir=[
+      ['1. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
+      ['   Duración ejecución:', diasEjec!==null ? diasEjec+' días'+(terminada?'':' (en curso)') : '—', [196,87,42]],
+    ];
+    if(terminada&&o.info.fin){
+      tiemposDir.push(['2. Obra finalizada:', formatFecha(o.info.fin), [46,107,74]]);
+    }
+    tiemposDir.forEach(([label,val,col])=>{
+      if(y>265){doc.addPage();y=20;}
+      doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...col);
+      doc.text(label,M+2,y);
+      doc.setFont('helvetica','bold');
+      doc.text(val,M+100,y);
+      y+=5;
+    });
+    nl(1);
+    if(diasEjec!==null){
+      doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
+      doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);
+      doc.text('Total del proyecto: '+diasEjec+' días',M+4,y+8);
+      y+=16;
+    }
+    nl(1);
+  } else if(compPDF && compPDF.inicio){
     if(y>230){doc.addPage();y=20;}
     line();
     txt('PROCESO DE COMPRAS / LICITACIÓN',M,11,'bold');nl(2);
@@ -2870,7 +3062,6 @@ window.generarPDF = function() {
     const diasBach = compPDF.fin && o.info.inicio ? calcularDias(compPDF.fin, o.info.inicio) : null;
     const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
 
-    // Datos del proceso
     if(compPDF.proveedor){txt('Proveedor adjudicado: '+compPDF.proveedor,M,9,'normal',[107,100,86]);nl();}
     if(compPDF.monto){txt('Monto adjudicado: $'+fmt(compPDF.monto),M,9,'normal',[107,100,86]);nl();}
     if(compPDF.notas){
@@ -2880,7 +3071,6 @@ window.generarPDF = function() {
     }
     nl(1);
 
-    // Timeline de tiempos
     const tiempos=[
       ['1. Inicio gestión de compras', compPDF.inicio ? formatFecha(compPDF.inicio) : '—', [28,26,22]],
       ['   Duración licitación:', diasLic!==null ? diasLic+' días' : '—', [196,87,42]],
@@ -2902,7 +3092,6 @@ window.generarPDF = function() {
     });
     nl(1);
 
-    // Total acumulado si hay datos completos
     const totalDiasProyecto = (diasLic||0)+(diasBach||0)+(diasEjec||0);
     if(totalDiasProyecto>0){
       doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
