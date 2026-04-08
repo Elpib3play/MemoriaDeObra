@@ -843,7 +843,7 @@
       <label>Nombre de la obra *</label>
       <input type="text" id="fo-nombre" placeholder="Ej: Edificio Belgrano — Planta baja">
     </div>
-    <div class="form-grid" style="margin-bottom:1rem">
+    <div class="form-grid" id="fo-prov-ubic-grid" style="margin-bottom:1rem">
       <div class="field"><label>Proveedor / Empresa</label>
         <input type="text" id="fo-proveedor" placeholder="Nombre del proveedor o empresa">
       </div>
@@ -852,7 +852,7 @@
         <span class="hint">Lugar del predio donde se va a intervenir</span>
       </div>
     </div>
-    <div class="form-grid" style="margin-bottom:1rem">
+    <div class="form-grid" id="fo-estado-grid" style="margin-bottom:1rem">
       <div id="fo-inicio-hint" style="display:none"></div>
       <div class="field"><label>Estado de obra</label>
         <select id="fo-estado" onchange="toggleFechaFinObra()">
@@ -872,10 +872,12 @@
         </div>
       </div>
     </div>
+    <div id="fo-contacto-block">
     <div style="font-size:0.75rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Contacto del proveedor <span style="font-weight:400;font-style:italic">(opcional)</span></div>
     <div class="form-grid" style="margin-bottom:1rem">
       <div class="field"><label>Email</label><input type="email" id="fo-email" placeholder="contacto@empresa.com"></div>
       <div class="field"><label>Teléfono / Celular</label><input type="text" id="fo-tel" placeholder="Ej: +54 11 1234-5678"></div>
+    </div>
     </div>
     <div class="obra-fin-row" id="obra-fin-row" style="margin-bottom:1rem">
       <div class="field"><label>Fecha de terminación</label>
@@ -1419,6 +1421,9 @@ window.ingresarDesdePanel = async function(obraId) {
   await cargarSubcolecciones(obraId);
   const terminada = info && info.estadoObra === 'terminado';
   setModoSoloLectura(terminada);
+  // Siempre arrancar en Libro de obra al entrar desde tarjeta
+  const tabLibro = document.querySelector(".tab[onclick*='libro']");
+  if (tabLibro) switchTab('libro', tabLibro);
   if (!terminada) renderAll();
 };
 
@@ -1435,6 +1440,24 @@ window.setTieneFecha = function(tiene) {
   const campo  = document.getElementById('fo-inicio-campo');
   const btnGrd = document.getElementById('btn-guardar-obra');
   const estado = document.getElementById('fo-estado');
+  const esCompletarLic = modoModal === 'completar-licitacion';
+
+  // Campos extra a ocultar/mostrar según modo
+  const camposExtra = ['fo-nombre','fo-proveedor','fo-ubicacion','fo-email','fo-tel']
+    .map(id => document.getElementById(id)?.closest('.field, .form-grid') || document.getElementById(id)?.parentElement);
+
+  // Botón volver al panel (solo en completar-licitacion + NO)
+  let btnVolver = document.getElementById('btn-volver-panel-completar');
+  if (!btnVolver) {
+    btnVolver = document.createElement('button');
+    btnVolver.id = 'btn-volver-panel-completar';
+    btnVolver.className = 'btn-primary';
+    btnVolver.style.marginTop = '0';
+    btnVolver.textContent = 'Volver al panel de obras';
+    btnVolver.onclick = () => cerrarModalObra().then(() => irAlPanel());
+    btnGrd.parentElement.appendChild(btnVolver);
+  }
+  btnVolver.style.display = 'none';
 
   if (tiene) {
     btnSi.style.background  = '#7C3AED'; btnSi.style.color='#fff'; btnSi.style.borderColor='#7C3AED';
@@ -1445,15 +1468,50 @@ window.setTieneFecha = function(tiene) {
     estado.parentElement.style.display = 'none';
     btnGrd.textContent      = 'Iniciar obra';
     btnGrd.style.background = 'var(--accent)';
+    btnGrd.style.display    = 'inline-block';
+    // En completar-licitacion licitada: ocultar contacto y estado
+    // En contratación directa: mostrar todo (nombre, proveedor, ubicacion, monto, notas, contacto)
+    if (esCompletarLic) {
+      const esDirecta = obraLicitacionId && obras[obraLicitacionId] && obras[obraLicitacionId].info.estadoObra === 'pendiente';
+      if (esDirecta) {
+        // Mostrar todos los campos incluido contacto y monto/notas
+        document.getElementById('fo-nombre').closest('.field').style.display = '';
+        document.getElementById('fo-prov-ubic-grid').style.display = '';
+        document.getElementById('fo-contacto-block').style.display = '';
+        document.getElementById('fo-estado-grid').style.display = 'none';
+        document.getElementById('fo-contratacion-directa-fields').style.display = 'block';
+        const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
+        if (btnCancelar) btnCancelar.style.display = '';
+      } else {
+        // Licitación: ocultar contacto y estado
+        document.getElementById('fo-contacto-block').style.display = 'none';
+        document.getElementById('fo-estado-grid').style.display = 'none';
+      }
+    }
   } else {
     btnNo.style.background  = 'var(--ink)'; btnNo.style.color='#fff'; btnNo.style.borderColor='var(--ink)';
     btnSi.style.background  = 'var(--surface2)'; btnSi.style.color='var(--ink)'; btnSi.style.borderColor='var(--border)';
     campo.style.display     = 'none';
     document.getElementById('fo-inicio').value = '';
-    estado.value            = 'en-curso'; // se guarda como en-curso sin fecha = pendiente
+    estado.value            = 'en-curso';
     estado.parentElement.style.display = 'none';
-    btnGrd.textContent      = 'Generar etiqueta de obra';
-    btnGrd.style.background = 'var(--ink)';
+    if (esCompletarLic) {
+      // Ocultar todos los campos y el botón guardar, mostrar solo "Volver al panel"
+      document.getElementById('fo-nombre').closest('.field').style.display = 'none';
+      document.getElementById('fo-prov-ubic-grid').style.display = 'none';
+      document.getElementById('fo-contacto-block').style.display = 'none';
+      document.getElementById('fo-estado-grid').style.display = 'none';
+      document.getElementById('fo-contratacion-directa-fields').style.display = 'none';
+      btnGrd.style.display    = 'none';
+      btnVolver.style.display = 'inline-block';
+      // Ocultar botón Cancelar — Volver al panel hace lo mismo
+      const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
+      if (btnCancelar) btnCancelar.style.display = 'none';
+    } else {
+      btnGrd.textContent      = 'Generar etiqueta de obra';
+      btnGrd.style.background = 'var(--ink)';
+      btnGrd.style.display    = 'inline-block';
+    }
   }
 };
 
@@ -2315,6 +2373,25 @@ window.cerrarModalObra = async function() {
   document.getElementById('fo-inicio-pregunta').style.display = 'none';
   document.getElementById('fo-inicio-campo').style.display    = 'none';
   document.getElementById('fo-contratacion-directa-fields').style.display = 'none';
+  document.getElementById('fo-contacto-block').style.display = '';
+  document.getElementById('fo-estado-grid').style.display = '';
+  document.getElementById('fo-prov-ubic-grid').style.display = '';
+  const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
+  if (btnCancelar) btnCancelar.style.display = '';
+  // Restaurar visibilidad de todos los campos del form
+  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-email','fo-tel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      let p = el.closest('.form-grid') || el.closest('.field') || el.parentElement;
+      if (p) p.style.display = '';
+    }
+  });
+  document.querySelectorAll('#modal-obra .form-grid, #modal-obra .field').forEach(el => { el.style.display = ''; });
+  // Restaurar botón guardar y ocultar botón volver
+  const btnGrd = document.getElementById('btn-guardar-obra');
+  if (btnGrd) btnGrd.style.display = 'inline-block';
+  const btnVolver = document.getElementById('btn-volver-panel-completar');
+  if (btnVolver) btnVolver.style.display = 'none';
   // Restaurar visibilidad del estado de obra
   const estadoField = document.getElementById('fo-estado');
   if (estadoField) estadoField.parentElement.style.display = 'block';
