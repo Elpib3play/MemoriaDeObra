@@ -886,6 +886,11 @@
       </div>
     </div>
 
+    <div class="field" id="fo-notas-obra-block" style="margin-bottom:1rem">
+      <label>Notas <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+      <textarea id="fo-notas-obra" placeholder="Observaciones generales de la obra..." style="min-height:70px"></textarea>
+    </div>
+
     <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
       <button class="btn-primary" style="margin-top:0" id="btn-guardar-obra" onclick="guardarObra()">Crear obra</button>
       <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra().then(()=>irAlPanel())">Cancelar</button>
@@ -1342,6 +1347,7 @@ window.ingresarDesdePanel = async function(obraId) {
       document.getElementById('fo-ubicacion').value = infoObra.ubicacion  || '';
       document.getElementById('fo-email').value     = infoObra.email      || '';
       document.getElementById('fo-tel').value       = infoObra.tel        || '';
+      document.getElementById('fo-notas-obra').value = infoObra.notas      || '';
       document.getElementById('fo-inicio').value    = '';
       document.getElementById('fo-estado').value    = 'en-curso';
       document.getElementById('obra-fin-row').classList.remove('visible');
@@ -1375,6 +1381,7 @@ window.ingresarDesdePanel = async function(obraId) {
       document.getElementById('fo-ubicacion').value = infoObra.ubicacion || '';
       document.getElementById('fo-email').value     = infoObra.email     || '';
       document.getElementById('fo-tel').value       = infoObra.tel       || '';
+      document.getElementById('fo-notas-obra').value = infoObra.notas     || '';
       document.getElementById('fo-inicio').value    = '';
       document.getElementById('fo-estado').value    = 'en-curso';
       document.getElementById('obra-fin-row').classList.remove('visible');
@@ -1480,12 +1487,18 @@ window.setTieneFecha = function(tiene) {
         document.getElementById('fo-contacto-block').style.display = '';
         document.getElementById('fo-estado-grid').style.display = 'none';
         document.getElementById('fo-contratacion-directa-fields').style.display = 'block';
+        document.getElementById('fo-notas-obra-block').style.display = '';
         const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
         if (btnCancelar) btnCancelar.style.display = '';
       } else {
-        // Licitación: ocultar contacto y estado
-        document.getElementById('fo-contacto-block').style.display = 'none';
+        // Licitación: restaurar todos los campos, ocultar solo estado
+        document.getElementById('fo-nombre').closest('.field').style.display = '';
+        document.getElementById('fo-prov-ubic-grid').style.display = '';
+        document.getElementById('fo-contacto-block').style.display = '';
         document.getElementById('fo-estado-grid').style.display = 'none';
+        document.getElementById('fo-notas-obra-block').style.display = '';
+        const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
+        if (btnCancelar) btnCancelar.style.display = '';
       }
     }
   } else {
@@ -1502,6 +1515,7 @@ window.setTieneFecha = function(tiene) {
       document.getElementById('fo-contacto-block').style.display = 'none';
       document.getElementById('fo-estado-grid').style.display = 'none';
       document.getElementById('fo-contratacion-directa-fields').style.display = 'none';
+      document.getElementById('fo-notas-obra-block').style.display = 'none';
       btnGrd.style.display    = 'none';
       btnVolver.style.display = 'inline-block';
       // Ocultar botón Cancelar — Volver al panel hace lo mismo
@@ -1655,7 +1669,7 @@ window.cerrarLicitacionYCrearObra = async function() {
 
   // Abrir form con pregunta Sí/No fecha
   document.getElementById('modal-obra-titulo').textContent = 'Completar obra';
-  ['fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
+  ['fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel','fo-notas-obra'].forEach(id => document.getElementById(id).value='');
   document.getElementById('fo-nombre').value    = nombreFinal;
   document.getElementById('fo-proveedor').value = proveedor;
   document.getElementById('fo-estado').value    = 'en-curso';
@@ -2307,7 +2321,7 @@ function abrirFormNuevaObra(proveedorPrecomp, nombrePrecomp) {
   document.getElementById('modal-obra-titulo').textContent = 'Nueva obra';
   document.getElementById('btn-guardar-obra').textContent  = 'Crear obra';
   document.getElementById('btn-guardar-obra').style.background = '';
-  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel'].forEach(id => document.getElementById(id).value='');
+  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel','fo-notas-obra','fo-notas-obra'].forEach(id => document.getElementById(id).value='');
   document.getElementById('fo-estado').value = 'en-curso';
   document.getElementById('obra-fin-row').classList.remove('visible');
   document.getElementById('fo-inicio-hint').style.display     = 'none';
@@ -2376,6 +2390,7 @@ window.cerrarModalObra = async function() {
   document.getElementById('fo-contacto-block').style.display = '';
   document.getElementById('fo-estado-grid').style.display = '';
   document.getElementById('fo-prov-ubic-grid').style.display = '';
+  document.getElementById('fo-notas-obra-block').style.display = '';
   const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
   if (btnCancelar) btnCancelar.style.display = '';
   // Restaurar visibilidad de todos los campos del form
@@ -2431,6 +2446,7 @@ window.guardarObra = async function() {
     fin:   estadoObra==='terminado' ? document.getElementById('fo-fin').value : '',
     email: document.getElementById('fo-email').value.trim(),
     tel:   document.getElementById('fo-tel').value.trim(),
+    notas: document.getElementById('fo-notas-obra').value.trim(),
     creadoEn: obras[obraActiva]?.info?.creadoEn || new Date().toISOString()
   };
   setSyncStatus('loading','Guardando...');
