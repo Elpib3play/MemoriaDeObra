@@ -21,7 +21,7 @@
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:DM Sans,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;}
 
-  .header{background:var(--ink);color:var(--bg);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+  .header{background:var(--ink);color:var(--bg);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(28,26,22,0.18);}
   .header-brand{font-family:DM Serif Display,serif;font-size:1.15rem;}
   .header-brand span{color:var(--accent);}
   .header-obra{font-size:0.78rem;color:var(--ink3);font-family:DM Mono,monospace;letter-spacing:0.04em;text-transform:uppercase;}
@@ -49,7 +49,7 @@
   .btn-clear-filtro:hover{color:var(--accent);border-color:var(--accent);}
   .filtro-badge{font-size:0.74rem;background:var(--accent-light);color:var(--accent);padding:0.25rem 0.6rem;border-radius:20px;font-weight:500;}
 
-  .tabs{display:flex;padding:0 2rem;background:var(--surface);border-bottom:1px solid var(--border);}
+  .tabs{display:flex;padding:0 2rem;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 2px 4px rgba(28,26,22,0.04);}
   .tab{padding:0.75rem 1.25rem;font-size:0.83rem;font-weight:500;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .tab:hover:not(.active){color:var(--ink);}
@@ -63,27 +63,27 @@
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
   .section-title small{font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--ink3);font-weight:400;letter-spacing:0.04em;text-transform:uppercase;}
 
-  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;}
+  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
   .form-grid.full{grid-template-columns:1fr;}
   .field{display:flex;flex-direction:column;gap:0.35rem;}
   .field label{font-size:0.75rem;font-weight:500;color:var(--ink2);text-transform:uppercase;letter-spacing:0.05em;}
   .field .hint{font-size:0.72rem;color:var(--ink3);font-style:italic;margin-top:2px;}
-  .field input,.field textarea,.field select{border:1px solid var(--border);background:var(--bg);font-family:DM Sans,sans-serif;font-size:0.9rem;padding:0.55rem 0.8rem;border-radius:6px;color:var(--ink);outline:none;transition:border-color 0.15s;}
-  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);}
+  .field input,.field textarea,.field select{border:1px solid var(--border);background:var(--bg);font-family:DM Sans,sans-serif;font-size:0.9rem;padding:0.6rem 0.9rem;border-radius:10px;color:var(--ink);outline:none;transition:border-color 0.15s,box-shadow 0.15s;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(196,87,42,0.1);}
   .field textarea{resize:vertical;min-height:80px;}
 
   .obra-fin-row{margin-top:0.75rem;padding-top:0.75rem;border-top:1px dashed var(--border);display:none;}
   .obra-fin-row.visible{display:block;}
 
-  .btn-primary{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.5rem;border-radius:6px;font-size:0.88rem;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;}
+  .btn-primary{background:var(--accent);color:#fff;border:none;padding:0.7rem 1.5rem;border-radius:10px;font-size:0.88rem;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;min-height:44px;}
   .btn-primary:hover{background:#a5471f;}
-  .btn-secondary{background:var(--surface2);color:var(--ink);border:1px solid var(--border);padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;margin-left:0.5rem;}
+  .btn-secondary{background:var(--surface2);color:var(--ink);border:1px solid var(--border);padding:0.7rem 1.2rem;border-radius:10px;font-size:0.85rem;font-family:DM Sans,sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;margin-left:0.5rem;min-height:44px;}
   .btn-secondary:hover{background:var(--border);}
 
   .entry-list{display:flex;flex-direction:column;gap:0.75rem;}
-  .entry{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0.75rem 1rem;align-items:start;position:relative;overflow:hidden;}
+  .entry{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0.75rem 1rem;align-items:start;position:relative;overflow:hidden;}
   .entry-date{font-family:DM Mono,monospace;font-size:0.75rem;color:var(--ink3);white-space:nowrap;padding-top:2px;flex-shrink:0;}
   .entry-content{min-width:0;overflow:hidden;}
   .entry-title{font-weight:500;font-size:0.9rem;margin-bottom:0.2rem;word-break:break-word;overflow-wrap:anywhere;white-space:normal;}
@@ -108,7 +108,7 @@
   .badge-gris{background:var(--surface2);color:var(--ink2);}
 
   .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:1.5rem;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.05);}
   .stat-label{font-size:0.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;}
   .stat-value{font-size:1.1rem;font-weight:600;color:var(--ink);font-family:DM Mono,monospace;line-height:1.3;word-break:break-word;overflow-wrap:anywhere;white-space:normal;}
   .stat-value.accent{color:var(--accent);}
@@ -122,7 +122,7 @@
   .sep{height:1px;background:var(--border);margin:1.5rem 0;}
 
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
-  .modal-box{background:var(--surface);border-radius:12px;padding:2rem;width:90%;max-width:560px;border:1px solid var(--border);max-height:92vh;overflow-y:auto;}
+  .modal-box{background:var(--surface);border-radius:20px;padding:2rem;width:90%;max-width:560px;border:1px solid var(--border);max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(28,26,22,0.2);}
   .modal-title{font-family:DM Serif Display,serif;font-size:1.25rem;margin-bottom:1.5rem;}
 
   .obra-info-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.83rem;color:var(--ink2);display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center;word-break:break-word;overflow-wrap:anywhere;}
@@ -141,7 +141,7 @@
 
   /* LOGIN */
   .login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:998;}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.5rem;width:90%;max-width:400px;}
+  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:2.5rem;width:90%;max-width:400px;box-shadow:0 12px 40px rgba(28,26,22,0.12);}
   .login-brand{font-family:DM Serif Display,serif;font-size:1.8rem;text-align:center;margin-bottom:0.25rem;}
   .login-brand span{color:var(--accent);}
   .login-sub{text-align:center;font-size:0.83rem;color:var(--ink3);margin-bottom:2rem;}
@@ -168,7 +168,7 @@
   /* Mes tag en tarjeta */
   .obra-card-mes{font-size:0.7rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.25rem;}
   /* btn nueva obra en panel */
-  .btn-new-obra-dash{background:var(--accent);color:#fff;border:none;padding:0.5rem 1.1rem;border-radius:6px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;}
+  .btn-new-obra-dash{background:var(--accent);color:#fff;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;min-height:40px;}
   .btn-new-obra-dash:hover{background:#a5471f;}
 
   .dashboard{display:none;min-height:100vh;background:var(--bg);}
@@ -183,7 +183,7 @@
   .dash-welcome p{font-size:0.88rem;color:var(--ink3);}
   /* Stats globales */
   .dash-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2.5rem;}
-  .dash-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;}
+  .dash-stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.5rem;box-shadow:0 1px 6px rgba(28,26,22,0.05);}
   .dash-stat-label{font-size:0.72rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;}
   .dash-stat-value{font-size:1.8rem;font-weight:600;font-family:DM Mono,monospace;color:var(--ink);line-height:1;}
   .dash-stat-value.accent{color:var(--accent);}
@@ -203,8 +203,8 @@
   .count-term{background:var(--green-light);color:var(--green);}
   /* Grid de tarjetas */
   .obra-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;}
-  .obra-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;transition:box-shadow 0.15s;min-height:220px;}
-  .obra-card:hover{box-shadow:0 4px 16px rgba(28,26,22,0.08);}
+  .obra-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.25rem;display:flex;flex-direction:column;gap:0.75rem;transition:box-shadow 0.2s,transform 0.2s;min-height:220px;}
+  .obra-card:hover{box-shadow:0 8px 24px rgba(28,26,22,0.12);transform:translateY(-2px);}
   .obra-card.en-curso{border-top:3px solid var(--amber);}
   .obra-card.terminada{border-top:3px solid var(--green);}
   .obra-card-header{display:flex;flex-direction:column;gap:0.4rem;}
@@ -222,7 +222,7 @@
   .obra-card-stat-value.accent{color:var(--accent);}
   .obra-card-stat-value.green{color:var(--green);}
   .obra-card-stat-value.red{color:var(--red);}
-  .btn-ingresar{background:var(--accent);color:#fff;border:none;padding:0.55rem 1.25rem;border-radius:6px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;width:100%;}
+  .btn-ingresar{background:var(--accent);color:#fff;border:none;padding:0.7rem 1.25rem;border-radius:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;width:100%;min-height:44px;}
   .btn-ingresar:hover{background:#a5471f;}
   .btn-ingresar.verde{background:var(--green);}
   .btn-ingresar.verde:hover{background:#1e4f35;}
@@ -291,7 +291,7 @@
   .compras-step-dot.ejecucion{background:var(--accent-light);color:var(--accent);}
   .compras-duracion-badge{display:inline-flex;align-items:center;gap:0.5rem;background:var(--amber-light);color:var(--amber);padding:0.5rem 1rem;border-radius:8px;font-size:0.85rem;font-weight:600;margin:1rem 0;}
   /* Panel compras dentro de la obra */
-  .compras-panel-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;}
+  .compras-panel-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);}
   .compras-empty{text-align:center;padding:2.5rem;color:var(--ink3);font-size:0.9rem;}
   .compras-empty-icon{font-size:2rem;margin-bottom:0.5rem;}
 
@@ -335,6 +335,58 @@
     .tabs{padding:0 1rem;overflow-x:auto;}
     .obra-bar,.filtros-bar{padding:0.75rem 1rem;}
   }
+
+  /* ===== MEJORAS ESTÉTICAS v7 ===== */
+  /* Animación fade-in cards */
+  @keyframes fadeInUp {
+    from { opacity:0; transform:translateY(10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .obra-card { animation: fadeInUp 0.25s ease both; }
+
+  /* Touch targets mobile más grandes */
+  @media(max-width:768px) {
+    .btn-primary,.btn-secondary,.btn-ingresar,.btn-pdf,.btn-new-obra-dash {
+      min-height:48px;
+      font-size:0.93rem;
+    }
+    .tab { padding:1rem 1rem;font-size:0.85rem; }
+    .field input,.field textarea,.field select { padding:0.75rem 0.9rem;font-size:0.95rem; }
+    .obra-card { border-radius:16px; }
+    .modal-box,.modal-completar-lic-box,.modal-compras-box,.modal-previo-box {
+      border-radius:20px 20px 0 0;
+      position:fixed;bottom:0;left:0;right:0;width:100%;max-width:100%;
+      max-height:90vh;
+    }
+  }
+
+  /* Sombra suave en obra-info-card */
+  .obra-info-card { box-shadow:0 1px 4px rgba(28,26,22,0.05); border-radius:12px; }
+
+  /* Mejora visual del header brand */
+  .header-brand { letter-spacing:-0.01em; }
+
+  /* Botones con transición suave */
+  .btn-primary,.btn-secondary,.btn-ingresar,.btn-pdf,.btn-new-obra-dash,.btn-actualizar {
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  }
+  .btn-primary:active,.btn-ingresar:active { transform:scale(0.98); }
+
+  /* Mejor contraste en labels */
+  .field label { color:var(--ink); }
+
+  /* Scroll suave global */
+  html { scroll-behavior:smooth; }
+
+  /* Separador de sección más elegante */
+  .sep { background:linear-gradient(to right, var(--border), transparent); }
+
+  /* Dash stat value más legible */
+  .dash-stat-value { letter-spacing:-0.02em; }
+
+  /* obra-bar más limpia */
+  .obra-bar { box-shadow:0 1px 3px rgba(28,26,22,0.06); }
+
 </style>
 </head>
 <body>
@@ -1844,7 +1896,7 @@ function renderCompras() {
         <div class="compras-step-dot fin">2</div>
         <div class="compras-step-content">
           <div class="compras-step-title">Adjudicación${comp.proveedor?' — <strong>'+comp.proveedor+'</strong>':''}</div>
-          <div class="compras-step-date">${formatFecha(comp.fin)}${comp.monto?' · $'+fmt(comp.monto):''}</div>
+          <div class="compras-step-date">${formatFecha(comp.fin)}</div>
         </div>
       </div>` : `
       <div class="compras-connector"></div>
@@ -2970,18 +3022,42 @@ function renderReporte() {
         ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
       </div>`;
     } else {
-      const diasComp = calcularDias(comp.inicio, comp.fin);
-      const diasHastaObra = comp.fin && obras[obraActiva].info.inicio ? calcularDias(comp.fin, obras[obraActiva].info.inicio) : null;
-      html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Proceso de compras / Licitación</div>
-      <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
-        ${comp.inicio?'<span>📅 Inicio gestión: <strong style="color:var(--ink)">'+formatFecha(comp.inicio)+'</strong></span>':''}
-        ${comp.fin?'<span>✓ Adjudicación: <strong style="color:var(--ink)">'+formatFecha(comp.fin)+'</strong></span>':''}
+      const diasComp     = calcularDias(comp.inicio, comp.fin);
+      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDias(comp.fin, infoObra.inicio) : null;
+      const diasEjecLic  = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
+      const totalLic     = (diasComp||0) + (diasHastaObra||0) + (diasEjecLic||0);
+      html += `<div class="sep"></div>
+      <div style="font-weight:500;font-size:.9rem;margin-bottom:1rem">🏗️ Proceso de compras / Licitación</div>
+      ${comp.proveedor||comp.monto||comp.notas ? `<div style="font-size:.82rem;color:var(--ink2);display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-bottom:1rem">
         ${comp.proveedor?'<span>🏢 Proveedor: <strong style="color:var(--ink)">'+comp.proveedor+'</strong></span>':''}
         ${comp.monto?'<span>💰 Monto: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
-        ${diasComp!==null?'<span>⏱ Duración proceso: <strong style="color:var(--accent)">'+diasComp+' días</strong></span>':''}
-        ${diasHastaObra!==null?'<span>📋 Tiempo hasta inicio de obra: <strong style="color:var(--blue)">'+diasHastaObra+' días</strong></span>':''}
-        ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
-      </div>`;
+        ${comp.notas?'<span>📝 '+comp.notas+'</span>':''}
+      </div>` : ''}
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">1. Inicio gestión de compras</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.inicio?formatFecha(comp.inicio):'—'}</span>
+        </div>
+        ${diasComp!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración licitación: <strong>${diasComp} días</strong></div>`:''}
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">2. Adjudicación</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.fin?formatFecha(comp.fin):'Pendiente'}</span>
+        </div>
+        ${diasHastaObra!==null?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${diasHastaObra} días</strong></div>`:''}
+        ${infoObra.inicio?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">3. Inicio de obra</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${formatFecha(infoObra.inicio)}</span>
+        </div>
+        ${diasEjecLic!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración ejecución: <strong>${diasEjecLic} días${terminada?'':' (en curso)'}</strong></div>`:''}` : ''}
+        ${terminada&&infoObra.fin?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;font-size:.84rem">
+          <span style="color:var(--green);font-weight:500">4. Obra finalizada</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--green)">${formatFecha(infoObra.fin)}</span>
+        </div>`:''}
+      </div>
+      ${terminada&&totalLic>0?`<div style="margin-top:.85rem;padding:.65rem 1rem;background:var(--surface2);border-radius:8px;display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;color:var(--ink)">
+        <span>Total del proyecto (licitación + espera + ejecución)</span>
+        <span style="color:var(--accent)">${totalLic} días</span>
+      </div>`:''}`;
     }
     el.innerHTML = html;
   } else {
