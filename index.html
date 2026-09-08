@@ -922,7 +922,7 @@
       <button id="btn-finalizar-obra" onclick="abrirFinalizarObra()" style="background:var(--accent);color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;display:none;margin-left:auto">✓ Finalizar obra</button>
     </div>
   </div>
-</div>
+
 
 <!-- MODAL CONFIRMAR FINALIZAR OBRA -->
 </div><!-- fin .main -->
@@ -1331,6 +1331,8 @@
 </div>
 
 <!-- FIREBASE SDK -->
+
+
 </div><!-- fin app-right -->
 </div><!-- fin app-layout -->
 
@@ -1402,26 +1404,42 @@ function getMesLabel(fecha) {
 }
 
 function mostrarDashboard() {
-  // El dashboard de obras ahora es el panel de obras directamente
-  document.querySelector('.obra-bar') && (document.querySelector('.obra-bar').style.display = 'flex');
-  document.getElementById('filtros-bar') && (document.getElementById('filtros-bar').style.display = 'none');
-  document.querySelector('.tabs') && (document.querySelector('.tabs').style.display = 'none');
-  document.querySelector('.main') && (document.querySelector('.main').style.display = 'block');
-  document.querySelector('.header') && (document.querySelector('.header').style.display = 'none');
-  document.getElementById('btn-panel') && (document.getElementById('btn-panel').style.display = 'none');
-  // Renderizar el panel de obras (tarjetas)
-  if (typeof renderObraSelect === 'function') renderObraSelect();
-  if (typeof renderAll === 'function') renderAll();
+  // Mostrar módulo obras y el panel de tarjetas dentro
+  document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.modulo-obras-wrap').forEach(e => e.classList.remove('active'));
+  const modObras = document.getElementById('mod-obras');
+  if (modObras) modObras.classList.add('active');
+  // Mostrar obra-bar (panel de tarjetas) y ocultar tabs/main (libro de obra)
+  const obraBar  = document.querySelector('#mod-obras .obra-bar');
+  const filtros  = document.getElementById('filtros-bar');
+  const tabs     = document.querySelector('#mod-obras .tabs');
+  const main     = document.querySelector('#mod-obras .main');
+  const header   = document.querySelector('#mod-obras .header');
+  const btnPanel = document.getElementById('btn-panel');
+  if (obraBar) obraBar.style.display = 'flex';
+  if (filtros) filtros.style.display = 'none';
+  if (tabs)    tabs.style.display    = 'none';
+  if (main)    main.style.display    = 'none';
+  if (header)  header.style.display  = 'none';
+  if (btnPanel) btnPanel.style.display = 'none';
+  // Renderizar tarjetas de obras
+  if (typeof actualizarFiltrosAniosDash === 'function') actualizarFiltrosAniosDash();
+  if (typeof renderDashboard === 'function') renderDashboard();
 }
 
 function ocultarDashboard() {
-  document.getElementById('dashboard').classList.remove('active');
-  document.querySelector('.header').style.display    = 'flex';
-  document.querySelector('.obra-bar').style.display  = 'flex';
-  document.querySelector('.tabs').style.display      = 'flex';
-  document.querySelector('.main').style.display      = 'block';
-  document.getElementById('btn-panel').style.display = 'inline-block';
-  document.getElementById('btn-logout').style.display= 'inline-block';
+  // El dashboard viejo ya no existe, solo ocultar módulos nuevos
+  document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
+  const obraBar = document.querySelector('#mod-obras .obra-bar');
+  const tabs    = document.querySelector('#mod-obras .tabs');
+  const main    = document.querySelector('#mod-obras .main');
+  if (obraBar) obraBar.style.display = 'flex';
+  if (tabs)    tabs.style.display    = 'flex';
+  if (main)    main.style.display    = 'block';
+  const btnPanel  = document.getElementById('btn-panel');
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnPanel)  btnPanel.style.display  = 'inline-block';
+  if (btnLogout) btnLogout.style.display = 'inline-block';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -4161,43 +4179,17 @@ function renderNuevoDashboard() {
 // ============================================================
 // Sobrescribir irAlPanel para usar nueva navegación
 window.irAlPanel = function() {
-  // Mostrar topbar
+  // Topbar
   const tb = document.getElementById('main-topbar');
   if (tb) tb.style.display = 'flex';
-  // Sidebar activo en obras
-  document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
+  // Sidebar
+  document.querySelectorAll('.sb-item').forEach(e => e.classList.remove('active'));
   const nav = document.getElementById('nav-obras');
   if (nav) nav.classList.add('active');
   const tt = document.getElementById('topbar-title');
   if (tt) tt.textContent = 'Memorias de Obra';
-  // Ocultar todos los módulos nuevos
-  document.querySelectorAll('.modulo').forEach(e=>e.classList.remove('active'));
-  // Mostrar módulo obras
-  document.querySelectorAll('.modulo-obras-wrap').forEach(e=>e.classList.remove('active'));
-  const mo = document.getElementById('mod-obras');
-  if (mo) mo.classList.add('active');
-  // Mostrar elementos de obras (obra-bar, tabs, main)
-  const obraBar = document.querySelector('#mod-obras .obra-bar');
-  const tabs    = document.querySelector('#mod-obras .tabs');
-  const main    = document.querySelector('#mod-obras .main');
-  if (obraBar) obraBar.style.display = 'flex';
-  if (tabs)    tabs.style.display    = 'flex';
-  if (main)    main.style.display    = 'block';
-  // Ocultar header viejo de obras (ya está en display:none pero por si acaso)
-  const headerObra = document.querySelector('#mod-obras .header');
-  if (headerObra) headerObra.style.display = 'none';
-  // Renderizar el dashboard de obras (panel de tarjetas)
-  if (typeof actualizarFiltrosAniosDash === 'function') actualizarFiltrosAniosDash();
-  if (typeof renderDashboard === 'function') renderDashboard();
-  // Asegurar que obra-bar y panel se vean
-  setTimeout(() => {
-    const ob = document.querySelector('#mod-obras .obra-bar');
-    const tb = document.querySelector('#mod-obras .tabs');
-    const mn = document.querySelector('#mod-obras .main');
-    if (ob) ob.style.display = 'flex';
-    if (tb) tb.style.display = 'flex';
-    if (mn) mn.style.display = 'block';
-  }, 50);
+  // Mostrar obras usando mostrarDashboard que ya tiene la lógica correcta
+  mostrarDashboard();
 };
 
 // Hook en onAuthStateChanged original para cargar tareas y mostrar UI
