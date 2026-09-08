@@ -616,6 +616,44 @@
     .app-right { width: 100%; }
     .modulo-inner { padding: 1rem; }
   }
+
+  /* ===== OVERRIDE DEFINITIVO LAYOUT ===== */
+  #mod-dashboard, #mod-agenda, #mod-proveedores, 
+  #mod-planos, #mod-tickets, #mod-busqueda, #mod-configuracion {
+    display: none !important;
+    flex: 1 !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #mod-dashboard.active, #mod-agenda.active, #mod-proveedores.active,
+  #mod-planos.active, #mod-tickets.active, #mod-busqueda.active, 
+  #mod-configuracion.active {
+    display: flex !important;
+  }
+  #mod-dashboard .modulo-inner, #mod-agenda .modulo-inner,
+  #mod-proveedores .modulo-inner, #mod-planos .modulo-inner,
+  #mod-tickets .modulo-inner, #mod-busqueda .modulo-inner,
+  #mod-configuracion .modulo-inner {
+    padding: 1.5rem 2rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #app-right {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    max-width: calc(100vw - 236px) !important;
+  }
 </style>
 </head>
 <body>
