@@ -387,199 +387,160 @@
   /* obra-bar más limpia */
   .obra-bar { box-shadow:0 1px 3px rgba(28,26,22,0.06); }
 
-  /* ===== LAYOUT PRINCIPAL CON SIDEBAR ===== */
+  /* ===== LAYOUT CON SIDEBAR ===== */
   html,body{height:100%;overflow:hidden;}
   .app-layout{display:flex;height:100vh;overflow:hidden;}
-  .sidebar{width:240px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;transition:transform 0.25s ease;z-index:300;}
-  .sidebar.collapsed{transform:translateX(-240px);position:fixed;height:100vh;}
-  .sb-header{padding:1.1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.75rem;}
-  .sb-brand{font-family:DM Serif Display,serif;font-size:1.05rem;color:var(--bg);line-height:1.2;}
+  .sidebar{width:236px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;z-index:300;transition:transform 0.25s ease;}
+  .sb-header{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .sb-brand{font-family:DM Serif Display,serif;font-size:1rem;color:var(--bg);line-height:1.2;}
   .sb-brand span{color:var(--accent);}
-  .sb-sub{font-size:0.68rem;color:var(--ink3);margin-top:1px;}
-  .sb-nav{flex:1;padding:0.5rem 0;overflow-y:auto;}
-  .sb-item{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 1.25rem;font-size:0.84rem;color:#A09890;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;user-select:none;}
+  .sb-sub{font-size:0.68rem;color:var(--ink3);margin-top:2px;}
+  .sb-nav{flex:1;padding:0.4rem 0;overflow-y:auto;}
+  .sb-item{display:flex;align-items:center;gap:0.65rem;padding:0.62rem 1.25rem;font-size:0.83rem;color:#A09890;cursor:pointer;border-left:3px solid transparent;transition:all 0.15s;user-select:none;}
   .sb-item:hover{background:rgba(255,255,255,0.06);color:var(--bg);}
   .sb-item.active{background:rgba(196,87,42,0.18);color:var(--accent-light);border-left-color:var(--accent);}
-  .sb-item-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;}
-  .sb-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:0.65rem;padding:1px 6px;border-radius:10px;font-weight:600;}
+  .sb-item-icon{width:18px;text-align:center;flex-shrink:0;font-size:0.95rem;}
+  .sb-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:0.62rem;padding:1px 6px;border-radius:10px;font-weight:600;}
   .sb-badge.amber{background:var(--amber);}
-  .sb-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.4rem 1rem;}
-  .sb-bottom{padding:0.85rem 1.25rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.75rem;}
-  .sb-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:600;color:#fff;flex-shrink:0;}
-  .sb-username{font-size:0.8rem;color:#A09890;flex:1;}
+  .sb-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.35rem 1rem;}
+  .sb-bottom{padding:0.75rem 1.25rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.6rem;}
+  .sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;color:#fff;flex-shrink:0;}
+  .sb-username{font-size:0.78rem;color:#A09890;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:299;}
+  .sb-overlay.visible{display:block;}
 
-  /* ===== ÁREA DERECHA ===== */
+  /* ===== TOPBAR ===== */
   .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-  .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;}
-  .topbar-left{display:flex;align-items:center;gap:1rem;}
-  .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.2rem;padding:0.35rem;border-radius:6px;display:flex;align-items:center;}
+  .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;position:sticky;top:0;}
+  .topbar-left{display:flex;align-items:center;gap:0.75rem;}
+  .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
   .btn-hamburger:hover{background:var(--surface2);}
-  .topbar-title{font-size:0.92rem;font-weight:500;color:var(--ink);}
+  .topbar-title{font-size:0.9rem;font-weight:500;color:var(--ink);}
   .topbar-right{display:flex;align-items:center;gap:0.75rem;}
-  .btn-bell{position:relative;background:none;border:1px solid var(--border);cursor:pointer;color:var(--ink2);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+  .btn-bell{position:relative;background:none;border:1px solid var(--border);cursor:pointer;color:var(--ink2);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;}
   .btn-bell:hover{background:var(--surface2);}
-  .bell-count{position:absolute;top:-5px;right:-5px;background:var(--accent);color:#fff;font-size:0.6rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-  .notif-dropdown{position:absolute;top:54px;right:1.5rem;width:300px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(28,26,22,0.14);z-index:400;display:none;}
+  .bell-count{position:absolute;top:-5px;right:-5px;background:var(--accent);color:#fff;font-size:0.6rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none;}
+
+  /* ===== NOTIF DROPDOWN ===== */
+  .notif-dropdown{position:fixed;top:52px;right:1.25rem;width:290px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(28,26,22,0.14);z-index:500;display:none;}
   .notif-dropdown.open{display:block;}
-  .notif-header{padding:0.85rem 1rem;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;}
-  .notif-list{max-height:320px;overflow-y:auto;}
-  .notif-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.7rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;}
+  .notif-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;}
+  .notif-list{max-height:340px;overflow-y:auto;}
+  .notif-item{display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;}
   .notif-item:last-child{border-bottom:none;}
   .notif-item:hover{background:var(--surface2);}
-  .notif-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+  .notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
   .notif-dot.red{background:var(--red);}
   .notif-dot.amber{background:var(--amber);}
   .notif-dot.green{background:var(--green);}
-  .notif-text{font-size:0.82rem;color:var(--ink);}
-  .notif-sub{font-size:0.73rem;color:var(--ink3);margin-top:1px;}
+  .notif-text{font-size:0.81rem;color:var(--ink);}
+  .notif-sub{font-size:0.71rem;color:var(--ink3);margin-top:1px;}
 
   /* ===== MÓDULOS ===== */
   .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;}
   .modulo.active{display:flex;}
-  .modulo-inner{padding:1.5rem;max-width:1000px;margin:0 auto;width:100%;}
-  .modulo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;}
-  .modulo-titulo{font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink);}
-
-  /* ===== MÓDULO OBRAS (wrapper del sistema actual) ===== */
+  .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
   .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow:hidden;}
   .modulo-obras-wrap.active{display:flex;}
 
   /* ===== DASHBOARD ===== */
-  .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.05);}
-  .kpi-label{font-size:0.7rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.4rem;}
-  .kpi-value{font-size:1.9rem;font-weight:600;font-family:DM Mono,monospace;line-height:1;color:var(--ink);}
+  .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
+  .kpi-label{font-size:0.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.35rem;}
+  .kpi-value{font-size:2rem;font-weight:600;font-family:DM Mono,monospace;line-height:1;color:var(--ink);}
   .kpi-value.accent{color:var(--accent);}
   .kpi-value.red{color:var(--red);}
   .kpi-value.amber{color:var(--amber);}
   .kpi-value.green{color:var(--green);}
-  .kpi-sub{font-size:0.72rem;color:var(--ink3);margin-top:4px;}
+  .kpi-sub{font-size:0.7rem;color:var(--ink3);margin-top:3px;}
   .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-  .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.05);}
-  .dash-card-title{font-size:0.72rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.85rem;display:flex;align-items:center;gap:6px;}
-  .alert-row{display:flex;align-items:center;gap:0.6rem;padding:0.45rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;color:var(--ink);}
+  .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
+  .dash-card-title{font-size:0.7rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;}
+  .alert-row{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.81rem;color:var(--ink);}
   .alert-row:last-child{border-bottom:none;}
   .alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-  .mant-row{display:flex;align-items:center;gap:0.6rem;padding:0.45rem 0;border-bottom:1px solid var(--border);}
+  .mant-row{display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid var(--border);}
   .mant-row:last-child{border-bottom:none;}
-  .mant-icon-sm{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;}
-  .mant-info-sm{flex:1;min-width:0;}
-  .mant-name-sm{font-size:0.82rem;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .mant-sub-sm{font-size:0.72rem;color:var(--ink3);}
+  .mant-name-sm{font-size:0.81rem;font-weight:500;color:var(--ink);}
+  .mant-sub-sm{font-size:0.7rem;color:var(--ink3);}
 
-  /* ===== AGENDA ANUAL ===== */
-  .agenda-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1.5rem;}
-  .agenda-tab{padding:0.6rem 1.1rem;font-size:0.83rem;font-weight:500;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
+  /* ===== AGENDA ===== */
+  .agenda-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
+  .agenda-tab{padding:0.55rem 1rem;font-size:0.82rem;font-weight:500;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
   .agenda-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
   .agenda-tab:hover:not(.active){color:var(--ink);}
   .agenda-vista{display:none;}
   .agenda-vista.active{display:block;}
-
-  .mant-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.75rem;display:flex;align-items:center;gap:1rem;transition:box-shadow 0.15s;}
-  .mant-card:hover{box-shadow:0 4px 12px rgba(28,26,22,0.08);}
+  .mant-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.1rem;margin-bottom:0.65rem;display:flex;align-items:center;gap:0.85rem;transition:box-shadow 0.15s;}
+  .mant-card:hover{box-shadow:0 3px 10px rgba(28,26,22,0.07);}
   .mant-card-estado{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
   .mant-card-info{flex:1;min-width:0;}
-  .mant-card-nombre{font-weight:500;font-size:0.88rem;color:var(--ink);}
-  .mant-card-sub{font-size:0.76rem;color:var(--ink3);margin-top:2px;}
-  .mant-card-fecha{font-size:0.78rem;font-family:DM Mono,monospace;color:var(--ink2);white-space:nowrap;text-align:right;}
-  .mant-card-fecha-label{font-size:0.68rem;color:var(--ink3);text-align:right;}
-  .mant-estado-badge{font-size:0.7rem;padding:0.2rem 0.65rem;border-radius:20px;font-weight:500;white-space:nowrap;}
+  .mant-card-nombre{font-weight:500;font-size:0.87rem;color:var(--ink);}
+  .mant-card-sub{font-size:0.74rem;color:var(--ink3);margin-top:1px;}
+  .mant-estado-badge{font-size:0.68rem;padding:0.18rem 0.6rem;border-radius:20px;font-weight:500;white-space:nowrap;}
   .mant-estado-badge.vencido{background:var(--red-light);color:var(--red);}
   .mant-estado-badge.proximo{background:var(--amber-light);color:var(--amber);}
   .mant-estado-badge.al-dia{background:var(--green-light);color:var(--green);}
-  .mant-estado-badge.licitacion{background:#EDE9FE;color:#5B21B6;}
-
   .form-nueva-tarea{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:none;}
   .form-nueva-tarea.visible{display:block;}
-
-  /* Calendario */
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-  .cal-day-name{font-size:0.7rem;font-weight:600;color:var(--ink3);text-align:center;padding:0.35rem 0;text-transform:uppercase;}
-  .cal-day{min-height:70px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.35rem;font-size:0.72rem;color:var(--ink2);}
-  .cal-day.otro-mes{opacity:0.35;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .cal-day-name{font-size:0.68rem;font-weight:600;color:var(--ink3);text-align:center;padding:0.3rem 0;text-transform:uppercase;}
+  .cal-day{min-height:68px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:0.3rem;font-size:0.7rem;}
+  .cal-day.otro-mes{opacity:0.3;}
   .cal-day.hoy{border-color:var(--accent);border-width:2px;}
-  .cal-day-num{font-weight:500;margin-bottom:3px;color:var(--ink);}
-  .cal-event{font-size:0.65rem;padding:2px 4px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
+  .cal-day-num{font-weight:500;margin-bottom:2px;color:var(--ink);font-size:0.75rem;}
+  .cal-event{font-size:0.62rem;padding:1px 3px;border-radius:3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;}
   .cal-event.vencido{background:var(--red-light);color:var(--red);}
   .cal-event.proximo{background:var(--amber-light);color:var(--amber);}
   .cal-event.al-dia{background:var(--green-light);color:var(--green);}
-  .cal-nav{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;}
-  .cal-nav button{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:0.35rem 0.85rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.83rem;color:var(--ink);}
+  .cal-nav{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem;}
+  .cal-nav button{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:0.3rem 0.8rem;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.81rem;color:var(--ink);}
   .cal-nav button:hover{background:var(--border);}
-  .cal-mes-label{font-family:DM Serif Display,serif;font-size:1.1rem;color:var(--ink);flex:1;text-align:center;}
+  .cal-mes-label{font-family:DM Serif Display,serif;font-size:1rem;color:var(--ink);flex:1;text-align:center;}
 
-  /* Proveedores placeholder */
-  .modulo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--ink3);gap:1rem;padding:3rem;}
-  .modulo-placeholder-icon{font-size:3rem;}
-  .modulo-placeholder-title{font-family:DM Serif Display,serif;font-size:1.3rem;color:var(--ink2);}
-  .modulo-placeholder-sub{font-size:0.85rem;text-align:center;max-width:300px;line-height:1.6;}
-
-  /* Overlay sidebar mobile */
-  .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:299;}
-  .sb-overlay.visible{display:block;}
+  /* ===== PLACEHOLDER MÓDULOS ===== */
+  .modulo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--ink3);gap:0.85rem;padding:3rem;text-align:center;}
+  .modulo-placeholder-icon{font-size:2.5rem;}
+  .modulo-placeholder-title{font-family:DM Serif Display,serif;font-size:1.25rem;color:var(--ink2);}
+  .modulo-placeholder-sub{font-size:0.84rem;max-width:280px;line-height:1.6;}
 
   @media(max-width:768px){
-    .sidebar{position:fixed;height:100vh;transform:translateX(-240px);}
+    .sidebar{position:fixed;height:100vh;transform:translateX(-236px);}
     .sidebar.open{transform:translateX(0);}
     .dash-kpi{grid-template-columns:1fr 1fr;}
     .dash-grid{grid-template-columns:1fr;}
     .modulo-inner{padding:1rem;}
-  }
-  @media(max-width:480px){
-    .dash-kpi{grid-template-columns:1fr 1fr;}
-    .topbar{padding:0 1rem;}
   }
 
 </style>
 </head>
 <body>
 
-<!-- OVERLAY SIDEBAR MOBILE -->
 <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
-<!-- APP LAYOUT -->
 <div class="app-layout">
 
 <!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sb-header">
-    <div>
-      <div class="sb-brand">Intendencia <span>UdeSA</span></div>
-      <div class="sb-sub">Campus Victoria</div>
-    </div>
+    <div class="sb-brand">Intendencia <span>UdeSA</span></div>
+    <div class="sb-sub">Campus Victoria</div>
   </div>
   <nav class="sb-nav">
-    <div class="sb-item" onclick="navegarA('dashboard')" id="nav-dashboard">
-      <span class="sb-item-icon">📊</span> Dashboard
-    </div>
-    <div class="sb-item active" onclick="navegarA('obras')" id="nav-obras">
-      <span class="sb-item-icon">🏗️</span> Memorias de Obra
-    </div>
-    <div class="sb-item" onclick="navegarA('agenda')" id="nav-agenda">
-      <span class="sb-item-icon">📅</span> Agenda Anual
-      <span class="sb-badge amber" id="badge-agenda" style="display:none">0</span>
-    </div>
-    <div class="sb-item" onclick="navegarA('proveedores')" id="nav-proveedores">
-      <span class="sb-item-icon">🏢</span> Proveedores
-    </div>
-    <div class="sb-item" onclick="navegarA('planos')" id="nav-planos">
-      <span class="sb-item-icon">📐</span> Planos y Docs
-    </div>
-    <div class="sb-item" onclick="navegarA('tickets')" id="nav-tickets">
-      <span class="sb-item-icon">🎫</span> Tickets
-    </div>
+    <div class="sb-item" onclick="navegarA('dashboard')" id="nav-dashboard"><span class="sb-item-icon">📊</span>Dashboard</div>
+    <div class="sb-item active" onclick="navegarA('obras')" id="nav-obras"><span class="sb-item-icon">🏗️</span>Memorias de Obra</div>
+    <div class="sb-item" onclick="navegarA('agenda')" id="nav-agenda"><span class="sb-item-icon">📅</span>Agenda Anual<span class="sb-badge amber" id="badge-agenda" style="display:none">0</span></div>
+    <div class="sb-item" onclick="navegarA('proveedores')" id="nav-proveedores"><span class="sb-item-icon">🏢</span>Proveedores</div>
+    <div class="sb-item" onclick="navegarA('planos')" id="nav-planos"><span class="sb-item-icon">📐</span>Planos y Docs</div>
+    <div class="sb-item" onclick="navegarA('tickets')" id="nav-tickets"><span class="sb-item-icon">🎫</span>Tickets</div>
     <div class="sb-divider"></div>
-    <div class="sb-item" onclick="navegarA('busqueda')" id="nav-busqueda">
-      <span class="sb-item-icon">🔍</span> Búsqueda Global
-    </div>
-    <div class="sb-item" onclick="navegarA('configuracion')" id="nav-configuracion">
-      <span class="sb-item-icon">⚙️</span> Configuración
-    </div>
+    <div class="sb-item" onclick="navegarA('busqueda')" id="nav-busqueda"><span class="sb-item-icon">🔍</span>Búsqueda Global</div>
+    <div class="sb-item" onclick="navegarA('configuracion')" id="nav-configuracion"><span class="sb-item-icon">⚙️</span>Configuración</div>
   </nav>
   <div class="sb-bottom">
     <div class="sb-avatar" id="sb-avatar">?</div>
     <div class="sb-username" id="sb-username">—</div>
-    <button class="btn-logout" onclick="logoutApp()" style="margin-top:0;margin-left:auto;font-size:0.72rem">Salir</button>
+    <button onclick="logoutApp()" style="background:none;border:1px solid rgba(255,255,255,0.15);color:#A09890;font-size:0.7rem;padding:0.2rem 0.6rem;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;">Salir</button>
   </div>
 </div>
 
@@ -587,32 +548,26 @@
 <div class="app-right" id="app-right">
 
   <!-- TOPBAR -->
-  <div class="topbar" id="main-topbar" style="display:none">
+  <div class="main-topbar" id="main-topbar" style="display:none">
     <div class="topbar-left">
-      <button class="btn-hamburger" onclick="toggleSidebar()" aria-label="Menú">☰</button>
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <button class="btn-hamburger" onclick="toggleSidebar()">☰</button>
+      <div class="topbar-title" id="topbar-title">Memorias de Obra</div>
     </div>
     <div class="topbar-right">
-      <div class="header-sync" style="font-size:0.72rem;color:var(--ink3);display:flex;align-items:center;gap:6px;">
+      <div class="header-sync" style="font-size:0.72rem;color:var(--ink3);display:flex;align-items:center;gap:6px">
         <div class="sync-dot" id="sync-dot"></div>
         <span id="sync-txt">Conectando...</span>
       </div>
       <button class="btn-bell" id="btn-bell" onclick="toggleNotifPanel()">
-        🔔
-        <span class="bell-count" id="bell-count" style="display:none">0</span>
+        🔔<span class="bell-count" id="bell-count">0</span>
       </button>
     </div>
   </div>
 
-  <!-- PANEL DE NOTIFICACIONES -->
+  <!-- NOTIF PANEL -->
   <div class="notif-dropdown" id="notif-dropdown">
-    <div class="notif-header">
-      <span>Notificaciones</span>
-      <span id="notif-count-label" style="font-size:0.72rem;color:var(--ink3)"></span>
-    </div>
-    <div class="notif-list" id="notif-list">
-      <div style="padding:1.5rem;text-align:center;color:var(--ink3);font-size:0.85rem">Sin alertas pendientes ✓</div>
-    </div>
+    <div class="notif-header"><span>Notificaciones</span><span id="notif-count-lbl" style="font-size:0.7rem;color:var(--ink3)"></span></div>
+    <div class="notif-list" id="notif-list"><div style="padding:1.25rem;text-align:center;color:var(--ink3);font-size:0.84rem">Sin alertas ✓</div></div>
   </div>
 
 <!-- LOGIN -->
@@ -726,9 +681,9 @@
   <div class="loading-msg">Conectando con la base de datos...</div>
 </div>
 
-<!-- MÓDULO: OBRAS (sistema existente) -->
+<!-- MÓDULO OBRAS -->
 <div class="modulo-obras-wrap active" id="mod-obras">
-<div class="header" id="header-obra-bar">
+<div class="header" style="display:none">
   <div class="header-brand">Memoria de <span>Obra</span></div>
   <div style="display:flex;align-items:center;gap:1.5rem">
     <button class="btn-logout" id="btn-panel" onclick="irAlPanel()" style="display:none;background:var(--blue-light);color:var(--blue);border-color:#b0cfe0">← Volver al panel</button>
@@ -910,6 +865,9 @@
 </div>
 
 <!-- MODAL CONFIRMAR FINALIZAR OBRA -->
+</div><!-- fin .main -->
+</div><!-- fin mod-obras -->
+
 <div class="modal-overlay" id="modal-finalizar-obra">
   <div class="modal-box" style="max-width:400px;text-align:center">
     <div style="font-size:2.5rem;margin-bottom:0.75rem">✅</div>
@@ -1215,9 +1173,6 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
-
-// Módulos Firestore expuestos para agenda y futuros módulos
-window._fbModules = { collection, doc, addDoc, setDoc, deleteDoc, getDocs, query, orderBy };
 // Sesión válida solo mientras la pestaña esté abierta
 setPersistence(auth, browserSessionPersistence);
 
@@ -1280,16 +1235,7 @@ function ocultarDashboard() {
   document.getElementById('btn-logout').style.display= 'inline-block';
 }
 
-window.irAlPanel = function() {
-  // Nuevo sistema: mostrar módulo obras dentro del layout nuevo
-  navegarA('obras');
-  // También mantener comportamiento viejo para el dashboard interno
-  if (document.getElementById('dashboard')) {
-    document.getElementById('dashboard').classList.add('active');
-  }
-  actualizarFiltrosAniosDash();
-  if (window.renderDashboard) window.renderDashboard();
-};
+window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
 
 window.abrirNuevaObraDesdePanel = function() {
   ocultarDashboard();
@@ -2192,6 +2138,32 @@ function renderCompras() {
 
     </div>
     ${comp.notas?`<div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--surface2);border-radius:6px;font-size:0.83rem;color:var(--ink2)"><strong>Notas:</strong> ${comp.notas}</div>`:''}
+
+    ${info.estadoObra==='terminado' && info.fin && comp.inicio ? (() => {
+      const total = (diasLicitacion||0) + (diasBache||0) + (diasEjecucion||0);
+      const filas = [
+        { n:'1', label:'Inicio gestión de compras', fecha: formatFecha(comp.inicio), dur: diasLicitacion!==null ? `Duración licitación: <strong style="color:var(--accent)">${diasLicitacion} días</strong>` : null },
+        { n:'2', label:'Adjudicación', fecha: comp.fin ? formatFecha(comp.fin) : '—', dur: diasBache!==null ? `Tiempo de espera hasta inicio: <strong style="color:var(--amber)">${diasBache} días</strong>` : null },
+        { n:'3', label:'Inicio de obra', fecha: formatFecha(info.inicio), dur: diasEjecucion!==null ? `Duración ejecución: <strong style="color:var(--accent)">${diasEjecucion} días</strong>` : null },
+        { n:'4', label:'Obra finalizada', fecha: formatFecha(info.fin), dur: null },
+      ];
+      return `<div style="margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem">
+        <div style="font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--ink3);margin-bottom:0.75rem">Resumen de tiempos</div>
+        <div style="display:flex;flex-direction:column;gap:0.35rem">
+          ${filas.map(f=>`
+            <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:0.84rem">
+              <span style="color:var(--ink2)">${f.n}. ${f.label}</span>
+              <span style="font-family:DM Mono,monospace;color:var(--ink);font-size:0.8rem">${f.fecha}</span>
+            </div>
+            ${f.dur?`<div style="font-size:0.76rem;color:var(--ink3);padding-left:1rem;margin-bottom:0.15rem">${f.dur}</div>`:''}
+          `).join('')}
+        </div>
+        <div style="margin-top:0.85rem;padding:0.65rem 1rem;background:var(--surface2);border-radius:7px;font-size:0.85rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between">
+          <span>Total del proyecto (licitación + espera + ejecución)</span>
+          <span style="color:var(--accent)">${total} días</span>
+        </div>
+      </div>`;
+    })() : ''}
   </div>`;
 }
 
@@ -2212,58 +2184,1496 @@ window.editarCompras = function() {
   document.getElementById('panel-compras').scrollIntoView({behavior:'smooth'});
 };
 
+window.formatMonto = function(input) {
+  // Sacar todo excepto dígitos
+  let val = input.value.replace(/[^0-9]/g, '');
+  if (!val) { input.value = ''; return; }
+  // Convertir a número con decimales (últimos 2 dígitos = centavos)
+  let num = parseInt(val, 10);
+  // Formatear: separador de miles = punto, decimales = coma
+  let entero = Math.floor(num / 100);
+  let cents  = num % 100;
+  let enteroFmt = entero.toLocaleString('es-AR');
+  input.value = enteroFmt + ',' + String(cents).padStart(2,'0');
+};
+
+// Obtener valor numérico del campo monto formateado
+function getMontoValue() {
+  const raw = document.getElementById('gasto-monto').value;
+  // Sacar puntos de miles, reemplazar coma por punto
+  const clean = raw.replace(/\./g,'').replace(',','.');
+  return parseFloat(clean) || 0;
+}
+
+window.toggleVerPass = function() {
+  const input = document.getElementById('login-pass');
+  const btn   = document.getElementById('btn-ver-pass');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+};
+
+window.loginSubmit = async function() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  const btn   = document.getElementById('btn-login');
+  if (!email||!pass) { errEl.textContent='Completá email y contraseña'; errEl.style.display='block'; return; }
+  btn.disabled=true; btn.textContent='Ingresando...';
+  errEl.style.display='none';
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = e.code==='auth/invalid-credential'||e.code==='auth/wrong-password'||e.code==='auth/user-not-found'
+      ? 'Email o contraseña incorrectos' : 'Error al ingresar. Intentá de nuevo.';
+    errEl.style.display='block';
+    btn.disabled=false; btn.textContent='Ingresar';
+  }
+};
+
+// ========== FINALIZAR OBRA ==========
+window.abrirFinalizarObra = function() {
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('fin-obra-fecha').value = hoy;
+  document.getElementById('modal-finalizar-obra').style.display = 'flex';
+};
+
+window.cerrarFinalizarObra = function() {
+  document.getElementById('modal-finalizar-obra').style.display = 'none';
+};
+
+window.confirmarFinalizarObra = async function() {
+  if (!obraActiva || !obras[obraActiva]) return;
+  const fecha = document.getElementById('fin-obra-fecha').value;
+  if (!fecha) { alert('Ingresá la fecha de finalización'); return; }
+  const infoActual = obras[obraActiva].info;
+  const infoNueva  = { ...infoActual, estadoObra: 'terminado', fin: fecha };
+  setSyncStatus('loading', 'Guardando...');
+  try {
+    await setDoc(doc(db,'obras',obraActiva), infoNueva);
+    setSyncStatus('ok', 'Obra finalizada ✓');
+    cerrarFinalizarObra();
+    actualizarHeaderObra();
+    renderObraInfoCard();
+    document.getElementById('btn-finalizar-obra').style.display = 'none';
+    // Activar modo solo lectura
+    setModoSoloLectura(true);
+  } catch(e) {
+    setSyncStatus('error','Error');
+    alert('Error: ' + e.message);
+  }
+};
+
+window.logoutApp = async function() {
+  obraActiva = null;
+  localStorage.removeItem('obraActiva');
+  document.getElementById('dashboard').classList.remove('active');
+  await signOut(auth);
+};
+
+// ========== INIT ==========
+window.addEventListener('DOMContentLoaded', () => {
+  const hoy = new Date().toISOString().split('T')[0];
+  ['lib-fecha','prob-fecha','gasto-fecha'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = hoy;
+  });
+
+  const loading = document.getElementById('loading-screen');
+  const loginSc = document.getElementById('login-screen');
+  const btnOut  = document.getElementById('btn-logout');
+
+  // Mostrar login por defecto mientras Firebase verifica
+  loginSc.style.display = 'flex';
+  loading.style.display  = 'none';
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // Logueado: ocultar login, mostrar loading, cargar datos
+      loginSc.style.display = 'none';
+      loading.style.display = 'flex';
+      document.querySelector('.loading-msg').textContent = 'Cargando datos...';
+      btnOut.style.display = 'inline-block';
+      setSyncStatus('loading', 'Conectando...');
+      try {
+        await cargarObras();
+        setSyncStatus('ok', 'Conectado');
+        // Mostrar dashboard al entrar
+        loading.style.display = 'none';
+        mostrarDashboard();
+      } catch(e) {
+        setSyncStatus('error', 'Sin conexión');
+        console.error(e);
+        loading.style.display = 'none';
+      }
+    } else {
+      // No logueado: mostrar login
+      loading.style.display = 'none';
+      loginSc.style.display = 'flex';
+      btnOut.style.display  = 'none';
+      obras = {}; obraActiva = null;
+      renderObraSelect();
+      renderAll();
+    }
+  });
+});
+
+// ========== CARGAR OBRAS (tiempo real) ==========
+async function cargarObras() {
+  return new Promise((resolve, reject) => {
+    const obrasRef = collection(db, 'obras');
+    unsubObras = onSnapshot(obrasRef, async (snap) => {
+      obras = {};
+      snap.forEach(d => {
+        obras[d.id] = { info: d.data(), libro:[], problemas:[], gastos:[], compras:{} };
+      });
+      renderObraSelect();
+      // restaurar obra activa
+      const savedId = localStorage.getItem('obraActiva');
+      if (savedId && obras[savedId]) {
+        obraActiva = savedId;
+        document.getElementById('obra-select').value = obraActiva;
+        actualizarHeaderObra();
+        mostrarBotonesObra(true);
+        document.getElementById('filtros-bar').style.display = 'flex';
+        await cargarSubcolecciones(obraActiva);
+        renderAll();
+      }
+      setSyncStatus('ok', 'Conectado');
+      resolve();
+    }, reject);
+  });
+}
+
+// ========== CARGAR SUBCOLECCIONES EN TIEMPO REAL ==========
+async function cargarSubcolecciones(obraId) {
+  // cancelar listeners previos de esta obra
+  if (unsubSubs[obraId]) {
+    unsubSubs[obraId].forEach(u => u());
+  }
+  unsubSubs[obraId] = [];
+  // Cargar compras (no es tiempo real, es un solo doc)
+  await cargarCompras(obraId);
+
+  const secciones = ['libro','problemas','gastos'];
+  for (const sec of secciones) {
+    const ref = collection(db, 'obras', obraId, sec);
+    const unsub = onSnapshot(query(ref, orderBy('fecha','asc')), snap => {
+      if (!obras[obraId]) return;
+      obras[obraId][sec] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      actualizarFiltrosAnio();
+      renderAll();
+    });
+    unsubSubs[obraId].push(unsub);
+  }
+}
+
+// ========== OBRA SELECT ==========
+function renderObraSelect() {
+  const sel = document.getElementById('obra-select');
+  const val = obraActiva || '';
+  sel.innerHTML = '<option value="">Seleccioná una obra...</option>';
+  Object.entries(obras).forEach(([id, o]) => {
+    const op = document.createElement('option');
+    op.value = id;
+    op.textContent = o.info.nombre + (o.info.estadoObra === 'terminado' ? ' ✓' : ' ●');
+    sel.appendChild(op);
+  });
+  if (val) sel.value = val;
+}
+
+window.cambiarObra = async function() {
+  obraActiva = document.getElementById('obra-select').value || null;
+  filtroAnio = ''; filtroMes = '';
+  document.getElementById('filtro-anio').value = '';
+  document.getElementById('filtro-mes').value  = '';
+  document.getElementById('filtro-resultado').style.display = 'none';
+  actualizarHeaderObra();
+  const hayObra = !!(obraActiva && obras[obraActiva]);
+  mostrarBotonesObra(hayObra);
+  document.getElementById('filtros-bar').style.display = hayObra ? 'flex' : 'none';
+  if (hayObra) {
+    localStorage.setItem('obraActiva', obraActiva);
+    await cargarSubcolecciones(obraActiva);
+  } else {
+    localStorage.removeItem('obraActiva');
+  }
+  renderAll();
+};
+
+function actualizarHeaderObra() {
+  const nombre = (obraActiva && obras[obraActiva]) ? obras[obraActiva].info.nombre : '— Sin obra —';
+  document.getElementById('header-obra-name').textContent = nombre;
+  const spanNombre = document.getElementById('obra-activa-nombre');
+  if (spanNombre) spanNombre.textContent = nombre !== '— Sin obra —' ? nombre : '';
+}
+
+function mostrarBotonesObra(v) {
+  ['btn-editar-obra','btn-eliminar-obra'].forEach(id =>
+    document.getElementById(id).style.display = v ? 'inline-block' : 'none'
+  );
+}
+
+function actualizarFiltrosAnio() {
+  if (!obraActiva || !obras[obraActiva]) return;
+  const o = obras[obraActiva];
+  const anios = new Set();
+  [...o.libro,...o.problemas,...o.gastos].forEach(r => { if(r.fecha) anios.add(r.fecha.split('-')[0]); });
+  const sel = document.getElementById('filtro-anio');
+  const val = sel.value;
+  sel.innerHTML = '<option value="">Todos los años</option>';
+  [...anios].sort().reverse().forEach(a => {
+    const op = document.createElement('option'); op.value=a; op.textContent=a; sel.appendChild(op);
+  });
+  if (val) sel.value = val;
+}
+
+// ========== FILTROS ==========
+window.aplicarFiltros = function() {
+  filtroAnio = document.getElementById('filtro-anio').value;
+  filtroMes  = document.getElementById('filtro-mes').value;
+  const badge = document.getElementById('filtro-resultado');
+  const meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  if (filtroAnio||filtroMes) {
+    badge.textContent = (filtroAnio||'')+(filtroMes?(filtroAnio?' — ':'')+meses[+filtroMes]:'');
+    badge.style.display = 'inline-block';
+  } else { badge.style.display='none'; }
+  renderAll();
+};
+window.limpiarFiltros = function() {
+  filtroAnio=''; filtroMes='';
+  document.getElementById('filtro-anio').value='';
+  document.getElementById('filtro-mes').value='';
+  document.getElementById('filtro-resultado').style.display='none';
+  renderAll();
+};
+function filtrar(lista) {
+  if (!filtroAnio && !filtroMes) return lista;
+  return lista.filter(r => {
+    if (!r.fecha) return false;
+    const [a,m] = r.fecha.split('-');
+    if (filtroAnio && a!==filtroAnio) return false;
+    if (filtroMes  && m!==filtroMes)  return false;
+    return true;
+  });
+}
+
+// ========== MODAL OBRA ==========
+window.toggleFechaFinObra = function() {
+  const estado = document.getElementById('fo-estado').value;
+  const row    = document.getElementById('obra-fin-row');
+  if (estado==='terminado') {
+    row.classList.add('visible');
+    if (!document.getElementById('fo-fin').value)
+      document.getElementById('fo-fin').value = new Date().toISOString().split('T')[0];
+  } else {
+    row.classList.remove('visible');
+    document.getElementById('fo-fin').value = '';
+  }
+};
+
+// Datos de compras previas pendientes de guardar con la obra
+let comprasPrevias  = null;
+let obraLicitacionId = null; // ID de obra en estado licitación que se está completando
+
+window.abrirModalNuevaObra = function() {
+  // Mostrar popup previo primero
+  comprasPrevias = null;
+  document.getElementById('modal-previo-compras').style.display = 'flex';
+};
+
+window.cerrarModalPrevio = function() {
+  document.getElementById('modal-previo-compras').style.display = 'none';
+};
+
+window.elegirSinCompras = function() {
+  comprasPrevias = null;
+  cerrarModalPrevio();
+  abrirFormNuevaObra('');
+};
+
+window.elegirConCompras = function() {
+  cerrarModalPrevio();
+  // Limpiar campos compras standalone
+  ['pre-comp-nombre','pre-comp-inicio','pre-comp-fin','pre-comp-proveedor','pre-comp-monto','pre-comp-notas'].forEach(id => document.getElementById(id).value='');
+  // Reset botones Sí/No
+  ['pre-btn-adj-si','pre-btn-adj-no'].forEach(id => {
+    document.getElementById(id).style.background  = 'var(--surface2)';
+    document.getElementById(id).style.color       = 'var(--ink)';
+    document.getElementById(id).style.borderColor = 'var(--border)';
+  });
+  document.getElementById('pre-campos-adj').style.display   = 'none';
+  document.getElementById('pre-btn-continuar').style.display = 'none';
+  document.getElementById('pre-btn-pendiente').style.display = 'none';
+  document.getElementById('modal-compras-standalone').style.display = 'flex';
+};
+
+window.cerrarModalComprasStandalone = function() {
+  document.getElementById('modal-compras-standalone').style.display = 'none';
+};
+
+window.confirmarComprasYCrearObra = async function() {
+  const nombre    = document.getElementById('pre-comp-nombre').value.trim();
+  const inicio    = document.getElementById('pre-comp-inicio').value;
+  const fin       = document.getElementById('pre-comp-fin').value;
+  const proveedor = document.getElementById('pre-comp-proveedor').value.trim();
+
+  if (!nombre) { alert('Ingresá el nombre de la obra o proyecto'); return; }
+  if (!inicio)  { alert('Ingresá la fecha de inicio de la licitación'); return; }
+
+  // Sin fecha de cierre → crear obra en estado "licitacion"
+  if (!fin || !proveedor) {
+    cerrarModalComprasStandalone();
+    // Crear obra pendiente de licitación automáticamente
+    await crearObraPendienteLicitacion(nombre, {
+      inicio, fin, proveedor,
+      monto: getMontoFromField('pre-comp-monto'),
+      notas: document.getElementById('pre-comp-notas').value.trim()
+    });
+    return;
+  }
+
+  // Con fecha de cierre y proveedor → guardar y abrir form de obra
+  comprasPrevias = { inicio, fin, proveedor,
+    monto: getMontoFromField('pre-comp-monto'),
+    notas: document.getElementById('pre-comp-notas').value.trim()
+  };
+  cerrarModalComprasStandalone();
+  abrirFormNuevaObra(proveedor, nombre);
+};
+
+async function crearObraPendienteLicitacion(nombre, compData) {
+  setSyncStatus('loading','Creando obra...');
+  try {
+    const infoObra = {
+      nombre:     nombre || ('Pendiente — ' + (compData.inicio ? formatFecha(compData.inicio) : 'sin fecha')),
+      proveedor:  '',
+      ubicacion:  '',
+      inicio:     '',
+      estadoObra: 'licitacion',
+      fin:        '',
+      email:      '',
+      tel:        ''
+    };
+    const docRef = await addDoc(collection(db,'obras'), infoObra);
+    await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), compData);
+    setSyncStatus('ok','Obra pendiente creada ✓');
+    // Actualizar datos locales
+    obras[docRef.id] = { info: infoObra, libro:[], problemas:[], gastos:[], compras:{ proceso: compData } };
+    renderObraSelect();
+    // Ir al panel
+    if (!document.getElementById('dashboard').classList.contains('active')) {
+      irAlPanel();
+    } else {
+      renderDashboard();
+    }
+    mostrarInfo('📋', 'Obra en estado Pendiente', 'La obra fue creada como pendiente de licitación. Cuando se cierre la licitación, ingresá desde el panel para completarla.');
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+}
+
+function abrirFormNuevaObra(proveedorPrecomp, nombrePrecomp) {
+  modoModal = 'nueva';
+  obraLicitacionId  = null;
+  infoAntesDeCerrar = null;
+  document.getElementById('modal-obra-titulo').textContent = 'Nueva obra';
+  document.getElementById('btn-guardar-obra').textContent  = 'Crear obra';
+  document.getElementById('btn-guardar-obra').style.background = '';
+  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-inicio','fo-fin','fo-email','fo-tel','fo-notas-obra','fo-notas-obra'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('fo-estado').value = 'en-curso';
+  document.getElementById('obra-fin-row').classList.remove('visible');
+  document.getElementById('fo-inicio-hint').style.display     = 'none';
+  document.getElementById('fo-inicio-campo').style.display    = 'none';
+  document.getElementById('fo-estado').parentElement.style.display = 'block';
+
+  if (proveedorPrecomp || nombrePrecomp) {
+    // Viene de compras → mostrar pregunta Sí/No para fecha de inicio
+    if (nombrePrecomp)    document.getElementById('fo-nombre').value    = nombrePrecomp;
+    if (proveedorPrecomp) document.getElementById('fo-proveedor').value = proveedorPrecomp;
+    document.getElementById('fo-inicio-pregunta').style.display = 'block';
+    document.getElementById('fo-estado').parentElement.style.display = 'none';
+    // Reset botones Sí/No
+    ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+      const b = document.getElementById(id);
+      b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+    });
+    document.getElementById('btn-guardar-obra').textContent   = 'Iniciar obra';
+    document.getElementById('btn-guardar-obra').style.background = 'var(--accent)';
+  } else {
+    // Sin compras → misma pregunta Sí/No que con compras
+    document.getElementById('fo-inicio-pregunta').style.display = 'block';
+    document.getElementById('fo-inicio-campo').style.display    = 'none';
+    document.getElementById('fo-estado').parentElement.style.display = 'none';
+    // Reset botones Sí/No
+    ['fo-inicio-si','fo-inicio-no'].forEach(id => {
+      const b = document.getElementById(id);
+      b.style.background = 'var(--surface2)'; b.style.color = 'var(--ink)'; b.style.borderColor = 'var(--border)';
+    });
+    // Mostrar campos de contratación directa y limpiarlos
+    document.getElementById('fo-contratacion-directa-fields').style.display = 'block';
+    document.getElementById('fo-monto-directo').value = '';
+    document.getElementById('fo-notas-directo').value = '';
+    document.getElementById('btn-guardar-obra').textContent      = 'Crear obra';
+    document.getElementById('btn-guardar-obra').style.background = '';
+  }
+  document.getElementById('modal-obra').style.display = 'flex';
+}
+
+window.abrirModalEditarObra = function() {
+  if (!obraActiva || !obras[obraActiva]) return;
+  modoModal = 'editar';
+  const info = obras[obraActiva].info;
+  document.getElementById('modal-obra-titulo').textContent = 'Editar obra';
+  document.getElementById('btn-guardar-obra').textContent  = 'Guardar cambios';
+  document.getElementById('fo-nombre').value    = info.nombre    || '';
+  document.getElementById('fo-proveedor').value = info.proveedor || '';
+  document.getElementById('fo-ubicacion').value = info.ubicacion || info.direccion || '';
+  document.getElementById('fo-inicio').value    = info.inicio    || '';
+  document.getElementById('fo-estado').value    = info.estadoObra|| 'en-curso';
+  document.getElementById('fo-fin').value       = info.fin       || '';
+  document.getElementById('fo-email').value     = info.email     || '';
+  document.getElementById('fo-tel').value       = info.tel       || '';
+  document.getElementById('obra-fin-row').classList.toggle('visible', (info.estadoObra||'en-curso')==='terminado');
+  document.getElementById('modal-obra').style.display = 'flex';
+};
+
+let infoAntesDeCerrar = null; // backup del estado antes de completar licitación
+
+window.cerrarModalObra = async function() {
+  document.getElementById('modal-obra').style.display = 'none';
+  document.getElementById('fo-inicio-hint').style.display     = 'none';
+  document.getElementById('fo-inicio-pregunta').style.display = 'none';
+  document.getElementById('fo-inicio-campo').style.display    = 'none';
+  document.getElementById('fo-contratacion-directa-fields').style.display = 'none';
+  document.getElementById('fo-contacto-block').style.display = '';
+  document.getElementById('fo-estado-grid').style.display = '';
+  document.getElementById('fo-prov-ubic-grid').style.display = '';
+  document.getElementById('fo-notas-obra-block').style.display = '';
+  const btnCancelar = document.querySelector('#modal-obra .btn-secondary');
+  if (btnCancelar) btnCancelar.style.display = '';
+  // Restaurar visibilidad de todos los campos del form
+  ['fo-nombre','fo-proveedor','fo-ubicacion','fo-email','fo-tel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      let p = el.closest('.form-grid') || el.closest('.field') || el.parentElement;
+      if (p) p.style.display = '';
+    }
+  });
+  document.querySelectorAll('#modal-obra .form-grid, #modal-obra .field').forEach(el => { el.style.display = ''; });
+  // Restaurar botón guardar y ocultar botón volver
+  const btnGrd = document.getElementById('btn-guardar-obra');
+  if (btnGrd) btnGrd.style.display = 'inline-block';
+  const btnVolver = document.getElementById('btn-volver-panel-completar');
+  if (btnVolver) btnVolver.style.display = 'none';
+  // Restaurar visibilidad del estado de obra
+  const estadoField = document.getElementById('fo-estado');
+  if (estadoField) estadoField.parentElement.style.display = 'block';
+  // Si cancelamos completar-licitacion, restaurar estado original en Firebase
+  if (modoModal === 'completar-licitacion' && infoAntesDeCerrar && obraLicitacionId) {
+    try {
+      await setDoc(doc(db,'obras',obraLicitacionId), infoAntesDeCerrar);
+      if (obras[obraLicitacionId]) obras[obraLicitacionId].info = infoAntesDeCerrar;
+      renderDashboard();
+    } catch(e) { console.error(e); }
+    infoAntesDeCerrar = null;
+    comprasPrevias    = null;
+    obraLicitacionId  = null;
+    modoModal         = null;
+  }
+};
+
+window.guardarObra = async function() {
+  const nombre = document.getElementById('fo-nombre').value.trim();
+  if (!nombre) { alert('Ingresá el nombre de la obra'); return; }
+  const inicio = document.getElementById('fo-inicio').value;
+  // Fecha obligatoria solo cuando viene del botón "Iniciar obra" (ya tiene adjudicación)
+  const btnText = document.getElementById('btn-guardar-obra').textContent.trim();
+  const esModoIniciar = btnText === 'Iniciar obra';
+  const esModoEtiqueta = btnText === 'Generar etiqueta de obra';
+  if (!inicio && esModoIniciar && !esModoEtiqueta) {
+    alert('Ingresá la fecha de inicio de la obra');
+    return;
+  }
+  const estadoObra = document.getElementById('fo-estado').value;
+  const infoNueva = {
+    nombre,
+    proveedor:  document.getElementById('fo-proveedor').value.trim(),
+    ubicacion:  document.getElementById('fo-ubicacion').value.trim(),
+    inicio:     document.getElementById('fo-inicio').value,
+    estadoObra,
+    fin:   estadoObra==='terminado' ? document.getElementById('fo-fin').value : '',
+    email: document.getElementById('fo-email').value.trim(),
+    tel:   document.getElementById('fo-tel').value.trim(),
+    notas: document.getElementById('fo-notas-obra').value.trim(),
+    creadoEn: obras[obraActiva]?.info?.creadoEn || new Date().toISOString()
+  };
+  setSyncStatus('loading','Guardando...');
+  try {
+    if (modoModal==='nueva') {
+      // Si es etiqueta (sin fecha) → guardar y volver al panel
+      if (esModoEtiqueta || !inicio) {
+        infoNueva.estadoObra = 'pendiente'; // sin fecha = pendiente (contratación directa)
+        infoNueva.creadoEn   = new Date().toISOString();
+        const docRef = await addDoc(collection(db,'obras'), infoNueva);
+        if (comprasPrevias) {
+          await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), comprasPrevias);
+          comprasPrevias = null;
+        } else {
+          const montoDirecto = getMontoFromField('fo-monto-directo');
+          const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+          if (montoDirecto || notasDirecto) {
+            await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), { tipo: 'directa', monto: montoDirecto, notas: notasDirecto });
+          }
+        }
+        setSyncStatus('ok','Etiqueta generada ✓');
+        cerrarModalObra();
+        irAlPanel();
+        return;
+      }
+      const docRef = await addDoc(collection(db,'obras'), infoNueva);
+      obraActiva = docRef.id;
+      localStorage.setItem('obraActiva', obraActiva);
+      if (comprasPrevias) {
+        await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), comprasPrevias);
+        comprasPrevias = null;
+      } else {
+        // Contratación directa: guardar monto/notas si los completó
+        const montoDirecto = getMontoFromField('fo-monto-directo');
+        const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+        if (montoDirecto || notasDirecto) {
+          const compDirecta = { tipo: 'directa', monto: montoDirecto, notas: notasDirecto };
+          await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), compDirecta);
+        }
+      }
+      await cargarSubcolecciones(obraActiva);
+      setTimeout(()=>{
+        renderObraSelect();
+        document.getElementById('obra-select').value = obraActiva;
+        actualizarHeaderObra();
+        mostrarBotonesObra(true);
+        document.getElementById('filtros-bar').style.display='flex';
+        setModoSoloLectura(false);
+        renderAll();
+      }, 500);
+    } else if (modoModal==='completar-licitacion') {
+      const obraId = obraLicitacionId;
+      // Si no hay fecha de inicio → guardar como licitado sin inicio y volver al panel
+      if (!infoNueva.inicio) {
+        infoNueva.estadoObra = 'licitado-sin-inicio';
+        await setDoc(doc(db,'obras',obraId), infoNueva);
+        if (obras[obraId]) obras[obraId].info = infoNueva;
+        infoAntesDeCerrar = null;
+        setSyncStatus('ok','Etiqueta generada ✓');
+        document.getElementById('modal-obra').style.display = 'none';
+        document.getElementById('fo-inicio-pregunta').style.display = 'none';
+        document.getElementById('fo-inicio-campo').style.display    = 'none';
+        const estadoField = document.getElementById('fo-estado');
+        if (estadoField) estadoField.parentElement.style.display = 'block';
+        irAlPanel();
+        return;
+      }
+      infoNueva.estadoObra = 'en-curso';
+      await setDoc(doc(db,'obras',obraId), infoNueva);
+      if (comprasPrevias) {
+        await setDoc(doc(db,'obras',obraId,'compras','proceso'), comprasPrevias);
+        comprasPrevias = null;
+      } else {
+        // Contratación directa: guardar monto/notas si los completó
+        const montoDirecto = getMontoFromField('fo-monto-directo');
+        const notasDirecto = document.getElementById('fo-notas-directo').value.trim();
+        if (montoDirecto || notasDirecto) {
+          const compDirecta = { tipo: 'directa', monto: montoDirecto, notas: notasDirecto };
+          await setDoc(doc(db,'obras',obraId,'compras','proceso'), compDirecta);
+          if (!obras[obraId].compras) obras[obraId].compras = {};
+          obras[obraId].compras.proceso = compDirecta;
+        }
+      }
+      obraActiva = obraId;
+      obraLicitacionId = null;
+      localStorage.setItem('obraActiva', obraActiva);
+      await cargarSubcolecciones(obraActiva);
+      ocultarDashboard();
+      renderObraSelect();
+      document.getElementById('obra-select').value = obraActiva;
+      actualizarHeaderObra();
+      mostrarBotonesObra(true);
+      document.getElementById('filtros-bar').style.display='flex';
+      setModoSoloLectura(false);
+      renderAll();
+      // Ir directo a Historial de obra
+      const tabRep = document.querySelector(".tab[onclick*='reporte']");
+      if (tabRep) switchTab('reporte', tabRep);
+    } else {
+      await setDoc(doc(db,'obras',obraActiva), infoNueva);
+      const esTerminada = infoNueva.estadoObra === 'terminado';
+      setModoSoloLectura(esTerminada);
+      if (!esTerminada) renderAll();
+    }
+    setSyncStatus('ok','Guardado ✓');
+    cerrarModalObra();
+  } catch(e) {
+    setSyncStatus('error','Error al guardar');
+    alert('Error: '+e.message);
+  }
+};
+
+// ========== ELIMINAR OBRA ==========
+window.eliminarObra = function() {
+  if (!obraActiva || !obras[obraActiva]) return;
+  document.getElementById('confirm-texto').textContent =
+    'Vas a eliminar la obra "'+obras[obraActiva].info.nombre+'" con todos sus registros. Esta acción no se puede deshacer.';
+  document.getElementById('modal-confirm').style.display = 'flex';
+};
+window.cerrarConfirm = function() { document.getElementById('modal-confirm').style.display='none'; };
+window.confirmarEliminar = async function() {
+  if (!obraActiva) return;
+  setSyncStatus('loading','Eliminando...');
+  try {
+    // borrar subcolecciones primero
+    for (const sec of ['libro','problemas','gastos']) {
+      const snap = await getDocs(collection(db,'obras',obraActiva,sec));
+      for (const d of snap.docs) await deleteDoc(d.ref);
+    }
+    await deleteDoc(doc(db,'obras',obraActiva));
+    if (unsubSubs[obraActiva]) { unsubSubs[obraActiva].forEach(u=>u()); delete unsubSubs[obraActiva]; }
+    obraActiva = null;
+    localStorage.removeItem('obraActiva');
+    filtroAnio=''; filtroMes='';
+    setSyncStatus('ok','Eliminado');
+    // Ir al panel después de eliminar
+    cerrarConfirm();
+    irAlPanel();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+// ========== TABS ==========
+window.switchTab = function(tab, el) {
+  if (el.classList.contains('disabled')) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  tabActual = tab;
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (tab==='reporte') renderReporte();
+  if (tab==='compras') renderCompras();
+};
+
+function setModoSoloLectura(soloLectura) {
+  const tabs = document.querySelectorAll('.tab');
+  const banner = document.getElementById('obra-readonly-banner');
+  if (soloLectura) {
+    // Deshabilitar todas las tabs excepto reporte
+    tabs.forEach(t => {
+      const onclick = t.getAttribute('onclick') || '';
+      const isReporte = onclick.includes('reporte');
+      const isCompras = onclick.includes('compras');
+      if (!isReporte && !isCompras) {
+        t.classList.add('disabled');
+        t.classList.remove('active');
+      } else if (isReporte) {
+        t.classList.add('active');
+      }
+    });
+    // Activar panel reporte
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-reporte').classList.add('active');
+    tabActual = 'reporte';
+    banner.classList.add('visible');
+    renderReporte();
+  } else {
+    tabs.forEach(t => t.classList.remove('disabled'));
+    banner.classList.remove('visible');
+    // Activar libro por defecto
+    tabs.forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tabs[0].classList.add('active');
+    document.getElementById('panel-libro').classList.add('active');
+    tabActual = 'libro';
+  }
+}
+
+function obraOk() {
+  if (!obraActiva || !obras[obraActiva]) { alert('Primero seleccioná o creá una obra.'); return false; }
+  return true;
+}
+
+// ========== INFO CARD ==========
+function calcularDias(inicio, fin) {
+  if (!inicio) return null;
+  const diff = Math.round((new Date(fin||new Date()) - new Date(inicio)) / 86400000);
+  return diff >= 0 ? diff : null;
+}
+
+function renderObraInfoCard() {
+  const el = document.getElementById('obra-info-libro');
+  if (!el) return;
+  if (!obraActiva || !obras[obraActiva]) { el.innerHTML=''; return; }
+  const info = obras[obraActiva].info;
+  const terminada = info.estadoObra==='terminado';
+  const dias = calcularDias(info.inicio, terminada ? info.fin : null);
+  const diasEnCurso = calcularDias(info.inicio, null);
+  const badge = terminada
+    ? `<span class="obra-fin-badge">Terminada ${info.fin?formatFecha(info.fin):''}</span>`
+    : `<span class="obra-activa-badge">En curso</span>`;
+  const tituloEl = document.getElementById('titulo-obra-activa');
+  if (tituloEl) tituloEl.textContent = info.nombre ? '— ' + info.nombre : '';
+  el.innerHTML=`<div class="obra-info-card">
+    ${info.proveedor?'<span><strong>Proveedor:</strong> '+info.proveedor+'</span>':''}
+    ${info.ubicacion||info.direccion?'<span><strong>Ubicación:</strong> '+(info.ubicacion||info.direccion)+'</span>':''}
+    ${info.email?'<span><strong>Email:</strong> <a href="mailto:'+info.email+'" style="color:var(--accent)">'+info.email+'</a></span>':''}
+    ${info.tel?'<span><strong>Tel:</strong> '+info.tel+'</span>':''}
+    ${info.inicio?'<span><strong>Inicio:</strong> '+formatFecha(info.inicio)+'</span>':''}
+    ${(terminada?dias:diasEnCurso)!==null?'<span><strong>Duración:</strong> '+(terminada?dias:diasEnCurso)+' días</span>':''}
+    <span>${badge}</span>
+  </div>`;
+}
+
+// ========== LIBRO ==========
+window.agregarLibro = async function() {
+  if (!obraOk()) return;
+  const fecha = document.getElementById('lib-fecha').value;
+  const desc  = document.getElementById('lib-desc').value.trim();
+  if (!fecha||!desc) { alert('Completá fecha y descripción'); return; }
+  const btn = document.getElementById('btn-agregar-libro');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  try {
+    await addDoc(collection(db,'obras',obraActiva,'libro'), {
+      fecha,
+      cat:  document.getElementById('lib-cat').value,
+      desc,
+      obs:  document.getElementById('lib-obs').value.trim(),
+      creadoEn: new Date().toISOString()
+    });
+    document.getElementById('lib-desc').value='';
+    document.getElementById('lib-obs').value='';
+    setSyncStatus('ok','Guardado ✓');
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+  btn.disabled=false; btn.textContent='Registrar avance';
+};
+
+function renderLibro() {
+  renderObraInfoCard();
+  if (!obraActiva||!obras[obraActiva]) {
+    document.getElementById('lista-libro').innerHTML='<div class="empty"><div class="empty-icon">📋</div>Seleccioná una obra primero</div>'; return;
+  }
+  const lista = filtrar(obras[obraActiva].libro).slice().reverse();
+  const el = document.getElementById('lista-libro');
+  if (!lista.length) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>'+(filtroAnio||filtroMes?'Sin registros en el período':'Todavía no hay registros de avance')+'</div>'; return;
+  }
+  el.innerHTML=lista.map(r=>`
+    <div class="entry">
+      <div class="entry-date">${formatFecha(r.fecha)}</div>
+      <div class="entry-content">
+        <div class="entry-title">${r.cat}</div>
+        <div class="entry-desc">${r.desc}${r.obs?'<br><em style="color:var(--ink3)">📝 '+r.obs+'</em>':''}</div>
+      </div>
+      <div class="entry-actions">
+        <button class="entry-edit" onclick="editarLibro('${r.id}')" title="Editar">✎</button>
+        <button class="entry-delete" onclick="eliminarRegistro('libro','${r.id}')" title="Eliminar">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ========== PROBLEMAS ==========
+window.agregarProblema = async function() {
+  if (!obraOk()) return;
+  const fecha = document.getElementById('prob-fecha').value;
+  const desc  = document.getElementById('prob-desc').value.trim();
+  if (!fecha||!desc) { alert('Completá fecha y descripción'); return; }
+  try {
+    await addDoc(collection(db,'obras',obraActiva,'problemas'), {
+      fecha,
+      sev:    document.getElementById('prob-sev').value,
+      desc,
+      accion: document.getElementById('prob-accion').value.trim(),
+      creadoEn: new Date().toISOString()
+    });
+    document.getElementById('prob-desc').value='';
+    document.getElementById('prob-accion').value='';
+    setSyncStatus('ok','Guardado ✓');
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+function renderProblemas() {
+  if (!obraActiva||!obras[obraActiva]) {
+    document.getElementById('lista-problemas').innerHTML='<div class="empty"><div class="empty-icon">✅</div>Seleccioná una obra primero</div>'; return;
+  }
+  const lista = filtrar(obras[obraActiva].problemas).slice().reverse();
+  const el = document.getElementById('lista-problemas');
+  if (!lista.length) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">✅</div>'+(filtroAnio||filtroMes?'Sin problemas en el período':'No hay problemas registrados')+'</div>'; return;
+  }
+  const sevInfo={baja:{cls:'badge-verde',lbl:'Baja'},media:{cls:'badge-amber',lbl:'Media'},alta:{cls:'badge-rojo',lbl:'Alta'}};
+  el.innerHTML=lista.map(r=>{
+    const s=sevInfo[r.sev]||sevInfo.baja;
+    return `<div class="entry">
+      <div class="entry-date">${formatFecha(r.fecha)}</div>
+      <div class="entry-content">
+        <div class="entry-title"><span class="badge ${s.cls}">Sev. ${s.lbl}</span></div>
+        <div class="entry-desc" style="margin-top:4px">${r.desc}</div>
+        ${r.accion?`<div style="font-size:0.8rem;color:var(--green);margin-top:4px">→ ${r.accion}</div>`:''}
+      </div>
+      <div class="entry-actions">
+        <button class="entry-edit" onclick="editarProblema('${r.id}')" title="Editar">✎</button>
+        <button class="entry-delete" onclick="eliminarRegistro('problemas','${r.id}')" title="Eliminar">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ========== GASTOS ==========
+window.agregarGasto = async function() {
+  if (!obraOk()) return;
+  const fecha  = document.getElementById('gasto-fecha').value;
+  const prov   = document.getElementById('gasto-prov').value.trim();
+  const monto  = getMontoValue();
+  if (!fecha||!prov||!monto) { alert('Completá fecha, proveedor y monto'); return; }
+  try {
+    await addDoc(collection(db,'obras',obraActiva,'gastos'), {
+      fecha, prov,
+      nro:    document.getElementById('gasto-nro').value.trim(),
+      monto,
+      centro: document.getElementById('gasto-centro').value.trim(),
+      notas:  document.getElementById('gasto-notas').value.trim(),
+      creadoEn: new Date().toISOString()
+    });
+    ['gasto-prov','gasto-nro','gasto-monto','gasto-centro','gasto-notas'].forEach(i=>document.getElementById(i).value='');
+    setSyncStatus('ok','Guardado ✓');
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+function renderGastos() {
+  if (!obraActiva||!obras[obraActiva]) {
+    document.getElementById('lista-gastos').innerHTML='<div class="empty"><div class="empty-icon">💰</div>Seleccioná una obra primero</div>';
+    document.getElementById('gasto-totales').style.display='none'; return;
+  }
+  const lista = filtrar(obras[obraActiva].gastos).slice().reverse();
+  const el = document.getElementById('lista-gastos');
+  const totDiv = document.getElementById('gasto-totales');
+  if (!lista.length) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">💰</div>'+(filtroAnio||filtroMes?'Sin gastos en el período':'No hay gastos registrados')+'</div>';
+    totDiv.style.display='none'; return;
+  }
+  const total        = lista.reduce((a,g)=>a+g.monto,0);
+  const totalGeneral = obras[obraActiva].gastos.reduce((a,g)=>a+g.monto,0);
+  const porCentro={};
+  lista.forEach(g=>{if(g.centro){porCentro[g.centro]=(porCentro[g.centro]||0)+g.monto;}});
+  const topCentro=Object.entries(porCentro).sort((a,b)=>b[1]-a[1])[0];
+  const filtrado=(filtroAnio||filtroMes)&&total!==totalGeneral;
+  totDiv.style.display='block';
+  totDiv.innerHTML=`<div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Total ${filtrado?'período':'gastado'}</div><div class="stat-value accent" >$${fmt(total)}</div></div>
+    ${filtrado?`<div class="stat-card"><div class="stat-label">Total obra completa</div><div class="stat-value" style="font-size:1.1rem">$${fmt(totalGeneral)}</div></div>`:''}
+    <div class="stat-card"><div class="stat-label">Facturas</div><div class="stat-value">${lista.length}</div></div>
+    ${topCentro?`<div class="stat-card"><div class="stat-label">Centro de costo</div><div class="stat-value" >${topCentro[0]}</div></div>`:''}
+  </div>`;
+  el.innerHTML=lista.map(r=>`
+    <div class="entry" style="grid-template-columns:auto minmax(0,1fr) auto auto">
+      <div class="entry-date">${formatFecha(r.fecha)}</div>
+      <div class="entry-content">
+        <div class="entry-title">${r.prov}${r.centro?'<span class="badge badge-amber" style="margin-left:6px">'+r.centro+'</span>':''}</div>
+        <div class="entry-desc">${r.nro?'<span style="font-family:monospace;font-size:0.78rem">Fact. '+r.nro+'</span> &middot; ':''} ${r.notas||''}</div>
+      </div>
+      <div style="font-size:1rem;font-weight:600;color:var(--amber);font-family:DM Mono,monospace;white-space:nowrap;padding-top:2px">$${fmt(r.monto)}</div>
+      <div class="entry-actions">
+        <button class="entry-edit" onclick="editarGasto('${r.id}')" title="Editar">✎</button>
+        <button class="entry-delete" onclick="eliminarRegistro('gastos','${r.id}')" title="Eliminar">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ========== ELIMINAR REGISTRO ==========
+window.eliminarRegistro = function(sec, id) {
+  if (!obraActiva) return;
+  pendingDelete = { sec, id };
+  const labels = { libro:'avance de obra', problemas:'problema', gastos:'gasto / factura' };
+  document.getElementById('confirm-reg-texto').textContent =
+    '¿Estás seguro que querés eliminar este ' + (labels[sec]||'registro') + '? Esta acción no se puede deshacer.';
+  document.getElementById('modal-confirm-reg').style.display = 'flex';
+};
+
+window.cerrarConfirmReg = function() {
+  document.getElementById('modal-confirm-reg').style.display = 'none';
+  pendingDelete = null;
+};
+
+window.confirmarEliminarRegistro = async function() {
+  if (!pendingDelete || !obraActiva) return;
+  const { sec, id } = pendingDelete;
+  cerrarConfirmReg();
+  try {
+    await deleteDoc(doc(db,'obras',obraActiva,sec,id));
+    setSyncStatus('ok','Eliminado ✓');
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+// ========== REPORTE ==========
+function renderReporte() {
+  const el = document.getElementById('reporte-preview');
+  if (!obraActiva||!obras[obraActiva]) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">📄</div>Seleccioná una obra para ver el reporte</div>'; return;
+  }
+  const o = obras[obraActiva];
+  const libroFilt  = filtrar(o.libro);
+  const probFilt   = filtrar(o.problemas);
+  const gastosFilt = filtrar(o.gastos);
+  const total        = gastosFilt.reduce((a,g)=>a+g.monto,0);
+  const totalGeneral = o.gastos.reduce((a,g)=>a+g.monto,0);
+  const porCat={};
+  gastosFilt.forEach(g=>{const k=g.centro||g.cat||'Sin centro';porCat[k]=(porCat[k]||0)+g.monto;});
+  const info=o.info;
+  const filtrado=filtroAnio||filtroMes;
+  const terminada=info.estadoObra==='terminado';
+  const dias=calcularDias(info.inicio,terminada?info.fin:null);
+  const diasEnCurso=calcularDias(info.inicio,null);
+
+  let html=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-bottom:1rem">
+    <div style="font-family:DM Serif Display,serif;font-size:1.6rem;margin-bottom:.5rem">${info.nombre}</div>
+    <div style="font-size:0.82rem;color:var(--ink3);display:flex;flex-wrap:wrap;gap:.75rem;align-items:center">
+      ${info.proveedor?'<span>Proveedor: <strong style="color:var(--ink)">'+info.proveedor+'</strong></span>':''}
+      ${info.ubicacion||info.direccion?'<span>Ubicación: <strong style="color:var(--ink)">'+(info.ubicacion||info.direccion)+'</strong></span>':''}
+      ${info.email?'<span>Email: <strong style="color:var(--ink)">'+info.email+'</strong></span>':''}
+      ${info.tel?'<span>Tel: <strong style="color:var(--ink)">'+info.tel+'</strong></span>':''}
+      ${info.inicio?'<span>Inicio: <strong style="color:var(--ink)">'+formatFecha(info.inicio)+'</strong></span>':''}
+      ${terminada&&info.fin?'<span>Fin: <strong style="color:var(--green)">'+formatFecha(info.fin)+'</strong></span>':''}
+      ${terminada?'<span class="obra-fin-badge">Obra terminada</span>':'<span class="obra-activa-badge">En curso</span>'}
+    </div>
+    ${filtrado?'<div style="margin-top:.75rem;font-size:.8rem;background:var(--accent-light);color:var(--accent);padding:.3rem .75rem;border-radius:5px;display:inline-block">Período: '+(filtroAnio||'')+(filtroMes?' — '+['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][+filtroMes]:'')+'</div>':''}
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">Detalles de obra</div><div class="stat-value green">${libroFilt.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Problemas</div><div class="stat-value">${probFilt.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Total ${filtrado?'período':'obra'}</div><div class="stat-value accent" >$${fmt(total)}</div></div>
+    ${terminada&&dias!==null?`<div class="stat-card"><div class="stat-label">Duración total</div><div class="stat-value green" >${dias} <span style="font-size:0.85rem;font-weight:400">días</span></div></div>`:diasEnCurso!==null?`<div class="stat-card"><div class="stat-label">Días transcurridos</div><div class="stat-value" >${diasEnCurso} <span style="font-size:0.85rem;font-weight:400;color:var(--ink3)">días</span></div></div>`:''}
+    ${filtrado&&total!==totalGeneral?'<div class="stat-card"><div class="stat-label">Total obra completa</div><div class="stat-value" >$'+fmt(totalGeneral)+'</div></div>':''}
+  </div>`;
+
+  if (libroFilt.length) {
+    html+=`<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">📋 Detalles de obra (${libroFilt.length} registros)</div>`;
+    html+=libroFilt.map(r=>`<div style="padding:.5rem 0;border-bottom:.5px solid var(--border);font-size:.84rem;word-break:break-word;overflow-wrap:anywhere">
+      <span style="color:var(--ink3);font-family:DM Mono,monospace;font-size:.74rem">${formatFecha(r.fecha)}</span>
+      — <strong>${r.cat}</strong>: ${r.desc}
+    </div>`).join('');
+  }
+  if (probFilt.length) {
+    html+=`<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">⚠️ Problemas e imprevistos</div>`;
+    html+=probFilt.map(r=>`<div style="padding:.5rem 0;border-bottom:.5px solid var(--border);font-size:.84rem;word-break:break-word;overflow-wrap:anywhere">
+      <span style="color:var(--ink3);font-family:DM Mono,monospace;font-size:.74rem">${formatFecha(r.fecha)}</span>
+      — <strong style="color:var(--red)">Sev. ${r.sev}</strong>: ${r.desc}${r.accion?' → '+r.accion:''}
+    </div>`).join('');
+  }
+  if (gastosFilt.length) {
+    html+=`<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">💰 Gastos y facturas</div>`;
+    html+=gastosFilt.map(r=>`<div style="padding:.5rem 0;border-bottom:.5px solid var(--border);font-size:.84rem;display:flex;justify-content:space-between;gap:1rem;word-break:break-word;overflow-wrap:anywhere">
+      <span><span style="color:var(--ink3);font-family:DM Mono,monospace;font-size:.74rem">${formatFecha(r.fecha)}</span> — ${r.prov}${r.centro?' <span style="color:var(--ink3)">('+r.centro+')</span>':''}${r.nro?' · Fact. '+r.nro:''}</span>
+      <strong style="color:var(--amber);font-family:DM Mono,monospace;white-space:nowrap">$${fmt(r.monto)}</strong>
+    </div>`).join('');
+    html+=`<div style="margin-top:.75rem;padding:.75rem 1rem;background:var(--accent-light);border-radius:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+      <span style="font-size:.85rem;font-weight:500;color:var(--accent)">Total de obra</span>
+      <span style="font-family:DM Mono,monospace;font-size:1.1rem;font-weight:600;color:var(--accent)">$${fmt(total)}</span>
+    </div>`;
+    if (Object.keys(porCat).length>1) {
+      html+=`<div style="margin-top:1rem"><div style="font-size:.78rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem">Distribución por centro de costo</div>`;
+      Object.entries(porCat).sort((a,b)=>b[1]-a[1]).forEach(([cat,monto])=>{
+        const pct=Math.round(monto/total*100);
+        html+=`<div style="font-size:.82rem;margin-bottom:4px;display:flex;align-items:center;gap:.5rem">
+          <span style="min-width:180px;color:var(--ink2)">${cat}</span>
+          <div style="flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--accent);border-radius:3px"></div></div>
+          <span style="min-width:70px;text-align:right;font-family:DM Mono,monospace;font-size:.75rem;color:var(--ink2)">$${fmt(monto)}</span>
+        </div>`;
+      });
+      html+='</div>';
+    }
+  }
+  // Agregar sección compras al reporte si existe
+  if (obraActiva && obras[obraActiva] && obras[obraActiva].compras && obras[obraActiva].compras.proceso) {
+    const comp = obras[obraActiva].compras.proceso;
+    const infoObra = obras[obraActiva].info;
+    if (comp.tipo === 'directa') {
+      // Contratación directa
+      const diasEjec = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
+      html += `<div class="sep"></div><div style="font-weight:500;font-size:.9rem;margin-bottom:.75rem">🏗️ Contratación directa</div>
+      <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
+        ${infoObra.inicio?'<span>📅 Inicio de obra: <strong style="color:var(--ink)">'+formatFecha(infoObra.inicio)+'</strong></span>':''}
+        ${comp.monto?'<span>💰 Monto contratado: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
+        ${diasEjec!==null?'<span>⏱ Duración ejecución: <strong style="color:var(--accent)">'+diasEjec+' días'+(terminada?'':' (en curso)')+'</strong></span>':''}
+        ${terminada && infoObra.fin?'<span>✅ Obra finalizada: <strong style="color:var(--ink)">'+formatFecha(infoObra.fin)+'</strong></span>':''}
+        ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
+      </div>`;
+    } else {
+      const diasComp     = calcularDias(comp.inicio, comp.fin);
+      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDias(comp.fin, infoObra.inicio) : null;
+      const diasEjecLic  = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
+      const totalLic     = (diasComp||0) + (diasHastaObra||0) + (diasEjecLic||0);
+      html += `<div class="sep"></div>
+      <div style="font-weight:500;font-size:.9rem;margin-bottom:1rem">🏗️ Proceso de compras / Licitación</div>
+      ${comp.proveedor||comp.monto||comp.notas ? `<div style="font-size:.82rem;color:var(--ink2);display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;margin-bottom:1rem">
+        ${comp.proveedor?'<span>🏢 Proveedor: <strong style="color:var(--ink)">'+comp.proveedor+'</strong></span>':''}
+        ${comp.monto?'<span>💰 Monto: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
+        ${comp.notas?'<span>📝 '+comp.notas+'</span>':''}
+      </div>` : ''}
+      <div style="display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">1. Inicio gestión de compras</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.inicio?formatFecha(comp.inicio):'—'}</span>
+        </div>
+        ${diasComp!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración licitación: <strong>${diasComp} días</strong></div>`:''}
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">2. Adjudicación</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.fin?formatFecha(comp.fin):'Pendiente'}</span>
+        </div>
+        ${diasHastaObra!==null?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${diasHastaObra} días</strong></div>`:''}
+        ${infoObra.inicio?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
+          <span style="color:var(--ink2)">3. Inicio de obra</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${formatFecha(infoObra.inicio)}</span>
+        </div>
+        ${diasEjecLic!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración ejecución: <strong>${diasEjecLic} días${terminada?'':' (en curso)'}</strong></div>`:''}` : ''}
+        ${terminada&&infoObra.fin?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;font-size:.84rem">
+          <span style="color:var(--green);font-weight:500">4. Obra finalizada</span>
+          <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--green)">${formatFecha(infoObra.fin)}</span>
+        </div>`:''}
+      </div>
+      ${terminada&&totalLic>0?`<div style="margin-top:.85rem;padding:.65rem 1rem;background:var(--surface2);border-radius:8px;display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;color:var(--ink)">
+        <span>Total del proyecto (licitación + espera + ejecución)</span>
+        <span style="color:var(--accent)">${totalLic} días</span>
+      </div>`:''}`;
+    }
+    el.innerHTML = html;
+  } else {
+    el.innerHTML = html;
+  }
+  // Mostrar botón finalizar solo si la obra está en curso
+  const btnFin = document.getElementById('btn-finalizar-obra');
+  if (btnFin) {
+    const enCurso = !terminada;
+    btnFin.style.display = enCurso ? 'inline-block' : 'none';
+  }
+}
+
+// ========== PDF ==========
+window.generarPDF = function() {
+  if (!obraActiva||!obras[obraActiva]) { alert('Seleccioná una obra primero'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  const o=obras[obraActiva];
+  const libroFilt  = filtrar(o.libro);
+  const probFilt   = filtrar(o.problemas);
+  const gastosFilt = filtrar(o.gastos);
+  const total        = gastosFilt.reduce((a,g)=>a+g.monto,0);
+  const totalGeneral = o.gastos.reduce((a,g)=>a+g.monto,0);
+  const W=210,M=20; let y=20;
+  const terminada=o.info.estadoObra==='terminado';
+  const dias=calcularDias(o.info.inicio,terminada?o.info.fin:null);
+  const diasEnCurso=calcularDias(o.info.inicio,null);
+
+  const nl=(ex=0)=>{y+=6+ex;if(y>270){doc.addPage();y=20;}};
+  const line=()=>{doc.setDrawColor(200,195,186);doc.line(M,y,W-M,y);nl(-2);};
+  const txt=(t,x,size=10,style='normal',color=[28,26,22])=>{
+    doc.setFontSize(size);doc.setFont('helvetica',style);doc.setTextColor(...color);doc.text(t,x,y);
+  };
+
+  doc.setFillColor(28,26,22);doc.rect(0,0,210,25,'F');
+  doc.setFontSize(16);doc.setFont('helvetica','bold');doc.setTextColor(245,242,236);
+  doc.text('MEMORIA DE OBRA',M,15);
+  doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(196,87,42);
+  doc.text('Generado: '+new Date().toLocaleDateString('es-AR'),W-M,15,{align:'right'});
+
+  y=35;
+  txt(o.info.nombre,M,14,'bold');nl();
+  if(o.info.proveedor){txt('Proveedor: '+o.info.proveedor,M,9,'normal',[107,100,86]);nl();}
+  const ubic=o.info.ubicacion||o.info.direccion||'';
+  if(ubic){txt('Ubicación: '+ubic,M,9,'normal',[107,100,86]);nl();}
+  if(o.info.email){txt('Email: '+o.info.email,M,9,'normal',[107,100,86]);nl();}
+  if(o.info.tel){txt('Tel: '+o.info.tel,M,9,'normal',[107,100,86]);nl();}
+  if(o.info.inicio){
+    let linea='Inicio: '+formatFecha(o.info.inicio);
+    if(terminada&&o.info.fin) linea+='   Fin: '+formatFecha(o.info.fin);
+    else linea+='   (En curso)';
+    txt(linea,M,9,'normal',[107,100,86]);nl();
+  }
+  // Duración en encabezado
+  if(terminada&&dias!==null){txt('Duración total de la obra: '+dias+' días',M,9,'bold',[46,107,74]);nl();}
+  else if(diasEnCurso!==null){txt('Días transcurridos: '+diasEnCurso+' días (en curso)',M,9,'normal',[107,100,86]);nl();}
+  if(filtroAnio||filtroMes){
+    const mes=['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    txt('Período: '+(filtroAnio||'')+(filtroMes?' — '+mes[+filtroMes]:''),M,9,'bold',[196,87,42]);nl();
+  }
+  nl(2);line();
+
+  txt('RESUMEN',M,10,'bold',[196,87,42]);nl(2);
+  [['Detalles de obra',libroFilt.length],['Problemas',probFilt.length],['Facturas',gastosFilt.length],['Total','$'+fmt(total)]].forEach((s,i)=>{
+    doc.setFillColor(237,233,224);doc.rect(M+i*42,y,38,14,'F');
+    doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(107,100,86);doc.text(s[0],M+i*42+3,y+5);
+    doc.setFontSize(terminada&&i===3?8:10);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);doc.text(String(s[1]),M+i*42+3,y+12);
+  });
+  y+=18;nl(2);
+
+  // Barra duración total
+  if(terminada&&dias!==null){
+    doc.setFillColor(212,237,223);doc.rect(M,y,W-M*2,14,'F');
+    doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(46,107,74);
+    doc.text('Duración total de la obra: '+dias+' días ('+formatFecha(o.info.inicio)+' → '+formatFecha(o.info.fin)+')',M+4,y+9);
+    y+=18;nl(0);
+  }
+
+  if(libroFilt.length){
+    line();txt('LIBRO DE OBRA',M,11,'bold');nl(2);
+    libroFilt.forEach(r=>{
+      if(y>260){doc.addPage();y=20;}
+      txt(formatFecha(r.fecha),M,8,'bold',[160,152,144]);
+      txt(r.cat,M+26,8,'normal',[160,152,144]);
+      nl(-2);
+      const lines=doc.splitTextToSize(r.desc,W-M*2);
+      doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(28,26,22);
+      doc.text(lines,M,y);y+=lines.length*4.5;
+      if(r.obs){
+        if(y>260){doc.addPage();y=20;}
+        const obsLines=doc.splitTextToSize('Obs: '+r.obs,W-M*2);
+        doc.setFontSize(8);doc.setFont('helvetica','italic');doc.setTextColor(107,100,86);
+        doc.text(obsLines,M,y);y+=obsLines.length*4.5;
+      }
+      nl(1);
+    });
+  }
+
+  if(probFilt.length){
+    line();txt('PROBLEMAS E IMPREVISTOS',M,11,'bold');nl(2);
+    probFilt.forEach(r=>{
+      if(y>260){doc.addPage();y=20;}
+      txt(formatFecha(r.fecha)+' — Sev. '+r.sev,M,8,'bold',[155,43,43]);nl(-2);
+      const lines=doc.splitTextToSize(r.desc,W-M*2);
+      doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(28,26,22);
+      doc.text(lines,M,y);y+=lines.length*4.5;
+      if(r.accion){txt('Acción: '+r.accion,M,8,'italic',[46,107,74]);nl();}
+      nl(1);
+    });
+  }
+
+  if(gastosFilt.length){
+    line();txt('GASTOS Y FACTURAS',M,11,'bold');nl(2);
+    const cols=[M,M+30,M+82,M+125,M+158];
+    ['Fecha','Proveedor','Centro de costo','N° Factura','Monto'].forEach((h,i)=>{txt(h,cols[i],7.5,'bold',[107,100,86]);});
+    nl(1);doc.setDrawColor(216,210,200);doc.line(M,y,W-M,y);nl(-2);
+    gastosFilt.forEach(r=>{
+      if(y>260){doc.addPage();y=20;}
+      [formatFecha(r.fecha),trunc(r.prov,18),trunc(r.centro||'—',20),trunc(r.nro||'—',15),'$'+fmt(r.monto)].forEach((v,i)=>{
+        doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(28,26,22);doc.text(v,cols[i],y);
+      });y+=5;
+      if(r.notas){
+        if(y>265){doc.addPage();y=20;}
+        const detLines=doc.splitTextToSize('Detalle: '+r.notas, W-M*2-4);
+        doc.setFontSize(7.5);doc.setFont('helvetica','italic');doc.setTextColor(107,100,86);
+        doc.text(detLines,M+2,y);y+=detLines.length*4;
+      }
+      y+=2;
+    });
+    nl(2);doc.setDrawColor(196,87,42);doc.line(M,y,W-M,y);nl(-1);
+    const totalStr='$'+fmt(total);
+    const totalLabel='TOTAL'+(filtroAnio||filtroMes?' PERÍODO':' DE OBRA')+':';
+    txt(totalLabel,M,11,'bold');
+    const totalFontSize = totalStr.length > 16 ? 8 : totalStr.length > 12 ? 9 : 11;
+    doc.setFontSize(totalFontSize);doc.setFont('helvetica','bold');doc.setTextColor(196,87,42);
+    doc.text(totalStr,W-M,y,{align:'right'});nl();
+    if((filtroAnio||filtroMes)&&total!==totalGeneral){nl(1);txt('Total obra completa: $'+fmt(totalGeneral),M,9,'normal',[107,100,86]);nl();}
+    const porCatPDF={};
+    gastosFilt.forEach(g=>{const k=g.centro||g.cat||'Sin centro';porCatPDF[k]=(porCatPDF[k]||0)+g.monto;});
+    if(Object.keys(porCatPDF).length>1){
+      nl(2);txt('Distribución por centro de costo:',M,9,'bold');nl(2);
+      Object.entries(porCatPDF).sort((a,b)=>b[1]-a[1]).forEach(([cat,monto])=>{
+        if(y>265){doc.addPage();y=20;}
+        txt(trunc(cat,35),M,8);
+        doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(160,112,32);
+        doc.text('$'+fmt(monto),W-M,y,{align:'right'});nl();
+      });
+    }
+  }
+
+  // ===== PROCESO DE COMPRAS AL FINAL =====
+  const compPDF = obras[obraActiva] && obras[obraActiva].compras && obras[obraActiva].compras.proceso;
+  if(compPDF && compPDF.tipo === 'directa') {
+    // Contratación directa
+    if(y>230){doc.addPage();y=20;}
+    line();
+    txt('CONTRATACIÓN DIRECTA',M,11,'bold');nl(2);
+    const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
+    if(o.info.proveedor){txt('Proveedor: '+o.info.proveedor,M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.monto){txt('Monto contratado: $'+fmt(compPDF.monto),M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.notas){
+      const nLines=doc.splitTextToSize('Notas: '+compPDF.notas,W-M*2);
+      doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(107,100,86);
+      doc.text(nLines,M,y);y+=nLines.length*4.5;
+    }
+    nl(1);
+    const tiemposDir=[
+      ['1. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
+      ['   Duración ejecución:', diasEjec!==null ? diasEjec+' días'+(terminada?'':' (en curso)') : '—', [196,87,42]],
+    ];
+    if(terminada&&o.info.fin){
+      tiemposDir.push(['2. Obra finalizada:', formatFecha(o.info.fin), [46,107,74]]);
+    }
+    tiemposDir.forEach(([label,val,col])=>{
+      if(y>265){doc.addPage();y=20;}
+      doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...col);
+      doc.text(label,M+2,y);
+      doc.setFont('helvetica','bold');
+      doc.text(val,M+100,y);
+      y+=5;
+    });
+    nl(1);
+    if(diasEjec!==null){
+      doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
+      doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);
+      doc.text('Total del proyecto: '+diasEjec+' días',M+4,y+8);
+      y+=16;
+    }
+    nl(1);
+  } else if(compPDF && compPDF.inicio){
+    if(y>230){doc.addPage();y=20;}
+    line();
+    txt('PROCESO DE COMPRAS / LICITACIÓN',M,11,'bold');nl(2);
+
+    const diasLic  = calcularDias(compPDF.inicio, compPDF.fin);
+    const diasBach = compPDF.fin && o.info.inicio ? calcularDias(compPDF.fin, o.info.inicio) : null;
+    const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
+
+    if(compPDF.proveedor){txt('Proveedor adjudicado: '+compPDF.proveedor,M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.monto){txt('Monto adjudicado: $'+fmt(compPDF.monto),M,9,'normal',[107,100,86]);nl();}
+    if(compPDF.notas){
+      const nLines=doc.splitTextToSize('Notas: '+compPDF.notas,W-M*2);
+      doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(107,100,86);
+      doc.text(nLines,M,y);y+=nLines.length*4.5;
+    }
+    nl(1);
+
+    const tiempos=[
+      ['1. Inicio gestión de compras', compPDF.inicio ? formatFecha(compPDF.inicio) : '—', [28,26,22]],
+      ['   Duración licitación:', diasLic!==null ? diasLic+' días' : '—', [196,87,42]],
+      ['2. Adjudicación:', compPDF.fin ? formatFecha(compPDF.fin) : 'Pendiente', [28,26,22]],
+      ['   Tiempo de espera hasta inicio:', diasBach!==null ? diasBach+' días' : '—', [196,87,42]],
+      ['3. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
+      ['   Duración ejecución:', diasEjec!==null ? diasEjec+' días'+(terminada?'':' (en curso)') : '—', [196,87,42]],
+    ];
+    if(terminada&&o.info.fin){
+      tiempos.push(['4. Obra finalizada:', formatFecha(o.info.fin), [46,107,74]]);
+    }
+    tiempos.forEach(([label,val,col])=>{
+      if(y>265){doc.addPage();y=20;}
+      doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...col);
+      doc.text(label,M+2,y);
+      doc.setFont('helvetica','bold');
+      doc.text(val,M+100,y);
+      y+=5;
+    });
+    nl(1);
+
+    const totalDiasProyecto = (diasLic||0)+(diasBach||0)+(diasEjec||0);
+    if(totalDiasProyecto>0){
+      doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
+      doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);
+      doc.text('Total del proyecto (licitación + espera + ejecución): '+totalDiasProyecto+' días',M+4,y+8);
+      y+=16;
+    }
+    nl(1);
+  }
+
+
+  const tp=doc.internal.getNumberOfPages();
+  for(let i=1;i<=tp;i++){
+    doc.setPage(i);
+    doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(160,152,144);
+    doc.text('Memoria de Obra — '+o.info.nombre,M,290);
+    doc.text('Página '+i+' de '+tp,W-M,290,{align:'right'});
+  }
+  doc.save('Memoria_de_Obra_'+o.info.nombre.replace(/[^a-z0-9]/gi,'_')+'.pdf');
+};
+
+// ========== HELPERS ==========
+
+// ========== EDICIÓN DE REGISTROS ==========
+let editandoId = { libro: null, problemas: null, gastos: null };
+
+window.editarLibro = function(id) {
+  const o = obras[obraActiva]; if (!o) return;
+  const r = o.libro.find(x => x.id === id); if (!r) return;
+  editandoId.libro = id;
+  document.getElementById('lib-fecha').value = r.fecha || '';
+  document.getElementById('lib-cat').value   = r.cat   || '';
+  document.getElementById('lib-desc').value  = r.desc  || '';
+  document.getElementById('lib-obs').value   = r.obs   || '';
+  document.getElementById('btn-agregar-libro').style.display    = 'none';
+  document.getElementById('btn-actualizar-libro').style.display = 'inline-block';
+  document.getElementById('btn-cancelar-libro').style.display   = 'inline-block';
+  document.getElementById('lib-editing-banner').classList.add('visible');
+  document.getElementById('panel-libro').scrollIntoView({behavior:'smooth'});
+};
+window.cancelarEditLibro = function() {
+  editandoId.libro = null;
+  document.getElementById('lib-desc').value  = '';
+  document.getElementById('lib-obs').value   = '';
+  document.getElementById('lib-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('btn-agregar-libro').style.display    = 'inline-block';
+  document.getElementById('btn-actualizar-libro').style.display = 'none';
+  document.getElementById('btn-cancelar-libro').style.display   = 'none';
+  document.getElementById('lib-editing-banner').classList.remove('visible');
+};
+window.actualizarLibro = async function() {
+  if (!editandoId.libro || !obraActiva) return;
+  const fecha = document.getElementById('lib-fecha').value;
+  const desc  = document.getElementById('lib-desc').value.trim();
+  if (!fecha || !desc) { alert('Completá fecha y descripción'); return; }
+  try {
+    await updateDoc(doc(db,'obras',obraActiva,'libro',editandoId.libro), {
+      fecha, cat: document.getElementById('lib-cat').value,
+      desc,  obs: document.getElementById('lib-obs').value.trim()
+    });
+    setSyncStatus('ok','Actualizado ✓'); cancelarEditLibro();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+window.editarProblema = function(id) {
+  const o = obras[obraActiva]; if (!o) return;
+  const r = o.problemas.find(x => x.id === id); if (!r) return;
+  editandoId.problemas = id;
+  document.getElementById('prob-fecha').value  = r.fecha  || '';
+  document.getElementById('prob-sev').value    = r.sev    || 'baja';
+  document.getElementById('prob-desc').value   = r.desc   || '';
+  document.getElementById('prob-accion').value = r.accion || '';
+  document.getElementById('btn-agregar-prob').style.display    = 'none';
+  document.getElementById('btn-actualizar-prob').style.display = 'inline-block';
+  document.getElementById('btn-cancelar-prob').style.display   = 'inline-block';
+  document.getElementById('prob-editing-banner').classList.add('visible');
+  document.getElementById('panel-problemas').scrollIntoView({behavior:'smooth'});
+};
+window.cancelarEditProblema = function() {
+  editandoId.problemas = null;
+  document.getElementById('prob-desc').value   = '';
+  document.getElementById('prob-accion').value = '';
+  document.getElementById('prob-fecha').value  = new Date().toISOString().split('T')[0];
+  document.getElementById('btn-agregar-prob').style.display    = 'inline-block';
+  document.getElementById('btn-actualizar-prob').style.display = 'none';
+  document.getElementById('btn-cancelar-prob').style.display   = 'none';
+  document.getElementById('prob-editing-banner').classList.remove('visible');
+};
+window.actualizarProblema = async function() {
+  if (!editandoId.problemas || !obraActiva) return;
+  const fecha = document.getElementById('prob-fecha').value;
+  const desc  = document.getElementById('prob-desc').value.trim();
+  if (!fecha || !desc) { alert('Completá fecha y descripción'); return; }
+  try {
+    await updateDoc(doc(db,'obras',obraActiva,'problemas',editandoId.problemas), {
+      fecha, sev: document.getElementById('prob-sev').value,
+      desc,  accion: document.getElementById('prob-accion').value.trim()
+    });
+    setSyncStatus('ok','Actualizado ✓'); cancelarEditProblema();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+window.editarGasto = function(id) {
+  const o = obras[obraActiva]; if (!o) return;
+  const r = o.gastos.find(x => x.id === id); if (!r) return;
+  editandoId.gastos = id;
+  document.getElementById('gasto-fecha').value  = r.fecha  || '';
+  document.getElementById('gasto-prov').value   = r.prov   || '';
+  document.getElementById('gasto-nro').value    = r.nro    || '';
+  // Formatear monto al cargar para editar
+  if (r.monto) {
+    const num = Math.round(r.monto * 100);
+    const entero = Math.floor(num/100);
+    const cents  = num % 100;
+    document.getElementById('gasto-monto').value = entero.toLocaleString('es-AR') + ',' + String(cents).padStart(2,'0');
+  } else {
+    document.getElementById('gasto-monto').value = '';
+  }
+  document.getElementById('gasto-centro').value = r.centro || '';
+  document.getElementById('gasto-notas').value  = r.notas  || '';
+  document.getElementById('btn-agregar-gasto').style.display    = 'none';
+  document.getElementById('btn-actualizar-gasto').style.display = 'inline-block';
+  document.getElementById('btn-cancelar-gasto').style.display   = 'inline-block';
+  document.getElementById('gasto-editing-banner').classList.add('visible');
+  document.getElementById('panel-gastos').scrollIntoView({behavior:'smooth'});
+};
+window.cancelarEditGasto = function() {
+  editandoId.gastos = null;
+  ['gasto-prov','gasto-nro','gasto-monto','gasto-centro','gasto-notas'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('gasto-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('btn-agregar-gasto').style.display    = 'inline-block';
+  document.getElementById('btn-actualizar-gasto').style.display = 'none';
+  document.getElementById('btn-cancelar-gasto').style.display   = 'none';
+  document.getElementById('gasto-editing-banner').classList.remove('visible');
+};
+window.actualizarGasto = async function() {
+  if (!editandoId.gastos || !obraActiva) return;
+  const fecha  = document.getElementById('gasto-fecha').value;
+  const prov   = document.getElementById('gasto-prov').value.trim();
+  const monto  = getMontoValue();
+  if (!fecha || !prov || !monto) { alert('Completá fecha, proveedor y monto'); return; }
+  try {
+    await updateDoc(doc(db,'obras',obraActiva,'gastos',editandoId.gastos), {
+      fecha, prov, monto,
+      nro:    document.getElementById('gasto-nro').value.trim(),
+      centro: document.getElementById('gasto-centro').value.trim(),
+      notas:  document.getElementById('gasto-notas').value.trim()
+    });
+    setSyncStatus('ok','Actualizado ✓'); cancelarEditGasto();
+  } catch(e) { setSyncStatus('error','Error'); alert('Error: '+e.message); }
+};
+
+function renderAll(){renderLibro();renderProblemas();renderGastos();if(tabActual==='reporte')renderReporte();}
+function formatFecha(f){if(!f)return'—';const[y,m,d]=f.split('-');return d+'/'+m+'/'+y;}
+function fmt(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function trunc(s,n){return s&&s.length>n?s.slice(0,n-1)+'…':(s||'');}
+
 </script>
 
-<!-- ============================================================ -->
-<!-- MÓDULOS NUEVOS                                               -->
-<!-- ============================================================ -->
 
-<!-- MÓDULO: DASHBOARD -->
+<!-- MÓDULO DASHBOARD -->
 <div class="modulo" id="mod-dashboard">
   <div class="modulo-inner">
-    <div class="modulo-header">
-      <div class="modulo-titulo">Dashboard</div>
-      <div style="font-size:0.78rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Dashboard</div>
+      <div style="font-size:0.75rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha-nuevo"></div>
     </div>
     <div class="dash-kpi">
       <div class="kpi"><div class="kpi-label">Obras activas</div><div class="kpi-value accent" id="kpi-obras">—</div><div class="kpi-sub" id="kpi-obras-sub"></div></div>
       <div class="kpi"><div class="kpi-label">Mant. vencidos</div><div class="kpi-value red" id="kpi-vencidos">—</div><div class="kpi-sub">Requieren atención</div></div>
-      <div class="kpi"><div class="kpi-label">Próx. 7 días</div><div class="kpi-value amber" id="kpi-proximos">—</div><div class="kpi-sub">Vencimientos</div></div>
+      <div class="kpi"><div class="kpi-label">Próx. 7 días</div><div class="kpi-value amber" id="kpi-proximos7">—</div><div class="kpi-sub">Vencimientos</div></div>
       <div class="kpi"><div class="kpi-label">Al día</div><div class="kpi-value green" id="kpi-aldia">—</div><div class="kpi-sub">Mantenimientos</div></div>
     </div>
     <div class="dash-grid">
       <div class="dash-card">
         <div class="dash-card-title">🔔 Alertas de mantenimiento</div>
-        <div id="dash-alertas"><div style="color:var(--ink3);font-size:0.83rem;padding:0.5rem 0">Cargando...</div></div>
+        <div id="dash-alertas-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
       </div>
       <div class="dash-card">
         <div class="dash-card-title">📅 Próximos mantenimientos</div>
-        <div id="dash-proximos"><div style="color:var(--ink3);font-size:0.83rem;padding:0.5rem 0">Cargando...</div></div>
+        <div id="dash-proximos-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
       </div>
     </div>
-    <div class="dash-card" style="margin-top:0">
-      <div class="dash-card-title">🏗️ Obras en curso</div>
-      <div id="dash-obras-activas"><div style="color:var(--ink3);font-size:0.83rem;padding:0.5rem 0">Cargando...</div></div>
+    <div class="dash-card">
+      <div class="dash-card-title">🏗️ Obras activas</div>
+      <div id="dash-obras-nuevo"><div style="color:var(--ink3);font-size:0.82rem">Cargando...</div></div>
     </div>
   </div>
 </div>
 
-<!-- MÓDULO: AGENDA ANUAL -->
+<!-- MÓDULO AGENDA -->
 <div class="modulo" id="mod-agenda">
   <div class="modulo-inner">
-    <div class="modulo-header">
-      <div class="modulo-titulo">Agenda Anual</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Agenda Anual</div>
       <button class="btn-primary" style="margin-top:0" onclick="toggleFormTarea(true)">+ Nueva tarea</button>
     </div>
 
-    <!-- Formulario nueva tarea -->
     <div class="form-nueva-tarea" id="form-nueva-tarea">
-      <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.25rem" id="form-tarea-titulo">Nueva tarea de mantenimiento</div>
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="field"><label>Nombre de la tarea *</label><input type="text" id="ta-nombre" placeholder="Ej: Limpieza de tanques"></div>
+      <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.1rem" id="form-tarea-titulo">Nueva tarea</div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Nombre *</label><input type="text" id="ta-nombre" placeholder="Ej: Limpieza de tanques"></div>
         <div class="field"><label>Categoría</label>
-          <select id="ta-categoria">
-            <option value="">Seleccionar...</option>
+          <select id="ta-categoria"><option value="">Seleccionar...</option>
             <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
             <option>Ascensores</option><option>Aires acondicionados</option>
             <option>Grupos electrógenos</option><option>Fumigación</option>
@@ -2272,11 +3682,11 @@ window.editarCompras = function() {
           </select>
         </div>
       </div>
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="field"><label>Edificio / Sector</label><input type="text" id="ta-edificio" placeholder="Ej: Edificio Principal — Planta baja"></div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Edificio / Sector</label><input type="text" id="ta-edificio" placeholder="Ej: Edificio Principal"></div>
         <div class="field"><label>Proveedor</label><input type="text" id="ta-proveedor" placeholder="Empresa responsable"></div>
       </div>
-      <div class="form-grid" style="margin-bottom:1rem">
+      <div class="form-grid" style="margin-bottom:0.85rem">
         <div class="field"><label>Próxima fecha *</label><input type="date" id="ta-fecha-prox"></div>
         <div class="field"><label>Periodicidad</label>
           <select id="ta-periodicidad">
@@ -2286,34 +3696,30 @@ window.editarCompras = function() {
           </select>
         </div>
       </div>
-      <div class="form-grid" style="margin-bottom:1rem">
+      <div class="form-grid" style="margin-bottom:0.85rem">
         <div class="field"><label>Prioridad</label>
-          <select id="ta-prioridad">
-            <option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option>
-          </select>
+          <select id="ta-prioridad"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select>
         </div>
-        <div class="field"><label>Responsable interno</label><input type="text" id="ta-responsable" placeholder="Nombre del responsable"></div>
+        <div class="field"><label>Responsable interno</label><input type="text" id="ta-responsable" placeholder="Nombre"></div>
       </div>
-      <div class="field" style="margin-bottom:1rem"><label>Observaciones</label><textarea id="ta-obs" placeholder="Notas adicionales..." style="min-height:60px"></textarea></div>
-      <div style="display:flex;gap:0.75rem">
-        <button class="btn-primary" style="margin-top:0" onclick="guardarTarea()">Guardar tarea</button>
+      <div class="field" style="margin-bottom:0.85rem"><label>Observaciones</label><textarea id="ta-obs" placeholder="Notas adicionales..." style="min-height:56px"></textarea></div>
+      <div style="display:flex;gap:0.6rem">
+        <button class="btn-primary" style="margin-top:0" onclick="guardarTarea()">Guardar</button>
         <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="toggleFormTarea(false)">Cancelar</button>
       </div>
     </div>
 
-    <!-- Tabs de la agenda -->
     <div class="agenda-tabs">
       <div class="agenda-tab active" onclick="switchAgendaTab('listado',this)">📋 Listado</div>
       <div class="agenda-tab" onclick="switchAgendaTab('calendario',this)">📅 Calendario</div>
       <div class="agenda-tab" onclick="switchAgendaTab('vencidos',this)">🔴 Vencidos</div>
-      <div class="agenda-tab" onclick="switchAgendaTab('proximos',this)">🟡 Próximos</div>
+      <div class="agenda-tab" onclick="switchAgendaTab('proximos',this)">🟡 Próximos 30 días</div>
     </div>
 
-    <!-- Vista Listado -->
     <div class="agenda-vista active" id="av-listado">
-      <div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap">
-        <input type="text" id="agenda-search" placeholder="Buscar tarea..." style="flex:1;min-width:160px" oninput="renderAgenda()">
-        <select id="agenda-filtro-cat" onchange="renderAgenda()" style="min-width:160px">
+      <div style="display:flex;gap:0.6rem;margin-bottom:0.85rem;flex-wrap:wrap">
+        <input type="text" id="agenda-search" placeholder="Buscar..." style="flex:1;min-width:140px" oninput="renderAgenda()">
+        <select id="agenda-filtro-cat" onchange="renderAgenda()" style="min-width:150px">
           <option value="">Todas las categorías</option>
           <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
           <option>Ascensores</option><option>Aires acondicionados</option>
@@ -2324,8 +3730,6 @@ window.editarCompras = function() {
       </div>
       <div id="agenda-listado-content"></div>
     </div>
-
-    <!-- Vista Calendario -->
     <div class="agenda-vista" id="av-calendario">
       <div class="cal-nav">
         <button onclick="calMes(-1)">← Anterior</button>
@@ -2334,102 +3738,47 @@ window.editarCompras = function() {
       </div>
       <div class="cal-grid" id="cal-grid"></div>
     </div>
-
-    <!-- Vista Vencidos -->
-    <div class="agenda-vista" id="av-vencidos">
-      <div id="agenda-vencidos-content"></div>
-    </div>
-
-    <!-- Vista Próximos -->
-    <div class="agenda-vista" id="av-proximos">
-      <div id="agenda-proximos-content"></div>
-    </div>
+    <div class="agenda-vista" id="av-vencidos"><div id="agenda-vencidos-content"></div></div>
+    <div class="agenda-vista" id="av-proximos"><div id="agenda-proximos-content"></div></div>
   </div>
 </div>
 
-<!-- MÓDULO: PROVEEDORES (placeholder) -->
-<div class="modulo" id="mod-proveedores">
-  <div class="modulo-placeholder">
-    <div class="modulo-placeholder-icon">🏢</div>
-    <div class="modulo-placeholder-title">Proveedores</div>
-    <div class="modulo-placeholder-sub">Módulo en desarrollo. Próximamente podrás gestionar tu base de proveedores y relacionarlos con obras, mantenimientos y tickets.</div>
-  </div>
-</div>
-
-<!-- MÓDULO: PLANOS (placeholder) -->
-<div class="modulo" id="mod-planos">
-  <div class="modulo-placeholder">
-    <div class="modulo-placeholder-icon">📐</div>
-    <div class="modulo-placeholder-title">Planos y Documentación</div>
-    <div class="modulo-placeholder-sub">Módulo en desarrollo. Centralizá toda la documentación del Campus: planos, PDFs, imágenes y más.</div>
-  </div>
-</div>
-
-<!-- MÓDULO: TICKETS (placeholder) -->
-<div class="modulo" id="mod-tickets">
-  <div class="modulo-placeholder">
-    <div class="modulo-placeholder-icon">🎫</div>
-    <div class="modulo-placeholder-title">Tickets</div>
-    <div class="modulo-placeholder-sub">Módulo en desarrollo. Gestioná solicitudes, incidentes y trabajos pendientes.</div>
-  </div>
-</div>
-
-<!-- MÓDULO: BÚSQUEDA GLOBAL (placeholder) -->
-<div class="modulo" id="mod-busqueda">
-  <div class="modulo-placeholder">
-    <div class="modulo-placeholder-icon">🔍</div>
-    <div class="modulo-placeholder-title">Búsqueda Global</div>
-    <div class="modulo-placeholder-sub">Módulo en desarrollo. Buscá en todos los módulos del sistema a la vez.</div>
-  </div>
-</div>
-
-<!-- MÓDULO: CONFIGURACIÓN (placeholder) -->
-<div class="modulo" id="mod-configuracion">
-  <div class="modulo-placeholder">
-    <div class="modulo-placeholder-icon">⚙️</div>
-    <div class="modulo-placeholder-title">Configuración</div>
-    <div class="modulo-placeholder-sub">Módulo en desarrollo. Configurá alertas, notificaciones, emails y preferencias del sistema.</div>
-  </div>
-</div>
+<!-- MÓDULOS PLACEHOLDER -->
+<div class="modulo" id="mod-proveedores"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🏢</div><div class="modulo-placeholder-title">Proveedores</div><div class="modulo-placeholder-sub">En desarrollo — base de proveedores con relación a obras, mantenimientos y tickets.</div></div></div>
+<div class="modulo" id="mod-planos"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">📐</div><div class="modulo-placeholder-title">Planos y Documentación</div><div class="modulo-placeholder-sub">En desarrollo — centralizá planos, PDFs y documentación del Campus.</div></div></div>
+<div class="modulo" id="mod-tickets"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🎫</div><div class="modulo-placeholder-title">Tickets</div><div class="modulo-placeholder-sub">En desarrollo — gestión de solicitudes e incidentes.</div></div></div>
+<div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
+<div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
 
 </div><!-- fin app-right -->
 </div><!-- fin app-layout -->
 
+
 <script>
 // ============================================================
-// NAVEGACIÓN PRINCIPAL
+// NAVEGACIÓN
 // ============================================================
-const MODULOS = ['dashboard','obras','agenda','proveedores','planos','tickets','busqueda','configuracion'];
-const TITULOS = {
-  dashboard:'Dashboard', obras:'Memorias de Obra', agenda:'Agenda Anual',
-  proveedores:'Proveedores', planos:'Planos y Documentación',
-  tickets:'Tickets', busqueda:'Búsqueda Global', configuracion:'Configuración'
-};
-
 let moduloActual = 'obras';
+const TITULOS = {dashboard:'Dashboard',obras:'Memorias de Obra',agenda:'Agenda Anual',
+  proveedores:'Proveedores',planos:'Planos y Documentación',tickets:'Tickets',
+  busqueda:'Búsqueda Global',configuracion:'Configuración'};
 
-window.navegarA = function(modulo) {
-  moduloActual = modulo;
-  // Sidebar items
-  document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + modulo);
-  if (navEl) navEl.classList.add('active');
-  // Módulos
-  document.querySelectorAll('.modulo').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.modulo-obras-wrap').forEach(el => el.classList.remove('active'));
-  if (modulo === 'obras') {
+window.navegarA = function(mod) {
+  moduloActual = mod;
+  document.querySelectorAll('.sb-item').forEach(e => e.classList.remove('active'));
+  const nav = document.getElementById('nav-' + mod);
+  if (nav) nav.classList.add('active');
+  document.querySelectorAll('.modulo, .modulo-obras-wrap').forEach(e => e.classList.remove('active'));
+  if (mod === 'obras') {
     document.getElementById('mod-obras').classList.add('active');
   } else {
-    const el = document.getElementById('mod-' + modulo);
+    const el = document.getElementById('mod-' + mod);
     if (el) el.classList.add('active');
   }
-  // Topbar
   const tt = document.getElementById('topbar-title');
-  if (tt) tt.textContent = TITULOS[modulo] || modulo;
-  // Renders
-  if (modulo === 'dashboard') renderDashboard();
-  if (modulo === 'agenda') renderAgenda();
-  // Cerrar sidebar en mobile
+  if (tt) tt.textContent = TITULOS[mod] || mod;
+  if (mod === 'dashboard') renderNuevoDashboard();
+  if (mod === 'agenda') renderAgenda();
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sb-overlay').classList.remove('visible');
@@ -2437,10 +3786,8 @@ window.navegarA = function(modulo) {
 };
 
 window.toggleSidebar = function() {
-  const sb = document.getElementById('sidebar');
-  const ov = document.getElementById('sb-overlay');
-  sb.classList.toggle('open');
-  ov.classList.toggle('visible');
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('visible');
 };
 
 // ============================================================
@@ -2450,13 +3797,11 @@ window.toggleNotifPanel = function() {
   document.getElementById('notif-dropdown').classList.toggle('open');
 };
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('#btn-bell') && !e.target.closest('#notif-dropdown')) {
-    const nd = document.getElementById('notif-dropdown');
-    if (nd) nd.classList.remove('open');
-  }
+  if (!e.target.closest('#btn-bell') && !e.target.closest('#notif-dropdown'))
+    document.getElementById('notif-dropdown')?.classList.remove('open');
 });
 
-function actualizarBellCount(n) {
+function actualizarBell(n) {
   const bc = document.getElementById('bell-count');
   const ba = document.getElementById('badge-agenda');
   if (bc) { bc.textContent = n; bc.style.display = n > 0 ? 'flex' : 'none'; }
@@ -2464,38 +3809,38 @@ function actualizarBellCount(n) {
 }
 
 function renderNotifPanel(tareas) {
-  const list = document.getElementById('notif-list');
-  if (!list) return;
   const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const items = tareas.filter(t => {
+  const alertas = tareas.filter(t => {
     if (!t.fechaProx) return false;
     const d = new Date(t.fechaProx + 'T00:00:00');
-    const diff = Math.ceil((d - hoy) / 86400000);
-    return diff <= 15;
+    return Math.ceil((d - hoy)/86400000) <= 15;
   }).sort((a,b) => new Date(a.fechaProx) - new Date(b.fechaProx));
-  actualizarBellCount(items.length);
-  if (!items.length) {
-    list.innerHTML = '<div style="padding:1.5rem;text-align:center;color:var(--ink3);font-size:0.85rem">Sin alertas pendientes ✓</div>';
+  actualizarBell(alertas.length);
+  const list = document.getElementById('notif-list');
+  const lbl  = document.getElementById('notif-count-lbl');
+  if (!list) return;
+  if (lbl) lbl.textContent = alertas.length ? alertas.length + ' alertas' : '';
+  if (!alertas.length) {
+    list.innerHTML = '<div style="padding:1.25rem;text-align:center;color:var(--ink3);font-size:0.84rem">Sin alertas pendientes ✓</div>';
     return;
   }
-  list.innerHTML = items.map(t => {
+  const hoyStr = hoy.toISOString().split('T')[0];
+  list.innerHTML = alertas.map(t => {
     const d = new Date(t.fechaProx + 'T00:00:00');
-    const diff = Math.ceil((d - hoy) / 86400000);
-    let cls = 'green', txt = 'Al día';
-    if (diff < 0) { cls = 'red'; txt = 'Vencido hace ' + Math.abs(diff) + ' día' + (Math.abs(diff)!==1?'s':''); }
-    else if (diff === 0) { cls = 'red'; txt = 'Vence hoy'; }
-    else if (diff <= 7) { cls = 'amber'; txt = 'Vence en ' + diff + ' día' + (diff!==1?'s':''); }
-    else { cls = 'amber'; txt = 'Vence en ' + diff + ' días'; }
+    const diff = Math.ceil((d - hoy)/86400000);
+    let cls = 'amber', txt;
+    if (diff < 0)       { cls = 'red';   txt = 'Vencido hace ' + Math.abs(diff) + ' día' + (Math.abs(diff)!==1?'s':''); }
+    else if (diff === 0){ cls = 'red';   txt = 'Vence hoy'; }
+    else                { txt = 'Vence en ' + diff + ' día' + (diff!==1?'s':''); }
     return `<div class="notif-item" onclick="navegarA('agenda')">
       <div class="notif-dot ${cls}"></div>
       <div><div class="notif-text">${t.nombre}</div><div class="notif-sub">${txt}${t.edificio?' · '+t.edificio:''}</div></div>
     </div>`;
   }).join('');
-  document.getElementById('notif-count-label').textContent = items.length + ' alertas';
 }
 
 // ============================================================
-// AGENDA ANUAL — FIRESTORE
+// AGENDA — FIRESTORE
 // ============================================================
 let tareasAgenda = [];
 let tareaEditandoId = null;
@@ -2508,39 +3853,29 @@ async function cargarTareas() {
     tareasAgenda = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderNotifPanel(tareasAgenda);
     if (moduloActual === 'agenda') renderAgenda();
-    if (moduloActual === 'dashboard') renderDashboard();
-  } catch(e) { console.error('Error cargando tareas:', e); }
+    if (moduloActual === 'dashboard') renderNuevoDashboard();
+  } catch(e) { console.error('cargarTareas:', e); }
 }
 
 window.toggleFormTarea = function(show) {
   const f = document.getElementById('form-nueva-tarea');
-  if (show) {
-    f.classList.add('visible');
-    f.scrollIntoView({behavior:'smooth'});
-  } else {
-    f.classList.remove('visible');
-    limpiarFormTarea();
-  }
+  if (show) { f.classList.add('visible'); f.scrollIntoView({behavior:'smooth'}); }
+  else { f.classList.remove('visible'); limpiarFormTarea(); }
 };
 
 function limpiarFormTarea() {
   ['ta-nombre','ta-edificio','ta-proveedor','ta-responsable','ta-obs','ta-fecha-prox'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
+    const el = document.getElementById(id); if(el) el.value = '';
   });
-  ['ta-categoria','ta-periodicidad','ta-prioridad'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.selectedIndex = 0;
-  });
+  const tit = document.getElementById('form-tarea-titulo');
+  if (tit) tit.textContent = 'Nueva tarea';
   tareaEditandoId = null;
-  const t = document.getElementById('form-tarea-titulo');
-  if (t) t.textContent = 'Nueva tarea de mantenimiento';
 }
 
 window.guardarTarea = async function() {
   const nombre = document.getElementById('ta-nombre').value.trim();
   const fechaProx = document.getElementById('ta-fecha-prox').value;
-  if (!nombre) { alert('El nombre es obligatorio'); return; }
-  if (!fechaProx) { alert('La fecha próxima es obligatoria'); return; }
+  if (!nombre || !fechaProx) { alert('Nombre y fecha son obligatorios'); return; }
   const data = {
     nombre, fechaProx,
     categoria:    document.getElementById('ta-categoria').value,
@@ -2554,9 +3889,9 @@ window.guardarTarea = async function() {
   };
   try {
     if (tareaEditandoId) {
-      await setDoc(doc(db, 'mantenimientos', tareaEditandoId), data);
+      await setDoc(doc(db,'mantenimientos',tareaEditandoId), data);
     } else {
-      await addDoc(collection(db, 'mantenimientos'), data);
+      await addDoc(collection(db,'mantenimientos'), data);
     }
     toggleFormTarea(false);
     await cargarTareas();
@@ -2584,7 +3919,7 @@ window.editarTarea = function(id) {
 window.eliminarTarea = async function(id) {
   if (!confirm('¿Eliminar esta tarea?')) return;
   try {
-    await deleteDoc(doc(db, 'mantenimientos', id));
+    await deleteDoc(doc(db,'mantenimientos',id));
     await cargarTareas();
   } catch(e) { alert('Error: ' + e.message); }
 };
@@ -2592,229 +3927,203 @@ window.eliminarTarea = async function(id) {
 window.completarTarea = async function(id) {
   const t = tareasAgenda.find(x => x.id === id);
   if (!t) return;
-  // Calcular próxima fecha según periodicidad
-  const hoy = new Date();
   let nueva = new Date(t.fechaProx + 'T00:00:00');
   const per = t.periodicidad || 'unica';
-  if (per === 'mensual')    nueva.setMonth(nueva.getMonth() + 1);
-  else if (per === 'bimestral')  nueva.setMonth(nueva.getMonth() + 2);
-  else if (per === 'trimestral') nueva.setMonth(nueva.getMonth() + 3);
-  else if (per === 'semestral')  nueva.setMonth(nueva.getMonth() + 6);
-  else if (per === 'anual')      nueva.setFullYear(nueva.getFullYear() + 1);
+  if      (per==='mensual')    nueva.setMonth(nueva.getMonth()+1);
+  else if (per==='bimestral')  nueva.setMonth(nueva.getMonth()+2);
+  else if (per==='trimestral') nueva.setMonth(nueva.getMonth()+3);
+  else if (per==='semestral')  nueva.setMonth(nueva.getMonth()+6);
+  else if (per==='anual')      nueva.setFullYear(nueva.getFullYear()+1);
   else nueva = null;
-  const fechaUlt = t.fechaProx;
-  const data = { ...t };
-  delete data.id;
-  data.fechaUlt = fechaUlt;
-  data.completadoEn = hoy.toISOString();
+  const data = {...t}; delete data.id;
+  data.fechaUlt = t.fechaProx;
+  data.completadoEn = new Date().toISOString();
   if (nueva) data.fechaProx = nueva.toISOString().split('T')[0];
   try {
-    await setDoc(doc(db, 'mantenimientos', id), data);
+    await setDoc(doc(db,'mantenimientos',id), data);
     await cargarTareas();
-    alert(nueva ? '✓ Tarea completada. Próxima fecha: ' + formatFecha(data.fechaProx) : '✓ Tarea completada (tarea única).');
+    alert(nueva ? '✓ Completada. Próxima: ' + formatFecha(data.fechaProx) : '✓ Tarea completada.');
   } catch(e) { alert('Error: ' + e.message); }
 };
 
 function getEstadoTarea(fechaProx) {
-  if (!fechaProx) return { estado: 'sin-fecha', label: 'Sin fecha', cls: '' };
+  if (!fechaProx) return { estado:'sin-fecha', label:'Sin fecha', cls:'', dot:'var(--ink3)' };
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const d = new Date(fechaProx + 'T00:00:00');
-  const diff = Math.ceil((d - hoy) / 86400000);
-  if (diff < 0)   return { estado: 'vencido',  label: 'Vencido',            cls: 'vencido',  dot: 'var(--red)',   diff };
-  if (diff === 0) return { estado: 'hoy',      label: 'Hoy',                cls: 'vencido',  dot: 'var(--red)',   diff };
-  if (diff <= 7)  return { estado: 'proximo',  label: 'Vence en '+diff+'d', cls: 'proximo',  dot: 'var(--amber)', diff };
-  if (diff <= 30) return { estado: 'proximo',  label: 'En '+diff+' días',   cls: 'proximo',  dot: 'var(--amber)', diff };
-  return { estado: 'al-dia', label: 'Al día', cls: 'al-dia', dot: 'var(--green)', diff };
+  const diff = Math.ceil((d - hoy)/86400000);
+  if (diff < 0)   return { estado:'vencido', label:'Vencido',          cls:'vencido', dot:'var(--red)',   diff };
+  if (diff === 0) return { estado:'hoy',     label:'Vence hoy',        cls:'vencido', dot:'var(--red)',   diff };
+  if (diff <= 7)  return { estado:'proximo', label:'En '+diff+' días', cls:'proximo', dot:'var(--amber)', diff };
+  if (diff <= 30) return { estado:'proximo', label:'En '+diff+' días', cls:'proximo', dot:'var(--amber)', diff };
+  return { estado:'al-dia', label:'Al día', cls:'al-dia', dot:'var(--green)', diff };
 }
 
 function renderTareaCard(t) {
-  const est = getEstadoTarea(t.fechaProx);
+  const e = getEstadoTarea(t.fechaProx);
   return `<div class="mant-card">
-    <div class="mant-card-estado" style="background:${est.dot}"></div>
+    <div class="mant-card-estado" style="background:${e.dot}"></div>
     <div class="mant-card-info">
       <div class="mant-card-nombre">${t.nombre}</div>
-      <div class="mant-card-sub">${[t.categoria, t.edificio, t.proveedor].filter(Boolean).join(' · ')}</div>
+      <div class="mant-card-sub">${[t.categoria,t.edificio,t.proveedor].filter(Boolean).join(' · ')}</div>
     </div>
-    <div style="text-align:right">
-      <div class="mant-card-fecha">${t.fechaProx ? formatFecha(t.fechaProx) : '—'}</div>
-      <div class="mant-card-fecha-label">${t.periodicidad || 'única'}</div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-size:0.78rem;font-family:DM Mono,monospace;color:var(--ink2)">${t.fechaProx ? formatFecha(t.fechaProx) : '—'}</div>
+      <div style="font-size:0.67rem;color:var(--ink3)">${t.periodicidad || 'única'}</div>
     </div>
-    <span class="mant-estado-badge ${est.cls}">${est.label}</span>
-    <div style="display:flex;gap:4px;flex-shrink:0">
-      <button onclick="completarTarea('${t.id}')" title="Marcar completada" style="background:var(--green-light);border:none;border-radius:6px;padding:0.35rem 0.6rem;cursor:pointer;font-size:0.8rem;color:var(--green)">✓</button>
-      <button onclick="editarTarea('${t.id}')" title="Editar" style="background:var(--blue-light);border:none;border-radius:6px;padding:0.35rem 0.6rem;cursor:pointer;font-size:0.8rem;color:var(--blue)">✏️</button>
-      <button onclick="eliminarTarea('${t.id}')" title="Eliminar" style="background:var(--red-light);border:none;border-radius:6px;padding:0.35rem 0.6rem;cursor:pointer;font-size:0.8rem;color:var(--red)">🗑</button>
+    <span class="mant-estado-badge ${e.cls}">${e.label}</span>
+    <div style="display:flex;gap:3px;flex-shrink:0">
+      <button onclick="completarTarea('${t.id}')" title="Completar" style="background:var(--green-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--green)">✓</button>
+      <button onclick="editarTarea('${t.id}')" title="Editar" style="background:var(--blue-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--blue)">✏️</button>
+      <button onclick="eliminarTarea('${t.id}')" title="Eliminar" style="background:var(--red-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--red)">🗑</button>
     </div>
   </div>`;
 }
 
 window.renderAgenda = function() {
-  const search = (document.getElementById('agenda-search')?.value || '').toLowerCase();
-  const cat = document.getElementById('agenda-filtro-cat')?.value || '';
-  let tareas = tareasAgenda.filter(t => {
-    if (search && !t.nombre?.toLowerCase().includes(search) && !t.edificio?.toLowerCase().includes(search)) return false;
-    if (cat && t.categoria !== cat) return false;
+  const search = (document.getElementById('agenda-search')?.value||'').toLowerCase();
+  const cat = document.getElementById('agenda-filtro-cat')?.value||'';
+  let t = tareasAgenda.filter(x => {
+    if (search && !x.nombre?.toLowerCase().includes(search) && !x.edificio?.toLowerCase().includes(search)) return false;
+    if (cat && x.categoria !== cat) return false;
     return true;
   });
-
-  // Listado
   const lc = document.getElementById('agenda-listado-content');
-  if (lc) lc.innerHTML = tareas.length ? tareas.map(renderTareaCard).join('') :
-    '<div class="empty"><div class="empty-icon">📅</div>No hay tareas. Creá una con el botón + Nueva tarea</div>';
-
-  // Vencidos
+  if (lc) lc.innerHTML = t.length ? t.map(renderTareaCard).join('') :
+    '<div class="empty"><div class="empty-icon">📅</div>Sin tareas. Usá + Nueva tarea para crear una.</div>';
   const vc = document.getElementById('agenda-vencidos-content');
-  if (vc) {
-    const venc = tareas.filter(t => getEstadoTarea(t.fechaProx).estado === 'vencido' || getEstadoTarea(t.fechaProx).estado === 'hoy');
-    vc.innerHTML = venc.length ? venc.map(renderTareaCard).join('') :
-      '<div class="empty"><div class="empty-icon">✅</div>Sin tareas vencidas</div>';
-  }
-
-  // Próximos (7 días)
+  if (vc) { const v = t.filter(x=>['vencido','hoy'].includes(getEstadoTarea(x.fechaProx).estado));
+    vc.innerHTML = v.length ? v.map(renderTareaCard).join('') : '<div class="empty"><div class="empty-icon">✅</div>Sin tareas vencidas</div>'; }
   const pc = document.getElementById('agenda-proximos-content');
-  if (pc) {
-    const prox = tareas.filter(t => { const e = getEstadoTarea(t.fechaProx); return e.estado === 'proximo' && e.diff <= 30; });
-    pc.innerHTML = prox.length ? prox.map(renderTareaCard).join('') :
-      '<div class="empty"><div class="empty-icon">🟢</div>Sin vencimientos próximos en los próximos 30 días</div>';
-  }
-
+  if (pc) { const p = t.filter(x=>{ const e=getEstadoTarea(x.fechaProx); return e.estado==='proximo'&&e.diff<=30; });
+    pc.innerHTML = p.length ? p.map(renderTareaCard).join('') : '<div class="empty"><div class="empty-icon">🟢</div>Sin vencimientos en los próximos 30 días</div>'; }
   renderCalendario();
 };
 
 window.switchAgendaTab = function(tab, el) {
-  document.querySelectorAll('.agenda-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.agenda-vista').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.agenda-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.agenda-vista').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('av-' + tab).classList.add('active');
-  if (tab === 'calendario') renderCalendario();
+  document.getElementById('av-'+tab).classList.add('active');
+  if (tab==='calendario') renderCalendario();
 };
 
-// ============================================================
-// CALENDARIO
-// ============================================================
-window.calMes = function(dir) {
-  calFecha.setMonth(calFecha.getMonth() + dir);
-  renderCalendario();
-};
+window.calMes = function(dir) { calFecha.setMonth(calFecha.getMonth()+dir); renderCalendario(); };
 
 function renderCalendario() {
   const grid = document.getElementById('cal-grid');
-  const label = document.getElementById('cal-mes-label');
-  if (!grid || !label) return;
-  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  label.textContent = meses[calFecha.getMonth()] + ' ' + calFecha.getFullYear();
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const primer = new Date(calFecha.getFullYear(), calFecha.getMonth(), 1);
-  const ultimo = new Date(calFecha.getFullYear(), calFecha.getMonth() + 1, 0);
-  let html = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d =>
-    `<div class="cal-day-name">${d}</div>`).join('');
-  // Días vacíos al inicio
-  for (let i = 0; i < primer.getDay(); i++) html += '<div class="cal-day otro-mes"></div>';
-  for (let d = 1; d <= ultimo.getDate(); d++) {
-    const fecha = new Date(calFecha.getFullYear(), calFecha.getMonth(), d);
-    const fechaStr = fecha.toISOString().split('T')[0];
-    const esHoy = fecha.getTime() === hoy.getTime();
-    const eventos = tareasAgenda.filter(t => t.fechaProx === fechaStr);
-    html += `<div class="cal-day${esHoy?' hoy':''}">
-      <div class="cal-day-num">${d}</div>
-      ${eventos.map(e => {
-        const est = getEstadoTarea(e.fechaProx);
-        return `<div class="cal-event ${est.cls}" title="${e.nombre}">${e.nombre}</div>`;
-      }).join('')}
-    </div>`;
+  const lbl  = document.getElementById('cal-mes-label');
+  if (!grid||!lbl) return;
+  const M=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  lbl.textContent = M[calFecha.getMonth()] + ' ' + calFecha.getFullYear();
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const primer=new Date(calFecha.getFullYear(),calFecha.getMonth(),1);
+  const ultimo=new Date(calFecha.getFullYear(),calFecha.getMonth()+1,0);
+  let h=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+  for(let i=0;i<primer.getDay();i++) h+='<div class="cal-day otro-mes"></div>';
+  for(let d=1;d<=ultimo.getDate();d++){
+    const fecha=new Date(calFecha.getFullYear(),calFecha.getMonth(),d);
+    const fs=fecha.toISOString().split('T')[0];
+    const esHoy=fecha.getTime()===hoy.getTime();
+    const ev=tareasAgenda.filter(t=>t.fechaProx===fs);
+    h+=`<div class="cal-day${esHoy?' hoy':''}"><div class="cal-day-num">${d}</div>
+      ${ev.map(e=>`<div class="cal-event ${getEstadoTarea(e.fechaProx).cls}" title="${e.nombre}">${e.nombre}</div>`).join('')}</div>`;
   }
-  grid.innerHTML = html;
+  grid.innerHTML = h;
 }
 
 // ============================================================
-// DASHBOARD
+// DASHBOARD NUEVO
 // ============================================================
-function renderDashboard() {
-  const hoy = new Date(); hoy.setHours(0,0,0,0);
-  const fechaEl = document.getElementById('dash-fecha');
-  if (fechaEl) fechaEl.textContent = hoy.toLocaleDateString('es-AR', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
-
-  const vencidos = tareasAgenda.filter(t => { const e = getEstadoTarea(t.fechaProx); return e.estado==='vencido'||e.estado==='hoy'; });
-  const proximos7 = tareasAgenda.filter(t => { const e = getEstadoTarea(t.fechaProx); return e.estado==='proximo'&&e.diff<=7; });
-  const aldia = tareasAgenda.filter(t => getEstadoTarea(t.fechaProx).estado==='al-dia');
-
-  const kv = document.getElementById('kpi-vencidos'); if(kv) kv.textContent = vencidos.length;
-  const kp = document.getElementById('kpi-proximos'); if(kp) kp.textContent = proximos7.length;
-  const ka = document.getElementById('kpi-aldia'); if(ka) ka.textContent = aldia.length;
-
-  // Obras KPI
-  const obrasActivas = Object.values(obras||{}).filter(o => o.info && o.info.estadoObra !== 'terminado');
-  const ko = document.getElementById('kpi-obras'); if(ko) ko.textContent = obrasActivas.length;
-  const ks = document.getElementById('kpi-obras-sub'); if(ks) ks.textContent = obrasActivas.length === 1 ? '1 obra activa' : obrasActivas.length + ' obras activas';
-
-  // Alertas panel
-  const alertasEl = document.getElementById('dash-alertas');
-  if (alertasEl) {
-    const items = [...vencidos, ...proximos7].slice(0, 5);
-    alertasEl.innerHTML = items.length ? items.map(t => {
-      const e = getEstadoTarea(t.fechaProx);
-      return `<div class="alert-row">
-        <div class="alert-dot" style="background:${e.dot}"></div>
-        <div style="flex:1;font-size:0.82rem">${t.nombre}</div>
-        <span class="mant-estado-badge ${e.cls}" style="font-size:0.68rem">${e.label}</span>
-      </div>`;
-    }).join('') : '<div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Sin alertas pendientes ✓</div>';
+function renderNuevoDashboard() {
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  const df=document.getElementById('dash-fecha-nuevo');
+  if(df) df.textContent=hoy.toLocaleDateString('es-AR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const vencidos=tareasAgenda.filter(t=>['vencido','hoy'].includes(getEstadoTarea(t.fechaProx).estado));
+  const prox7=tareasAgenda.filter(t=>{const e=getEstadoTarea(t.fechaProx);return e.estado==='proximo'&&e.diff<=7;});
+  const aldia=tareasAgenda.filter(t=>getEstadoTarea(t.fechaProx).estado==='al-dia');
+  const kv=document.getElementById('kpi-vencidos'); if(kv) kv.textContent=vencidos.length;
+  const kp=document.getElementById('kpi-proximos7'); if(kp) kp.textContent=prox7.length;
+  const ka=document.getElementById('kpi-aldia'); if(ka) ka.textContent=aldia.length;
+  const obrasAct=Object.values(obras||{}).filter(o=>o.info&&o.info.estadoObra!=='terminado');
+  const ko=document.getElementById('kpi-obras'); if(ko) ko.textContent=obrasAct.length;
+  const ks=document.getElementById('kpi-obras-sub'); if(ks) ks.textContent=obrasAct.length===1?'1 activa':obrasAct.length+' activas';
+  // Alertas
+  const ae=document.getElementById('dash-alertas-nuevo');
+  if(ae){
+    const items=[...vencidos,...prox7].slice(0,6);
+    ae.innerHTML=items.length?items.map(t=>{const e=getEstadoTarea(t.fechaProx);
+      return `<div class="alert-row"><div class="alert-dot" style="background:${e.dot}"></div><div style="flex:1;font-size:0.81rem">${t.nombre}</div><span class="mant-estado-badge ${e.cls}" style="font-size:0.67rem">${e.label}</span></div>`;
+    }).join(''):'<div style="color:var(--ink3);font-size:0.81rem;padding:0.4rem 0">Sin alertas pendientes ✓</div>';
   }
-
   // Próximos
-  const proxEl = document.getElementById('dash-proximos');
-  if (proxEl) {
-    const items = tareasAgenda.slice(0, 4);
-    proxEl.innerHTML = items.length ? items.map(t => {
-      const e = getEstadoTarea(t.fechaProx);
-      return `<div class="mant-row">
-        <div class="mant-icon-sm" style="background:var(--surface2);font-size:1rem">📋</div>
-        <div class="mant-info-sm">
-          <div class="mant-name-sm">${t.nombre}</div>
-          <div class="mant-sub-sm">${t.edificio || t.categoria || '—'}</div>
-        </div>
-        <span class="mant-estado-badge ${e.cls}" style="font-size:0.68rem">${t.fechaProx ? formatFecha(t.fechaProx) : '—'}</span>
-      </div>`;
-    }).join('') : '<div style="color:var(--ink3);font-size:0.82rem">Sin tareas programadas</div>';
+  const pe=document.getElementById('dash-proximos-nuevo');
+  if(pe){
+    const items=tareasAgenda.slice(0,5);
+    pe.innerHTML=items.length?items.map(t=>{const e=getEstadoTarea(t.fechaProx);
+      return `<div class="mant-row"><div style="flex:1;min-width:0"><div class="mant-name-sm">${t.nombre}</div><div class="mant-sub-sm">${t.edificio||t.categoria||'—'}</div></div><span class="mant-estado-badge ${e.cls}" style="font-size:0.67rem">${t.fechaProx?formatFecha(t.fechaProx):'—'}</span></div>`;
+    }).join(''):'<div style="color:var(--ink3);font-size:0.81rem">Sin tareas</div>';
   }
-
-  // Obras activas en dash
-  const obrasDashEl = document.getElementById('dash-obras-activas');
-  if (obrasDashEl) {
-    if (!obrasActivas.length) {
-      obrasDashEl.innerHTML = '<div style="color:var(--ink3);font-size:0.82rem">Sin obras activas</div>';
-    } else {
-      obrasDashEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem">` +
-        obrasActivas.map(o => {
-          const info = o.info;
-          const borderColor = info.estadoObra === 'licitacion' ? '#7C3AED' : 'var(--amber)';
-          return `<div style="background:var(--surface2);border-radius:10px;padding:0.75rem 1rem;border-top:3px solid ${borderColor};cursor:pointer" onclick="navegarA('obras')">
-            <div style="font-weight:500;font-size:0.88rem;color:var(--ink);margin-bottom:3px">${info.nombre || '—'}</div>
-            <div style="font-size:0.73rem;color:var(--ink3)">${info.proveedor || ''}</div>
-          </div>`;
-        }).join('') + '</div>';
-    }
+  // Obras
+  const oe=document.getElementById('dash-obras-nuevo');
+  if(oe){
+    if(!obrasAct.length){oe.innerHTML='<div style="color:var(--ink3);font-size:0.81rem">Sin obras activas</div>';return;}
+    oe.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0.65rem">'+
+      obrasAct.map(o=>{const i=o.info;const bc=i.estadoObra==='licitacion'?'#7C3AED':'var(--amber)';
+        return `<div style="background:var(--surface2);border-radius:10px;padding:0.65rem 0.9rem;border-top:3px solid ${bc};cursor:pointer" onclick="navegarA('obras')">
+          <div style="font-weight:500;font-size:0.86rem;color:var(--ink)">${i.nombre||'—'}</div>
+          <div style="font-size:0.72rem;color:var(--ink3);margin-top:1px">${i.proveedor||''}</div>
+        </div>`;}).join('')+'</div>';
   }
 }
 
 // ============================================================
 // INTEGRACIÓN CON SISTEMA EXISTENTE
 // ============================================================
-// Post-login: mostrar topbar y cargar tareas
-function postLoginSetup() {
-  document.getElementById('main-topbar').style.display = 'flex';
-  try {
-    const email = auth.currentUser?.email || '';
-    const av = document.getElementById('sb-avatar');
-    const un = document.getElementById('sb-username');
-    if (av) av.textContent = email.charAt(0).toUpperCase();
-    if (un) un.textContent = email.split('@')[0];
-  } catch(e){}
-  cargarTareas();
+// Sobrescribir irAlPanel para usar nueva navegación
+const _origIrAlPanel = window.irAlPanel;
+window.irAlPanel = function() {
+  // Mostrar topbar
+  const tb = document.getElementById('main-topbar');
+  if (tb) tb.style.display = 'flex';
+  // Mostrar sidebar activo en obras
+  document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
+  const nav = document.getElementById('nav-obras');
+  if (nav) nav.classList.add('active');
+  // Activar módulo obras
+  document.querySelectorAll('.modulo,.modulo-obras-wrap').forEach(e=>e.classList.remove('active'));
+  const mo = document.getElementById('mod-obras');
+  if (mo) mo.classList.add('active');
+  // Ejecutar lógica original (mostrar dashboard viejo con las obras)
+  if (_origIrAlPanel) _origIrAlPanel();
+};
+
+// Hook en onAuthStateChanged original para cargar tareas y mostrar UI
+const _origDOMLoaded = window._domLoadedCallback;
+document.addEventListener('_postLogin', async () => {
+  await cargarTareas();
+});
+
+// Patch del onAuthStateChanged para actualizar avatar y cargar tareas
+const _origOnAuth = window._onAuthCallback;
+
+// Agregar avatar al login existente
+function actualizarAvatar(user) {
+  const av = document.getElementById('sb-avatar');
+  const un = document.getElementById('sb-username');
+  const tb = document.getElementById('main-topbar');
+  if (av && user) av.textContent = user.email.charAt(0).toUpperCase();
+  if (un && user) un.textContent = user.email.split('@')[0];
+  if (tb) tb.style.display = user ? 'flex' : 'none';
 }
 
-// Hook formatFecha para agenda (reutiliza la existente)
-// ya está definida en el código anterior
+// Interceptar el onAuthStateChanged ya definido en el código original
+// Lo hacemos observando el estado de auth directamente
+onAuthStateChanged(auth, async (user) => {
+  actualizarAvatar(user);
+  if (user) {
+    await cargarTareas();
+  }
+});
 
 </script>
 </body>
