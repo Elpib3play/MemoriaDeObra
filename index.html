@@ -416,18 +416,18 @@
   /* ===== MÓDULOS ===== */
 
   /* ===== DASHBOARD ===== */
-  .dash-kpi{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem;}
-  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
-  .kpi-label{font-size:0.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.35rem;}
-  .kpi-value{font-size:2rem;font-weight:600;font-family:DM Mono,monospace;line-height:1;color:var(--ink);}
+  .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:1.25rem;}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.1rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);display:flex;flex-direction:column;gap:0.2rem;}
+  .kpi-label{font-size:0.67rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;}
+  .kpi-value{font-size:1.6rem;font-weight:600;font-family:DM Mono,monospace;line-height:1.1;color:var(--ink);}
   .kpi-value.accent{color:var(--accent);}
   .kpi-value.red{color:var(--red);}
   .kpi-value.amber{color:var(--amber);}
   .kpi-value.green{color:var(--green);}
-  .kpi-sub{font-size:0.7rem;color:var(--ink3);margin-top:3px;}
-  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
-  .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
-  .dash-card-title{font-size:0.7rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;}
+  .kpi-sub{font-size:0.68rem;color:var(--ink3);}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+  .dash-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0.9rem 1.1rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
+  .dash-card-title{font-size:0.67rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.6rem;}
   .alert-row{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.81rem;color:var(--ink);}
   .alert-row:last-child{border-bottom:none;}
   .alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
@@ -654,6 +654,38 @@
     overflow: hidden !important;
     max-width: calc(100vw - 236px) !important;
   }
+  /* ===== TICKETS ===== */
+  .ticket-tabla{width:100%;border-collapse:collapse;font-size:0.83rem;}
+  .ticket-tabla th{font-size:0.67rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;}
+  .ticket-tabla td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink);}
+  .ticket-tabla tr:hover td{background:var(--surface2);}
+  .ticket-tabla tr:last-child td{border-bottom:none;}
+  .ticket-id{font-family:DM Mono,monospace;font-size:0.75rem;color:var(--ink3);white-space:nowrap;}
+  .ticket-tarea{font-weight:500;color:var(--ink);max-width:280px;}
+  .ticket-tarea-sub{font-size:0.72rem;color:var(--ink3);margin-top:1px;}
+  .badge-prioridad{font-size:0.67rem;padding:0.18rem 0.55rem;border-radius:20px;font-weight:600;white-space:nowrap;}
+  .badge-prioridad.alta{background:#FEE2E2;color:#991B1B;}
+  .badge-prioridad.media{background:#FEF3C7;color:#92400E;}
+  .badge-prioridad.baja{background:#D1FAE5;color:#065F46;}
+  .badge-estado{font-size:0.67rem;padding:0.18rem 0.55rem;border-radius:20px;font-weight:500;white-space:nowrap;}
+  .badge-estado.en-curso{background:#DBEAFE;color:#1E40AF;}
+  .badge-estado.resuelto{background:#D1FAE5;color:#065F46;}
+  .badge-estado.en-espera{background:#FEF3C7;color:#92400E;}
+  .badge-estado.no-iniciado{background:var(--surface2);color:var(--ink3);}
+  .badge-tipo{font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:20px;background:var(--surface2);color:var(--ink2);white-space:nowrap;}
+  .ticket-obs{font-size:0.76rem;color:var(--ink2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ticket-acciones{display:flex;gap:4px;justify-content:flex-end;}
+  .ticket-acciones button{background:none;border:1px solid var(--border);border-radius:5px;padding:0.2rem 0.45rem;cursor:pointer;font-size:0.75rem;color:var(--ink2);}
+  .ticket-acciones button:hover{background:var(--surface2);}
+  .modal-ticket{position:fixed;inset:0;background:rgba(28,26,22,0.45);display:none;align-items:center;justify-content:center;z-index:600;}
+  .modal-ticket.open{display:flex;}
+  .modal-ticket-box{background:var(--surface);border-radius:16px;padding:1.75rem;width:90%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(28,26,22,0.2);}
+  .ticket-filtros{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+  .ticket-stats{display:flex;gap:0.6rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+  .ticket-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;display:flex;flex-direction:column;gap:0.15rem;min-width:80px;}
+  .ticket-stat-val{font-size:1.4rem;font-weight:600;font-family:DM Mono,monospace;color:var(--ink);line-height:1;}
+  .ticket-stat-lbl{font-size:0.65rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
+
 </style>
 </head>
 <body>
@@ -674,7 +706,7 @@
     <div class="sb-item" onclick="navegarA('agenda')" id="nav-agenda"><span class="sb-item-icon">📅</span>Agenda Anual<span class="sb-badge amber" id="badge-agenda" style="display:none">0</span></div>
     <div class="sb-item" onclick="navegarA('proveedores')" id="nav-proveedores"><span class="sb-item-icon">🏢</span>Proveedores</div>
     <div class="sb-item" onclick="navegarA('planos')" id="nav-planos"><span class="sb-item-icon">📐</span>Planos y Docs</div>
-    <div class="sb-item" onclick="navegarA('tickets')" id="nav-tickets"><span class="sb-item-icon">🎫</span>Tickets</div>
+    <div class="sb-item" onclick="navegarA('tickets')" id="nav-tickets"><span class="sb-item-icon">🎫</span>Tickets<span class="sb-badge" id="badge-tickets" style="display:none">0</span></div>
     <div class="sb-divider"></div>
     <div class="sb-item" onclick="navegarA('busqueda')" id="nav-busqueda"><span class="sb-item-icon">🔍</span>Búsqueda Global</div>
     <div class="sb-item" onclick="navegarA('configuracion')" id="nav-configuracion"><span class="sb-item-icon">⚙️</span>Configuración</div>
@@ -977,9 +1009,9 @@
 <!-- MÓDULO DASHBOARD -->
 <div class="modulo" id="mod-dashboard">
   <div class="modulo-inner">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
-      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Dashboard</div>
-      <div style="font-size:0.75rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha-nuevo"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.25rem;color:var(--ink)">Dashboard</div>
+      <div style="font-size:0.72rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha-nuevo"></div>
     </div>
     <div class="dash-kpi">
       <div class="kpi"><div class="kpi-label">Obras activas</div><div class="kpi-value accent" id="kpi-obras">—</div><div class="kpi-sub" id="kpi-obras-sub"></div></div>
@@ -1090,7 +1122,119 @@
 <!-- MÓDULOS PLACEHOLDER -->
 <div class="modulo" id="mod-proveedores"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🏢</div><div class="modulo-placeholder-title">Proveedores</div><div class="modulo-placeholder-sub">En desarrollo — base de proveedores con relación a obras, mantenimientos y tickets.</div></div></div>
 <div class="modulo" id="mod-planos"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">📐</div><div class="modulo-placeholder-title">Planos y Documentación</div><div class="modulo-placeholder-sub">En desarrollo — centralizá planos, PDFs y documentación del Campus.</div></div></div>
-<div class="modulo" id="mod-tickets"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🎫</div><div class="modulo-placeholder-title">Tickets</div><div class="modulo-placeholder-sub">En desarrollo — gestión de solicitudes e incidentes.</div></div></div>
+<div class="modulo" id="mod-tickets">
+  <div class="modulo-inner">
+
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.35rem;color:var(--ink)">Tickets</div>
+      <button class="btn-primary" style="margin-top:0" onclick="abrirModalTicket()">+ Nuevo ticket</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="ticket-stats" id="ticket-stats"></div>
+
+    <!-- Filtros -->
+    <div class="ticket-filtros">
+      <input type="text" id="tk-buscar" placeholder="Buscar ticket..." style="flex:1;min-width:160px;font-size:0.83rem" oninput="renderTickets()">
+      <select id="tk-filtro-estado" onchange="renderTickets()" style="font-size:0.83rem;min-width:130px">
+        <option value="">Todos los estados</option>
+        <option value="no-iniciado">No iniciado</option>
+        <option value="en-curso">En curso</option>
+        <option value="en-espera">En espera</option>
+        <option value="resuelto">Resuelto</option>
+      </select>
+      <select id="tk-filtro-tipo" onchange="renderTickets()" style="font-size:0.83rem;min-width:140px">
+        <option value="">Todos los tipos</option>
+        <option value="Correctivo">Correctivo</option>
+        <option value="Proyecto">Proyecto</option>
+        <option value="Iniciativa">Iniciativa</option>
+        <option value="Preventivo">Preventivo</option>
+        <option value="Actividad interna">Actividad interna</option>
+      </select>
+      <select id="tk-filtro-prioridad" onchange="renderTickets()" style="font-size:0.83rem;min-width:110px">
+        <option value="">Todas</option>
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+    </div>
+
+    <!-- Tabla -->
+    <div style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
+      <table class="ticket-tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tarea</th>
+            <th>Pedido a</th>
+            <th>Fecha</th>
+            <th>Prioridad</th>
+            <th>F. Terminada</th>
+            <th>Estado</th>
+            <th>Tipo</th>
+            <th>Observaciones</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ticket-tbody">
+          <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink3)">Cargando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL TICKET -->
+<div class="modal-ticket" id="modal-ticket">
+  <div class="modal-ticket-box">
+    <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.25rem" id="modal-ticket-titulo">Nuevo ticket</div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Tarea *</label><input type="text" id="tk-nombre" placeholder="Descripción del trabajo"></div>
+      <div class="field"><label>Pedido a</label><input type="text" id="tk-pedido-a" placeholder="Ej: Cesar, Eze, Cesar/Eze"></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Fecha solicitada</label><input type="date" id="tk-fecha-sol"></div>
+      <div class="field"><label>Prioridad</label>
+        <select id="tk-prioridad">
+          <option value="Alta">Alta</option>
+          <option value="Media" selected>Media</option>
+          <option value="Baja">Baja</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Estado</label>
+        <select id="tk-estado">
+          <option value="no-iniciado">No iniciado</option>
+          <option value="en-curso">En curso</option>
+          <option value="en-espera">En espera</option>
+          <option value="resuelto">Resuelto</option>
+        </select>
+      </div>
+      <div class="field"><label>Tipo</label>
+        <select id="tk-tipo">
+          <option value="Correctivo">Correctivo</option>
+          <option value="Proyecto">Proyecto</option>
+          <option value="Iniciativa">Iniciativa</option>
+          <option value="Preventivo">Preventivo</option>
+          <option value="Actividad interna">Actividad interna</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Fecha terminada</label><input type="date" id="tk-fecha-fin"></div>
+      <div class="field" style="grid-column:1/-1"><label>Observaciones</label>
+        <textarea id="tk-obs" placeholder="Notas, actualizaciones, estado del trabajo..." style="min-height:70px"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+      <button class="btn-primary" style="margin-top:0" onclick="guardarTicket()">Guardar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalTicket()">Cancelar</button>
+    </div>
+  </div>
+</div>
 <div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
 <div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
 
@@ -3918,6 +4062,7 @@ window.navegarA = function(mod) {
   if (tt) tt.textContent = TITULOS[mod] || mod;
   if (mod === 'dashboard') renderNuevoDashboard();
   if (mod === 'agenda') renderAgenda();
+  if (mod === 'tickets') { cargarTickets(); }
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sb-overlay').classList.remove('visible');
@@ -4083,14 +4228,22 @@ window.completarTarea = async function(id) {
   else if (per==='semestral')  nueva.setMonth(nueva.getMonth()+6);
   else if (per==='anual')      nueva.setFullYear(nueva.getFullYear()+1);
   else nueva = null;
-  const data = {...t}; delete data.id;
-  data.fechaUlt = t.fechaProx;
-  data.completadoEn = new Date().toISOString();
-  if (nueva) data.fechaProx = nueva.toISOString().split('T')[0];
   try {
-    await setDoc(doc(db,'mantenimientos',id), data);
-    await cargarTareas();
-    alert(nueva ? '✓ Completada. Próxima: ' + formatFecha(data.fechaProx) : '✓ Tarea completada.');
+    if (!nueva) {
+      // Tarea única: eliminar directamente
+      await deleteDoc(doc(db,'mantenimientos',id));
+      await cargarTareas();
+      alert('✓ Tarea completada y eliminada de la agenda.');
+    } else {
+      // Tarea recurrente: actualizar con nueva fecha
+      const data = {...t}; delete data.id;
+      data.fechaUlt = t.fechaProx;
+      data.completadoEn = new Date().toISOString();
+      data.fechaProx = nueva.toISOString().split('T')[0];
+      await setDoc(doc(db,'mantenimientos',id), data);
+      await cargarTareas();
+      alert('✓ Completada. Próxima: ' + formatFecha(data.fechaProx));
+    }
   } catch(e) { alert('Error: ' + e.message); }
 };
 
@@ -4121,6 +4274,7 @@ function renderTareaCard(t) {
     <span class="mant-estado-badge ${e.cls}">${e.label}</span>
     <div style="display:flex;gap:3px;flex-shrink:0">
       <button onclick="completarTarea('${t.id}')" title="Completar" style="background:var(--green-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--green)">✓</button>
+      <button onclick="generarTicketDesdeAgenda('${t.nombre||''}','${t.id}')" title="Generar ticket" style="background:#EDE9FE;border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:#5B21B6">🎫</button>
       <button onclick="editarTarea('${t.id}')" title="Editar" style="background:var(--blue-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--blue)">✏️</button>
       <button onclick="eliminarTarea('${t.id}')" title="Eliminar" style="background:var(--red-light);border:none;border-radius:6px;padding:0.3rem 0.55rem;cursor:pointer;font-size:0.78rem;color:var(--red)">🗑</button>
     </div>
@@ -4216,11 +4370,11 @@ function renderNuevoDashboard() {
   const oe=document.getElementById('dash-obras-nuevo');
   if(oe){
     if(!obrasAct.length){oe.innerHTML='<div style="color:var(--ink3);font-size:0.81rem">Sin obras activas</div>';return;}
-    oe.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0.65rem">'+
+    oe.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:0.5rem">'+
       obrasAct.map(o=>{const i=o.info;const bc=i.estadoObra==='licitacion'?'#7C3AED':'var(--amber)';
-        return `<div style="background:var(--surface2);border-radius:10px;padding:0.65rem 0.9rem;border-top:3px solid ${bc};cursor:pointer" onclick="navegarA('obras')">
-          <div style="font-weight:500;font-size:0.86rem;color:var(--ink)">${i.nombre||'—'}</div>
-          <div style="font-size:0.72rem;color:var(--ink3);margin-top:1px">${i.proveedor||''}</div>
+        return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.45rem 0.85rem;border-left:3px solid ${bc};cursor:pointer" onclick="navegarA('obras')">
+          <div style="font-weight:500;font-size:0.8rem;color:var(--ink)">${i.nombre||'—'}</div>
+          <div style="font-size:0.68rem;color:var(--ink3)">${i.proveedor||''}</div>
         </div>`;}).join('')+'</div>';
   }
 }
@@ -4269,6 +4423,192 @@ onAuthStateChanged(auth, async (user) => {
     actualizarAvatar(user);
     await cargarTareas();
   }
+});
+
+// ============================================================
+// TICKETS
+// ============================================================
+let ticketsData = [];
+let ticketEditandoId = null;
+let ticketContador = 0;
+
+async function cargarTickets() {
+  try {
+    const q = query(collection(db, 'tickets'), orderBy('creadoEn','desc'));
+    const snap = await getDocs(q);
+    ticketsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Calcular próximo ID
+    if (ticketsData.length > 0) {
+      const maxId = Math.max(...ticketsData.map(t => t.numero || 0));
+      ticketContador = maxId;
+    }
+    if (moduloActual === 'tickets') renderTickets();
+    renderTicketsBadge();
+  } catch(e) { console.error('cargarTickets:', e); }
+}
+
+function renderTicketsBadge() {
+  const abiertos = ticketsData.filter(t => t.estado !== 'resuelto').length;
+  const badge = document.getElementById('badge-tickets');
+  if (badge) {
+    badge.textContent = abiertos;
+    badge.style.display = abiertos > 0 ? 'inline-block' : 'none';
+  }
+}
+
+window.renderTickets = function() {
+  const buscar  = (document.getElementById('tk-buscar')?.value||'').toLowerCase();
+  const estado  = document.getElementById('tk-filtro-estado')?.value||'';
+  const tipo    = document.getElementById('tk-filtro-tipo')?.value||'';
+  const prio    = document.getElementById('tk-filtro-prioridad')?.value||'';
+
+  let lista = ticketsData.filter(t => {
+    if (buscar && !t.nombre?.toLowerCase().includes(buscar) && 
+        !t.obs?.toLowerCase().includes(buscar) &&
+        !t.pedidoA?.toLowerCase().includes(buscar)) return false;
+    if (estado && t.estado !== estado) return false;
+    if (tipo   && t.tipo   !== tipo)   return false;
+    if (prio   && t.prioridad !== prio) return false;
+    return true;
+  });
+
+  // Stats
+  const statsEl = document.getElementById('ticket-stats');
+  if (statsEl) {
+    const total    = ticketsData.length;
+    const abiertos = ticketsData.filter(t=>t.estado!=='resuelto').length;
+    const curso    = ticketsData.filter(t=>t.estado==='en-curso').length;
+    const espera   = ticketsData.filter(t=>t.estado==='en-espera').length;
+    const resuelto = ticketsData.filter(t=>t.estado==='resuelto').length;
+    statsEl.innerHTML = `
+      <div class="ticket-stat"><div class="ticket-stat-val">${total}</div><div class="ticket-stat-lbl">Total</div></div>
+      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--accent)">${abiertos}</div><div class="ticket-stat-lbl">Abiertos</div></div>
+      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--blue)">${curso}</div><div class="ticket-stat-lbl">En curso</div></div>
+      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--amber)">${espera}</div><div class="ticket-stat-lbl">En espera</div></div>
+      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--green)">${resuelto}</div><div class="ticket-stat-lbl">Resueltos</div></div>
+    `;
+  }
+
+  // Tabla
+  const tbody = document.getElementById('ticket-tbody');
+  if (!tbody) return;
+
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink3)">No hay tickets que coincidan</td></tr>';
+    return;
+  }
+
+  const estadoLabels = { 'no-iniciado':'No iniciado','en-curso':'En curso','en-espera':'En espera','resuelto':'Resuelto' };
+
+  tbody.innerHTML = lista.map(t => {
+    const prioCls = (t.prioridad||'').toLowerCase().replace(' ','-');
+    const estCls  = t.estado||'no-iniciado';
+    return `<tr>
+      <td><span class="ticket-id">#${String(t.numero||'?').padStart(3,'0')}</span></td>
+      <td>
+        <div class="ticket-tarea">${t.nombre||'—'}</div>
+        ${t.tipo?`<div class="ticket-tarea-sub">${t.tipo}</div>`:''}
+      </td>
+      <td style="font-size:0.8rem;white-space:nowrap">${t.pedidoA||'—'}</td>
+      <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${t.fechaSol?formatFecha(t.fechaSol):'—'}</td>
+      <td><span class="badge-prioridad ${prioCls}">${t.prioridad||'—'}</span></td>
+      <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${t.fechaFin?formatFecha(t.fechaFin):'—'}</td>
+      <td><span class="badge-estado ${estCls}">${estadoLabels[estCls]||estCls}</span></td>
+      <td><span class="badge-tipo">${t.tipo||'—'}</span></td>
+      <td><div class="ticket-obs" title="${(t.obs||'').replace(/"/g,'')}">${t.obs||'—'}</div></td>
+      <td>
+        <div class="ticket-acciones">
+          <button onclick="editarTicket('${t.id}')" title="Editar">✏️</button>
+          <button onclick="eliminarTicket('${t.id}')" title="Eliminar" style="color:var(--red)">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+window.abrirModalTicket = function(fromAgenda) {
+  ticketEditandoId = null;
+  document.getElementById('modal-ticket-titulo').textContent = 'Nuevo ticket';
+  ['tk-nombre','tk-pedido-a','tk-fecha-fin','tk-obs'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  // Fecha solicitada = hoy
+  document.getElementById('tk-fecha-sol').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tk-prioridad').value = 'Media';
+  document.getElementById('tk-estado').value    = 'no-iniciado';
+  document.getElementById('tk-tipo').value      = 'Correctivo';
+  // Si viene de agenda, pre-completar nombre
+  if (fromAgenda) {
+    document.getElementById('tk-nombre').value = fromAgenda;
+    document.getElementById('tk-tipo').value   = 'Preventivo';
+  }
+  document.getElementById('modal-ticket').classList.add('open');
+};
+
+window.cerrarModalTicket = function() {
+  document.getElementById('modal-ticket').classList.remove('open');
+};
+
+window.editarTicket = function(id) {
+  const t = ticketsData.find(x => x.id === id);
+  if (!t) return;
+  ticketEditandoId = id;
+  document.getElementById('modal-ticket-titulo').textContent = 'Editar ticket #' + String(t.numero||'').padStart(3,'0');
+  document.getElementById('tk-nombre').value    = t.nombre    || '';
+  document.getElementById('tk-pedido-a').value  = t.pedidoA   || '';
+  document.getElementById('tk-fecha-sol').value = t.fechaSol  || '';
+  document.getElementById('tk-fecha-fin').value = t.fechaFin  || '';
+  document.getElementById('tk-obs').value       = t.obs       || '';
+  document.getElementById('tk-prioridad').value = t.prioridad || 'Media';
+  document.getElementById('tk-estado').value    = t.estado    || 'no-iniciado';
+  document.getElementById('tk-tipo').value      = t.tipo      || 'Correctivo';
+  document.getElementById('modal-ticket').classList.add('open');
+};
+
+window.guardarTicket = async function() {
+  const nombre = document.getElementById('tk-nombre').value.trim();
+  if (!nombre) { alert('La tarea es obligatoria'); return; }
+  const data = {
+    nombre,
+    pedidoA:   document.getElementById('tk-pedido-a').value.trim(),
+    fechaSol:  document.getElementById('tk-fecha-sol').value,
+    fechaFin:  document.getElementById('tk-fecha-fin').value,
+    obs:       document.getElementById('tk-obs').value.trim(),
+    prioridad: document.getElementById('tk-prioridad').value,
+    estado:    document.getElementById('tk-estado').value,
+    tipo:      document.getElementById('tk-tipo').value,
+  };
+  try {
+    if (ticketEditandoId) {
+      const existing = ticketsData.find(t => t.id === ticketEditandoId);
+      await setDoc(doc(db,'tickets',ticketEditandoId), { ...data, numero: existing?.numero, creadoEn: existing?.creadoEn });
+    } else {
+      ticketContador++;
+      data.numero   = ticketContador;
+      data.creadoEn = new Date().toISOString();
+      await addDoc(collection(db,'tickets'), data);
+    }
+    cerrarModalTicket();
+    await cargarTickets();
+  } catch(e) { alert('Error al guardar: ' + e.message); }
+};
+
+window.eliminarTicket = async function(id) {
+  if (!confirm('¿Eliminar este ticket?')) return;
+  try {
+    await deleteDoc(doc(db,'tickets',id));
+    await cargarTickets();
+  } catch(e) { alert('Error: ' + e.message); }
+};
+
+window.generarTicketDesdeAgenda = function(nombre, tareaId) {
+  navegarA('tickets');
+  setTimeout(() => abrirModalTicket(nombre), 300);
+};
+
+// Cerrar modal al hacer click fuera
+document.getElementById('modal-ticket')?.addEventListener('click', function(e) {
+  if (e.target === this) cerrarModalTicket();
 });
 
 </script>
