@@ -411,7 +411,7 @@
   .sb-overlay.visible{display:block;}
 
   /* ===== TOPBAR ===== */
-  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;}
+  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;width:0;}
   .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;position:sticky;top:0;}
   .topbar-left{display:flex;align-items:center;gap:0.75rem;}
   .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
@@ -438,9 +438,9 @@
   .notif-sub{font-size:0.71rem;color:var(--ink3);margin-top:1px;}
 
   /* ===== MÓDULOS ===== */
-  .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;min-height:0;}
+  .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;min-height:0;width:100%;}
   .modulo.active{display:flex;}
-  .modulo > .modulo-inner{overflow-y:auto;flex:1;}
+  .modulo-inner{padding:1.5rem;width:100%;max-width:980px;margin:0 auto;box-sizing:border-box;}
   .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
   .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
   .modulo-obras-wrap.active{display:flex;}
@@ -502,7 +502,7 @@
   .cal-mes-label{font-family:DM Serif Display,serif;font-size:1rem;color:var(--ink);flex:1;text-align:center;}
 
   /* ===== PLACEHOLDER MÓDULOS ===== */
-  .modulo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--ink3);gap:0.85rem;padding:3rem;text-align:center;}
+  .modulo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--ink3);gap:0.85rem;padding:3rem;text-align:center;width:100%;}
   .modulo-placeholder-icon{font-size:2.5rem;}
   .modulo-placeholder-title{font-family:DM Serif Display,serif;font-size:1.25rem;color:var(--ink2);}
   .modulo-placeholder-sub{font-size:0.84rem;max-width:280px;line-height:1.6;}
@@ -3631,134 +3631,7 @@ function formatFecha(f){if(!f)return'—';const[y,m,d]=f.split('-');return d+'/'
 function fmt(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function trunc(s,n){return s&&s.length>n?s.slice(0,n-1)+'…':(s||'');}
 
-</script>
 
-
-<!-- MÓDULO DASHBOARD -->
-<div class="modulo" id="mod-dashboard">
-  <div class="modulo-inner">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
-      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Dashboard</div>
-      <div style="font-size:0.75rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha-nuevo"></div>
-    </div>
-    <div class="dash-kpi">
-      <div class="kpi"><div class="kpi-label">Obras activas</div><div class="kpi-value accent" id="kpi-obras">—</div><div class="kpi-sub" id="kpi-obras-sub"></div></div>
-      <div class="kpi"><div class="kpi-label">Mant. vencidos</div><div class="kpi-value red" id="kpi-vencidos">—</div><div class="kpi-sub">Requieren atención</div></div>
-      <div class="kpi"><div class="kpi-label">Próx. 7 días</div><div class="kpi-value amber" id="kpi-proximos7">—</div><div class="kpi-sub">Vencimientos</div></div>
-      <div class="kpi"><div class="kpi-label">Al día</div><div class="kpi-value green" id="kpi-aldia">—</div><div class="kpi-sub">Mantenimientos</div></div>
-    </div>
-    <div class="dash-grid">
-      <div class="dash-card">
-        <div class="dash-card-title">🔔 Alertas de mantenimiento</div>
-        <div id="dash-alertas-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
-      </div>
-      <div class="dash-card">
-        <div class="dash-card-title">📅 Próximos mantenimientos</div>
-        <div id="dash-proximos-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
-      </div>
-    </div>
-    <div class="dash-card">
-      <div class="dash-card-title">🏗️ Obras activas</div>
-      <div id="dash-obras-nuevo"><div style="color:var(--ink3);font-size:0.82rem">Cargando...</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- MÓDULO AGENDA -->
-<div class="modulo" id="mod-agenda">
-  <div class="modulo-inner">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
-      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Agenda Anual</div>
-      <button class="btn-primary" style="margin-top:0" onclick="toggleFormTarea(true)">+ Nueva tarea</button>
-    </div>
-
-    <div class="form-nueva-tarea" id="form-nueva-tarea">
-      <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.1rem" id="form-tarea-titulo">Nueva tarea</div>
-      <div class="form-grid" style="margin-bottom:0.85rem">
-        <div class="field"><label>Nombre *</label><input type="text" id="ta-nombre" placeholder="Ej: Limpieza de tanques"></div>
-        <div class="field"><label>Categoría</label>
-          <select id="ta-categoria"><option value="">Seleccionar...</option>
-            <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
-            <option>Ascensores</option><option>Aires acondicionados</option>
-            <option>Grupos electrógenos</option><option>Fumigación</option>
-            <option>Eléctrico</option><option>Bombas</option>
-            <option>Certificaciones</option><option>Contratos</option><option>Otro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-grid" style="margin-bottom:0.85rem">
-        <div class="field"><label>Edificio / Sector</label><input type="text" id="ta-edificio" placeholder="Ej: Edificio Principal"></div>
-        <div class="field"><label>Proveedor</label><input type="text" id="ta-proveedor" placeholder="Empresa responsable"></div>
-      </div>
-      <div class="form-grid" style="margin-bottom:0.85rem">
-        <div class="field"><label>Próxima fecha *</label><input type="date" id="ta-fecha-prox"></div>
-        <div class="field"><label>Periodicidad</label>
-          <select id="ta-periodicidad">
-            <option value="unica">Única</option><option value="mensual">Mensual</option>
-            <option value="bimestral">Bimestral</option><option value="trimestral">Trimestral</option>
-            <option value="semestral">Semestral</option><option value="anual">Anual</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-grid" style="margin-bottom:0.85rem">
-        <div class="field"><label>Prioridad</label>
-          <select id="ta-prioridad"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select>
-        </div>
-        <div class="field"><label>Responsable interno</label><input type="text" id="ta-responsable" placeholder="Nombre"></div>
-      </div>
-      <div class="field" style="margin-bottom:0.85rem"><label>Observaciones</label><textarea id="ta-obs" placeholder="Notas adicionales..." style="min-height:56px"></textarea></div>
-      <div style="display:flex;gap:0.6rem">
-        <button class="btn-primary" style="margin-top:0" onclick="guardarTarea()">Guardar</button>
-        <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="toggleFormTarea(false)">Cancelar</button>
-      </div>
-    </div>
-
-    <div class="agenda-tabs">
-      <div class="agenda-tab active" onclick="switchAgendaTab('listado',this)">📋 Listado</div>
-      <div class="agenda-tab" onclick="switchAgendaTab('calendario',this)">📅 Calendario</div>
-      <div class="agenda-tab" onclick="switchAgendaTab('vencidos',this)">🔴 Vencidos</div>
-      <div class="agenda-tab" onclick="switchAgendaTab('proximos',this)">🟡 Próximos 30 días</div>
-    </div>
-
-    <div class="agenda-vista active" id="av-listado">
-      <div style="display:flex;gap:0.6rem;margin-bottom:0.85rem;flex-wrap:wrap">
-        <input type="text" id="agenda-search" placeholder="Buscar..." style="flex:1;min-width:140px" oninput="renderAgenda()">
-        <select id="agenda-filtro-cat" onchange="renderAgenda()" style="min-width:150px">
-          <option value="">Todas las categorías</option>
-          <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
-          <option>Ascensores</option><option>Aires acondicionados</option>
-          <option>Grupos electrógenos</option><option>Fumigación</option>
-          <option>Eléctrico</option><option>Bombas</option>
-          <option>Certificaciones</option><option>Contratos</option><option>Otro</option>
-        </select>
-      </div>
-      <div id="agenda-listado-content"></div>
-    </div>
-    <div class="agenda-vista" id="av-calendario">
-      <div class="cal-nav">
-        <button onclick="calMes(-1)">← Anterior</button>
-        <div class="cal-mes-label" id="cal-mes-label"></div>
-        <button onclick="calMes(1)">Siguiente →</button>
-      </div>
-      <div class="cal-grid" id="cal-grid"></div>
-    </div>
-    <div class="agenda-vista" id="av-vencidos"><div id="agenda-vencidos-content"></div></div>
-    <div class="agenda-vista" id="av-proximos"><div id="agenda-proximos-content"></div></div>
-  </div>
-</div>
-
-<!-- MÓDULOS PLACEHOLDER -->
-<div class="modulo" id="mod-proveedores"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🏢</div><div class="modulo-placeholder-title">Proveedores</div><div class="modulo-placeholder-sub">En desarrollo — base de proveedores con relación a obras, mantenimientos y tickets.</div></div></div>
-<div class="modulo" id="mod-planos"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">📐</div><div class="modulo-placeholder-title">Planos y Documentación</div><div class="modulo-placeholder-sub">En desarrollo — centralizá planos, PDFs y documentación del Campus.</div></div></div>
-<div class="modulo" id="mod-tickets"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🎫</div><div class="modulo-placeholder-title">Tickets</div><div class="modulo-placeholder-sub">En desarrollo — gestión de solicitudes e incidentes.</div></div></div>
-<div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
-<div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
-
-</div><!-- fin app-right -->
-</div><!-- fin app-layout -->
-
-
-<script>
 // ============================================================
 // NAVEGACIÓN
 // ============================================================
@@ -4130,5 +4003,131 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 </script>
+
+
+<!-- MÓDULO DASHBOARD -->
+<div class="modulo" id="mod-dashboard">
+  <div class="modulo-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Dashboard</div>
+      <div style="font-size:0.75rem;color:var(--ink3);font-family:DM Mono,monospace" id="dash-fecha-nuevo"></div>
+    </div>
+    <div class="dash-kpi">
+      <div class="kpi"><div class="kpi-label">Obras activas</div><div class="kpi-value accent" id="kpi-obras">—</div><div class="kpi-sub" id="kpi-obras-sub"></div></div>
+      <div class="kpi"><div class="kpi-label">Mant. vencidos</div><div class="kpi-value red" id="kpi-vencidos">—</div><div class="kpi-sub">Requieren atención</div></div>
+      <div class="kpi"><div class="kpi-label">Próx. 7 días</div><div class="kpi-value amber" id="kpi-proximos7">—</div><div class="kpi-sub">Vencimientos</div></div>
+      <div class="kpi"><div class="kpi-label">Al día</div><div class="kpi-value green" id="kpi-aldia">—</div><div class="kpi-sub">Mantenimientos</div></div>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">🔔 Alertas de mantenimiento</div>
+        <div id="dash-alertas-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">📅 Próximos mantenimientos</div>
+        <div id="dash-proximos-nuevo"><div style="color:var(--ink3);font-size:0.82rem;padding:0.5rem 0">Cargando...</div></div>
+      </div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-card-title">🏗️ Obras activas</div>
+      <div id="dash-obras-nuevo"><div style="color:var(--ink3);font-size:0.82rem">Cargando...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULO AGENDA -->
+<div class="modulo" id="mod-agenda">
+  <div class="modulo-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Agenda Anual</div>
+      <button class="btn-primary" style="margin-top:0" onclick="toggleFormTarea(true)">+ Nueva tarea</button>
+    </div>
+
+    <div class="form-nueva-tarea" id="form-nueva-tarea">
+      <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.1rem" id="form-tarea-titulo">Nueva tarea</div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Nombre *</label><input type="text" id="ta-nombre" placeholder="Ej: Limpieza de tanques"></div>
+        <div class="field"><label>Categoría</label>
+          <select id="ta-categoria"><option value="">Seleccionar...</option>
+            <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
+            <option>Ascensores</option><option>Aires acondicionados</option>
+            <option>Grupos electrógenos</option><option>Fumigación</option>
+            <option>Eléctrico</option><option>Bombas</option>
+            <option>Certificaciones</option><option>Contratos</option><option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Edificio / Sector</label><input type="text" id="ta-edificio" placeholder="Ej: Edificio Principal"></div>
+        <div class="field"><label>Proveedor</label><input type="text" id="ta-proveedor" placeholder="Empresa responsable"></div>
+      </div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Próxima fecha *</label><input type="date" id="ta-fecha-prox"></div>
+        <div class="field"><label>Periodicidad</label>
+          <select id="ta-periodicidad">
+            <option value="unica">Única</option><option value="mensual">Mensual</option>
+            <option value="bimestral">Bimestral</option><option value="trimestral">Trimestral</option>
+            <option value="semestral">Semestral</option><option value="anual">Anual</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid" style="margin-bottom:0.85rem">
+        <div class="field"><label>Prioridad</label>
+          <select id="ta-prioridad"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select>
+        </div>
+        <div class="field"><label>Responsable interno</label><input type="text" id="ta-responsable" placeholder="Nombre"></div>
+      </div>
+      <div class="field" style="margin-bottom:0.85rem"><label>Observaciones</label><textarea id="ta-obs" placeholder="Notas adicionales..." style="min-height:56px"></textarea></div>
+      <div style="display:flex;gap:0.6rem">
+        <button class="btn-primary" style="margin-top:0" onclick="guardarTarea()">Guardar</button>
+        <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="toggleFormTarea(false)">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="agenda-tabs">
+      <div class="agenda-tab active" onclick="switchAgendaTab('listado',this)">📋 Listado</div>
+      <div class="agenda-tab" onclick="switchAgendaTab('calendario',this)">📅 Calendario</div>
+      <div class="agenda-tab" onclick="switchAgendaTab('vencidos',this)">🔴 Vencidos</div>
+      <div class="agenda-tab" onclick="switchAgendaTab('proximos',this)">🟡 Próximos 30 días</div>
+    </div>
+
+    <div class="agenda-vista active" id="av-listado">
+      <div style="display:flex;gap:0.6rem;margin-bottom:0.85rem;flex-wrap:wrap">
+        <input type="text" id="agenda-search" placeholder="Buscar..." style="flex:1;min-width:140px" oninput="renderAgenda()">
+        <select id="agenda-filtro-cat" onchange="renderAgenda()" style="min-width:150px">
+          <option value="">Todas las categorías</option>
+          <option>Agua y saneamiento</option><option>Seguridad (matafuegos)</option>
+          <option>Ascensores</option><option>Aires acondicionados</option>
+          <option>Grupos electrógenos</option><option>Fumigación</option>
+          <option>Eléctrico</option><option>Bombas</option>
+          <option>Certificaciones</option><option>Contratos</option><option>Otro</option>
+        </select>
+      </div>
+      <div id="agenda-listado-content"></div>
+    </div>
+    <div class="agenda-vista" id="av-calendario">
+      <div class="cal-nav">
+        <button onclick="calMes(-1)">← Anterior</button>
+        <div class="cal-mes-label" id="cal-mes-label"></div>
+        <button onclick="calMes(1)">Siguiente →</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="agenda-vista" id="av-vencidos"><div id="agenda-vencidos-content"></div></div>
+    <div class="agenda-vista" id="av-proximos"><div id="agenda-proximos-content"></div></div>
+  </div>
+</div>
+
+<!-- MÓDULOS PLACEHOLDER -->
+<div class="modulo" id="mod-proveedores"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🏢</div><div class="modulo-placeholder-title">Proveedores</div><div class="modulo-placeholder-sub">En desarrollo — base de proveedores con relación a obras, mantenimientos y tickets.</div></div></div>
+<div class="modulo" id="mod-planos"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">📐</div><div class="modulo-placeholder-title">Planos y Documentación</div><div class="modulo-placeholder-sub">En desarrollo — centralizá planos, PDFs y documentación del Campus.</div></div></div>
+<div class="modulo" id="mod-tickets"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🎫</div><div class="modulo-placeholder-title">Tickets</div><div class="modulo-placeholder-sub">En desarrollo — gestión de solicitudes e incidentes.</div></div></div>
+<div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
+<div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
+
+</div><!-- fin app-right -->
+</div><!-- fin app-layout -->
+
+
 </body>
 </html>
