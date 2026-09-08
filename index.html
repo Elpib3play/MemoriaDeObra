@@ -391,8 +391,6 @@
 
   /* ===== LAYOUT CON SIDEBAR ===== */
   html,body{height:100%;overflow:hidden;}
-  .app-layout{display:flex;height:100vh;overflow:hidden;}
-  .sidebar{width:236px;min-width:236px;background:var(--ink);display:flex;flex-direction:column;z-index:300;transition:transform 0.25s ease;}
   .sb-header{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
   .sb-brand{font-family:DM Serif Display,serif;font-size:1rem;color:var(--bg);line-height:1.2;}
   .sb-brand span{color:var(--accent);}
@@ -412,41 +410,10 @@
   .sb-overlay.visible{display:block;}
 
   /* ===== TOPBAR ===== */
-  .app-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative;}
-  .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;}
-  .topbar-left{display:flex;align-items:center;gap:0.75rem;}
-  .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
-  .btn-hamburger:hover{background:var(--surface2);}
-  .topbar-title{font-size:0.9rem;font-weight:500;color:var(--ink);}
-  .topbar-right{display:flex;align-items:center;gap:0.75rem;}
-  .btn-bell{position:relative;background:none;border:1px solid var(--border);cursor:pointer;color:var(--ink2);width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;}
-  .btn-bell:hover{background:var(--surface2);}
-  .bell-count{position:absolute;top:-5px;right:-5px;background:var(--accent);color:#fff;font-size:0.6rem;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;display:none;}
 
   /* ===== NOTIF DROPDOWN ===== */
-  .notif-dropdown{position:fixed;top:52px;right:1.25rem;width:290px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(28,26,22,0.14);z-index:500;display:none;}
-  .notif-dropdown.open{display:block;}
-  .notif-header{padding:0.75rem 1rem;border-bottom:1px solid var(--border);font-size:0.78rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between;align-items:center;}
-  .notif-list{max-height:340px;overflow-y:auto;}
-  .notif-item{display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;}
-  .notif-item:last-child{border-bottom:none;}
-  .notif-item:hover{background:var(--surface2);}
-  .notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
-  .notif-dot.red{background:var(--red);}
-  .notif-dot.amber{background:var(--amber);}
-  .notif-dot.green{background:var(--green);}
-  .notif-text{font-size:0.81rem;color:var(--ink);}
-  .notif-sub{font-size:0.71rem;color:var(--ink3);margin-top:1px;}
 
   /* ===== MÓDULOS ===== */
-  .modulo{display:none;width:100%;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
-  .modulo.active{display:flex;}
-  .modulo-obras-wrap{display:none;width:100%;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
-  .modulo-obras-wrap.active{display:flex;}
-  .modulo-inner{padding:1.5rem 2rem;width:100%;box-sizing:border-box;}
-  .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
-  .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
-  .modulo-obras-wrap.active{display:flex;}
 
   /* ===== DASHBOARD ===== */
   .dash-kpi{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem;}
@@ -504,21 +471,151 @@
   .cal-mes-label{font-family:DM Serif Display,serif;font-size:1rem;color:var(--ink);flex:1;text-align:center;}
 
   /* ===== PLACEHOLDER MÓDULOS ===== */
-  .modulo-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--ink3);gap:0.85rem;padding:3rem;text-align:center;width:100%;}
-  .modulo-placeholder-icon{font-size:2.5rem;}
-  .modulo-placeholder-title{font-family:DM Serif Display,serif;font-size:1.25rem;color:var(--ink2);}
-  .modulo-placeholder-sub{font-size:0.84rem;max-width:280px;line-height:1.6;}
 
-  .sidebar.collapsed{width:0;min-width:0;overflow:hidden;}
-  .sidebar.collapsed + .app-right,.app-right.sidebar-collapsed{flex:1;}
-  @media(max-width:768px){
-    .sidebar{position:fixed;height:100vh;transform:translateX(-236px);}
-    .sidebar.open{transform:translateX(0);}
+.sidebar.open{transform:translateX(0);}
     .dash-kpi{grid-template-columns:1fr 1fr;}
     .dash-grid{grid-template-columns:1fr;}
-    .modulo-inner{padding:1rem;}
+    }
+
+
+  /* ===== LAYOUT PRINCIPAL - VERSIÓN LIMPIA ===== */
+  html,body { height:100%; overflow:hidden; margin:0; padding:0; }
+  
+  .app-layout {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
   }
 
+  /* SIDEBAR */
+  .sidebar {
+    width: 236px;
+    flex-shrink: 0;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    z-index: 300;
+    transition: width 0.25s ease;
+    overflow: hidden;
+  }
+  .sidebar.collapsed { width: 0; }
+
+  /* ÁREA DERECHA */
+  .app-right {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* TOPBAR */
+  .main-topbar {
+    height: 52px;
+    min-height: 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: 0 1px 4px rgba(28,26,22,0.06);
+    z-index: 200;
+  }
+  .topbar-left  { display:flex; align-items:center; gap:0.75rem; }
+  .topbar-right { display:flex; align-items:center; gap:0.75rem; }
+  .topbar-title { font-size:0.9rem; font-weight:500; color:var(--ink); }
+  .btn-hamburger {
+    background: none; border: none; cursor: pointer;
+    color: var(--ink); font-size: 1.2rem; padding: 0.3rem 0.4rem;
+    border-radius: 6px; line-height: 1;
+  }
+  .btn-hamburger:hover { background: var(--surface2); }
+  .btn-bell {
+    position: relative; background: none; border: 1px solid var(--border);
+    cursor: pointer; color: var(--ink2); width: 34px; height: 34px;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+  }
+  .btn-bell:hover { background: var(--surface2); }
+  .bell-count {
+    position: absolute; top: -5px; right: -5px; background: var(--accent);
+    color: #fff; font-size: 0.6rem; font-weight: 700; width: 16px; height: 16px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* NOTIFICACIONES */
+  .notif-dropdown {
+    position: fixed; top: 52px; right: 1.5rem; width: 290px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; box-shadow: 0 8px 24px rgba(28,26,22,0.14);
+    z-index: 500; display: none;
+  }
+  .notif-dropdown.open { display: block; }
+  .notif-header {
+    padding: 0.75rem 1rem; border-bottom: 1px solid var(--border);
+    font-size: 0.78rem; font-weight: 600; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .notif-list { max-height: 340px; overflow-y: auto; }
+  .notif-item {
+    display: flex; align-items: flex-start; gap: 0.65rem;
+    padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-item:hover { background: var(--surface2); }
+  .notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+  .notif-dot.red   { background: var(--red);   }
+  .notif-dot.amber { background: var(--amber); }
+  .notif-dot.green { background: var(--green); }
+  .notif-text { font-size:0.81rem; color:var(--ink); }
+  .notif-sub  { font-size:0.71rem; color:var(--ink3); margin-top:1px; }
+
+  /* MÓDULOS */
+  .modulo, .modulo-obras-wrap {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+    width: 100%;
+  }
+  .modulo.active, .modulo-obras-wrap.active { display: flex; }
+
+  .modulo-inner {
+    padding: 1.5rem 2rem;
+    width: 100%;
+    max-width: 1000px;
+    box-sizing: border-box;
+  }
+
+  /* PLACEHOLDER MÓDULOS */
+  .modulo-placeholder {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; flex: 1; color: var(--ink3);
+    gap: 0.85rem; padding: 3rem; text-align: center; width: 100%;
+  }
+  .modulo-placeholder-icon  { font-size: 2.5rem; }
+  .modulo-placeholder-title { font-family: DM Serif Display,serif; font-size: 1.25rem; color: var(--ink2); }
+  .modulo-placeholder-sub   { font-size: 0.84rem; max-width: 280px; line-height: 1.6; }
+
+  /* OVERLAY MOBILE */
+  .sb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:299; }
+  .sb-overlay.visible { display:block; }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed; height: 100vh;
+      width: 236px; transform: translateX(-236px);
+      transition: transform 0.25s ease;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar.collapsed { width: 236px; transform: translateX(-236px); }
+    .app-right { width: 100%; }
+    .modulo-inner { padding: 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -2357,10 +2454,12 @@ window.addEventListener('DOMContentLoaded', () => {
         await cargarObras();
         setSyncStatus('ok', 'Conectado');
         loading.style.display = 'none';
-        // Mostrar topbar y sidebar
+        // Mostrar topbar
         const tb = document.getElementById('main-topbar');
         if (tb) tb.style.display = 'flex';
-        // Ir al panel de obras por defecto
+        // Siempre ir al panel al iniciar (no restaurar última obra)
+        obraActiva = null;
+        localStorage.removeItem('obraActiva');
         irAlPanel();
       } catch(e) {
         setSyncStatus('error', 'Sin conexión');
@@ -4052,6 +4151,15 @@ window.irAlPanel = function() {
   // Renderizar el dashboard de obras (panel de tarjetas)
   if (typeof actualizarFiltrosAniosDash === 'function') actualizarFiltrosAniosDash();
   if (typeof renderDashboard === 'function') renderDashboard();
+  // Asegurar que obra-bar y panel se vean
+  setTimeout(() => {
+    const ob = document.querySelector('#mod-obras .obra-bar');
+    const tb = document.querySelector('#mod-obras .tabs');
+    const mn = document.querySelector('#mod-obras .main');
+    if (ob) ob.style.display = 'flex';
+    if (tb) tb.style.display = 'flex';
+    if (mn) mn.style.display = 'block';
+  }, 50);
 };
 
 // Hook en onAuthStateChanged original para cargar tareas y mostrar UI
