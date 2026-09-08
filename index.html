@@ -756,16 +756,61 @@
   </div>
 </div>
 
-<div class="obra-bar">
-  <label>Obra activa:</label>
-  <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
-  <!-- Select oculto para compatibilidad con el código -->
+<div class="obra-bar" id="obras-panel-bar">
+  <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+    <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
+    <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
+  </div>
   <select id="obra-select" onchange="cambiarObra()" style="display:none">
     <option value="">Seleccioná una obra...</option>
   </select>
   <button class="btn-new-obra" onclick="abrirModalNuevaObra()">+ Nueva obra</button>
   <button class="btn-edit-obra" id="btn-editar-obra" onclick="abrirModalEditarObra()" style="display:none">✏️ Editar obra</button>
   <button class="btn-del-obra" id="btn-eliminar-obra" onclick="eliminarObra()" style="display:none">🗑 Eliminar</button>
+</div>
+
+<!-- PANEL DE OBRAS (tarjetas) -->
+<div id="obras-panel" style="flex:1;overflow-y:auto;padding:1.5rem 2rem;display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
+    <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Panel de obras</div>
+    <div style="font-size:0.8rem;color:var(--ink3)">Resumen general de todos tus proyectos</div>
+  </div>
+  <div id="dash-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.5rem"></div>
+  <div style="display:flex;gap:0.75rem;margin-bottom:1.25rem;flex-wrap:wrap">
+    <input type="text" id="dash-buscar" placeholder="Buscar obra..." style="flex:1;min-width:180px" oninput="renderDashboard()">
+    <select id="dash-filtro-anio" onchange="renderDashboard()" style="min-width:130px"><option value="">Todos los años</option></select>
+    <select id="dash-filtro-mes" onchange="renderDashboard()" style="min-width:130px">
+      <option value="">Todos los meses</option>
+      <option value="01">Enero</option><option value="02">Febrero</option>
+      <option value="03">Marzo</option><option value="04">Abril</option>
+      <option value="05">Mayo</option><option value="06">Junio</option>
+      <option value="07">Julio</option><option value="08">Agosto</option>
+      <option value="09">Septiembre</option><option value="10">Octubre</option>
+      <option value="11">Noviembre</option><option value="12">Diciembre</option>
+    </select>
+    <select id="dash-filtro-estado" onchange="renderDashboard()" style="min-width:150px">
+      <option value="">Todos los estados</option>
+      <option value="licitacion">Pendiente</option>
+      <option value="en-curso">En curso</option>
+      <option value="terminado">Terminadas</option>
+    </select>
+    <div style="display:flex;gap:0.5rem">
+      <button id="btn-vista-cards" onclick="setVista('cards')" class="btn-vista active" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--ink);color:var(--bg);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">🃏 Tarjetas</button>
+      <button id="btn-vista-lista" onclick="setVista('lista')" class="btn-vista" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">☰ Lista</button>
+    </div>
+  </div>
+  <div id="dash-section-licitacion" style="display:none">
+    <div class="dash-section-title" style="color:var(--purple);margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
+    <div id="dash-cards-licitacion" class="dash-cards-wrap"></div>
+  </div>
+  <div id="dash-section-curso" style="display:block">
+    <div class="dash-section-title" style="margin-bottom:0.75rem">En curso <span id="dash-count-curso" class="dash-count"></span></div>
+    <div id="dash-cards-curso" class="dash-cards-wrap"></div>
+  </div>
+  <div id="dash-section-term" style="display:block">
+    <div class="dash-section-title" style="margin-bottom:0.75rem">Terminadas <span id="dash-count-term" class="dash-count"></span></div>
+    <div id="dash-cards-term" class="dash-cards-wrap"></div>
+  </div>
 </div>
 
 <div class="obra-readonly-banner" id="obra-readonly-banner">✓ Obra terminada — modo solo lectura &nbsp;·&nbsp; <span style="font-weight:400">Usá <strong>✏️ Editar obra</strong> para reactivarla</span></div>
@@ -1404,41 +1449,45 @@ function getMesLabel(fecha) {
 }
 
 function mostrarDashboard() {
-  // Mostrar módulo obras y el panel de tarjetas dentro
+  // Ocultar módulos nuevos, mostrar módulo obras
   document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.modulo-obras-wrap').forEach(e => e.classList.remove('active'));
   const modObras = document.getElementById('mod-obras');
   if (modObras) modObras.classList.add('active');
-  // Mostrar obra-bar (panel de tarjetas) y ocultar tabs/main (libro de obra)
-  const obraBar  = document.querySelector('#mod-obras .obra-bar');
-  const filtros  = document.getElementById('filtros-bar');
-  const tabs     = document.querySelector('#mod-obras .tabs');
-  const main     = document.querySelector('#mod-obras .main');
-  const header   = document.querySelector('#mod-obras .header');
-  const btnPanel = document.getElementById('btn-panel');
-  if (obraBar) obraBar.style.display = 'flex';
-  if (filtros) filtros.style.display = 'none';
-  if (tabs)    tabs.style.display    = 'none';
-  if (main)    main.style.display    = 'none';
-  if (header)  header.style.display  = 'none';
-  if (btnPanel) btnPanel.style.display = 'none';
-  // Renderizar tarjetas de obras
-  if (typeof renderDashboard === 'function') renderDashboard();
+  // Ocultar libro de obra (tabs + main), mostrar panel de obras
+  const obraBar    = document.getElementById('obras-panel-bar');
+  const obraPanel  = document.getElementById('obras-panel');
+  const filtros    = document.getElementById('filtros-bar');
+  const tabs       = document.querySelector('#mod-obras .tabs');
+  const main       = document.querySelector('#mod-obras .main');
+  const header     = document.querySelector('#mod-obras .header');
+  const btnPanel   = document.getElementById('btn-panel');
+  const readonly   = document.getElementById('obra-readonly-banner');
+  if (obraBar)   obraBar.style.display   = 'flex';
+  if (obraPanel) obraPanel.style.display = 'block';
+  if (filtros)   filtros.style.display   = 'none';
+  if (tabs)      tabs.style.display      = 'none';
+  if (main)      main.style.display      = 'none';
+  if (header)    header.style.display    = 'none';
+  if (btnPanel)  btnPanel.style.display  = 'none';
+  if (readonly)  readonly.style.display  = 'none';
+  // Renderizar tarjetas
+  actualizarFiltrosAniosDash();
+  renderDashboard();
 }
 
 function ocultarDashboard() {
-  // El dashboard viejo ya no existe, solo ocultar módulos nuevos
-  document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
-  const obraBar = document.querySelector('#mod-obras .obra-bar');
-  const tabs    = document.querySelector('#mod-obras .tabs');
-  const main    = document.querySelector('#mod-obras .main');
-  if (obraBar) obraBar.style.display = 'flex';
-  if (tabs)    tabs.style.display    = 'flex';
-  if (main)    main.style.display    = 'block';
+  // Ocultar el panel de obras, mostrar el libro de obra
+  const obraPanel = document.getElementById('obras-panel');
+  const tabs      = document.querySelector('#mod-obras .tabs');
+  const main      = document.querySelector('#mod-obras .main');
+  const filtros   = document.getElementById('filtros-bar');
   const btnPanel  = document.getElementById('btn-panel');
-  const btnLogout = document.getElementById('btn-logout');
+  if (obraPanel) obraPanel.style.display = 'none';
+  if (tabs)      tabs.style.display      = 'flex';
+  if (main)      main.style.display      = 'block';
+  if (filtros)   filtros.style.display   = 'none';
   if (btnPanel)  btnPanel.style.display  = 'inline-block';
-  if (btnLogout) btnLogout.style.display = 'inline-block';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -1450,9 +1499,8 @@ window.abrirNuevaObraDesdePanel = function() {
 };
 
 function actualizarFiltrosAniosDash() {
-  // Los filtros del panel de obras usan IDs del sistema original
   const sel = document.getElementById('dash-filtro-anio');
-  if (!sel) return; // El elemento puede no existir en el nuevo layout
+  if (!sel) return;
   const anios = new Set();
   Object.values(obras).forEach(o => {
     if (o.info.inicio) anios.add(o.info.inicio.split('-')[0]);
@@ -1467,6 +1515,8 @@ function actualizarFiltrosAniosDash() {
 }
 
 window.renderDashboard = function() {
+  // Guard: solo ejecutar si los elementos del panel de obras existen
+  if (!document.getElementById('dash-stats-grid')) return;
   const buscar = (document.getElementById('dash-buscar')?.value||'').toLowerCase();
   const anio   = document.getElementById('dash-filtro-anio')?.value || '';
   const mes    = document.getElementById('dash-filtro-mes')?.value || '';
