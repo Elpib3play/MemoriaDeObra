@@ -1423,7 +1423,6 @@ function mostrarDashboard() {
   if (header)  header.style.display  = 'none';
   if (btnPanel) btnPanel.style.display = 'none';
   // Renderizar tarjetas de obras
-  if (typeof actualizarFiltrosAniosDash === 'function') actualizarFiltrosAniosDash();
   if (typeof renderDashboard === 'function') renderDashboard();
 }
 
@@ -1451,12 +1450,14 @@ window.abrirNuevaObraDesdePanel = function() {
 };
 
 function actualizarFiltrosAniosDash() {
+  // Los filtros del panel de obras usan IDs del sistema original
+  const sel = document.getElementById('dash-filtro-anio');
+  if (!sel) return; // El elemento puede no existir en el nuevo layout
   const anios = new Set();
   Object.values(obras).forEach(o => {
     if (o.info.inicio) anios.add(o.info.inicio.split('-')[0]);
     if (o.info.fin)    anios.add(o.info.fin.split('-')[0]);
   });
-  const sel = document.getElementById('dash-filtro-anio');
   const val = sel.value;
   sel.innerHTML = '<option value="">Todos los años</option>';
   [...anios].sort().reverse().forEach(a => {
@@ -1466,10 +1467,10 @@ function actualizarFiltrosAniosDash() {
 }
 
 window.renderDashboard = function() {
-  const buscar = (document.getElementById('dash-buscar').value||'').toLowerCase();
-  const anio   = document.getElementById('dash-filtro-anio').value;
-  const mes    = document.getElementById('dash-filtro-mes').value;
-  const estado = document.getElementById('dash-filtro-estado').value;
+  const buscar = (document.getElementById('dash-buscar')?.value||'').toLowerCase();
+  const anio   = document.getElementById('dash-filtro-anio')?.value || '';
+  const mes    = document.getElementById('dash-filtro-mes')?.value || '';
+  const estado = document.getElementById('dash-filtro-estado')?.value || '';
 
   let lista = Object.entries(obras).map(([id,o])=>({id,...o}));
 
