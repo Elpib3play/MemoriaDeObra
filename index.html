@@ -1126,10 +1126,19 @@
   <div class="modulo-inner">
 
     <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;flex-wrap:wrap;gap:0.75rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.75rem">
       <div style="font-family:DM Serif Display,serif;font-size:1.35rem;color:var(--ink)">Tickets</div>
-      <button class="btn-primary" style="margin-top:0" onclick="abrirModalTicket()">+ Nuevo ticket</button>
+      <button class="btn-primary" style="margin-top:0" id="btn-nuevo-ticket" onclick="abrirModalTicket()">+ Nuevo ticket</button>
     </div>
+
+    <!-- Tabs -->
+    <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:1rem">
+      <div class="tk-tab active" onclick="switchTicketTab('listado',this)" style="padding:0.5rem 1rem;font-size:0.82rem;font-weight:500;color:var(--accent);cursor:pointer;border-bottom:2px solid var(--accent)">📋 Listado</div>
+      <div class="tk-tab" onclick="switchTicketTab('dashboard',this)" style="padding:0.5rem 1rem;font-size:0.82rem;font-weight:500;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent">📊 Dashboard</div>
+    </div>
+
+    <!-- Vista Listado -->
+    <div id="tk-vista-listado">
 
     <!-- Stats -->
     <div class="ticket-stats" id="ticket-stats"></div>
@@ -4426,6 +4435,206 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ============================================================
+// DASHBOARD DE TICKETS
+// ============================================================
+const TK_TIPOS  = ['Correctivo','Iniciativa','Proyecto','Preventivo','Actividad interna'];
+const TK_CORES  = ['#eb6834','#1baf7a','#2a78d6','#eda100','#6250d6'];
+const MESES_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+let tkPieAnualChart = null;
+let tkBarrasChart   = null;
+let tkLineaChart    = null;
+let tkPieMesChart   = null;
+
+window.switchTicketTab = function(tab, el) {
+  document.querySelectorAll('.tk-tab').forEach(t => {
+    t.style.color = 'var(--ink2)';
+    t.style.borderBottom = '2px solid transparent';
+  });
+  el.style.color = 'var(--accent)';
+  el.style.borderBottom = '2px solid var(--accent)';
+  document.getElementById('tk-vista-listado').style.display  = tab === 'listado'   ? 'block' : 'none';
+  document.getElementById('tk-vista-dashboard').style.display = tab === 'dashboard' ? 'block' : 'none';
+  document.getElementById('btn-nuevo-ticket').style.display   = tab === 'listado'   ? 'inline-block' : 'none';
+  if (tab === 'dashboard') renderDashboardTickets();
+};
+
+window.renderDashboardTickets = function() {
+  const axisC = '#898781';
+  const gridC = 'rgba(140,138,130,0.12)';
+
+  // Calcular datos desde ticketsData
+  const totalT    = ticketsData.length;
+  const resueltos = ticketsData.filter(t => t.estado === 'resuelto').length;
+  const enCurso   = ticketsData.filter(t => t.estado === 'en-curso').length;
+  const enEspera  = ticketsData.filter(t => t.estado === 'en-espera').length;
+  const noIniciado= ticketsData.filter(t => t.estado === 'no-iniciado').length;
+  const eficiencia = totalT > 0 ? Math.round(resueltos / totalT * 100) : 0;
+
+  // Stats del dashboard
+  const statsEl = document.getElementById('tk-dash-stats');
+  if (statsEl) statsEl.innerHTML = `
+    <div class="ticket-stat"><div class="ticket-stat-val">${totalT}</div><div class="ticket-stat-lbl">Total</div></div>
+    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--green)">${resueltos}</div><div class="ticket-stat-lbl">Resueltos</div></div>
+    <div class="ticket-stat"><div class="ticket-stat-val" style="color:#2a78d6">${enCurso}</div><div class="ticket-stat-lbl">En curso</div></div>
+    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--amber)">${enEspera}</div><div class="ticket-stat-lbl">En espera</div></div>
+    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--accent)">${noIniciado}</div><div class="ticket-stat-lbl">No iniciado</div></div>
+  `;
+
+  // Eficiencia
+  const bar = document.getElementById('tk-eficiencia-bar');
+  const pct = document.getElementById('tk-eficiencia-pct');
+  const sub = document.getElementById('tk-eficiencia-sub');
+  if (bar) bar.style.width = eficiencia + '%';
+  if (pct) pct.textContent = eficiencia + '%';
+  if (sub) sub.textContent = resueltos + ' de ' + totalT + ' trabajos resueltos';
+
+  // Contar por tipo
+  const porTipo = TK_TIPOS.map(t => ticketsData.filter(x => x.tipo === t).length);
+  const totalTipo = porTipo.reduce((a,b) => a+b, 0);
+
+  // Ranking
+  const rankEl = document.getElementById('tk-ranking');
+  if (rankEl) {
+    const sorted = TK_TIPOS.map((t,i) => ({t,v:porTipo[i],c:TK_CORES[i]}))
+      .sort((a,b) => b.v - a.v);
+    const maxV = sorted[0]?.v || 1;
+    rankEl.innerHTML = sorted.map((s,i) => `
+      <div style="display:flex;align-items:center;gap:0.6rem;padding:0.35rem 0;border-bottom:0.5px solid var(--border)">
+        <span style="font-size:0.65rem;color:var(--ink3);width:14px;text-align:right">${i+1}</span>
+        <div style="width:8px;height:8px;border-radius:2px;background:${s.c};flex-shrink:0"></div>
+        <span style="font-size:0.75rem;color:var(--ink);flex:1">${s.t}</span>
+        <div style="width:90px;background:var(--surface2);border-radius:3px;height:6px;flex-shrink:0">
+          <div style="width:${maxV>0?Math.round(s.v/maxV*100):0}%;height:6px;background:${s.c};border-radius:3px"></div>
+        </div>
+        <span style="font-size:0.75rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${s.v}</span>
+        <span style="font-size:0.65rem;color:var(--ink3);min-width:30px;text-align:right">${totalTipo>0?Math.round(s.v/totalTipo*100):0}%</span>
+      </div>`).join('');
+  }
+
+  // Leyenda torta anual
+  const legEl = document.getElementById('tk-pie-legend');
+  if (legEl) legEl.innerHTML = TK_TIPOS.map((t,i) => `
+    <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.65rem;color:var(--ink2)">
+      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]}"></div>${t}
+    </div>`).join('');
+
+  // Torta anual
+  if (tkPieAnualChart) tkPieAnualChart.destroy();
+  tkPieAnualChart = new Chart(document.getElementById('tk-pie-anual'), {
+    type: 'doughnut',
+    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth: 0, hoverOffset: 8 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'52%',
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} (${totalTipo>0?Math.round(c.raw/totalTipo*100):0}%)`}} }
+    }
+  });
+
+  // Datos mensuales desde ticketsData
+  const mesesData = Array.from({length:12}, (_,m) => {
+    const del_mes = ticketsData.filter(t => {
+      const f = t.fechaSol || t.creadoEn || '';
+      return f && new Date(f).getMonth() === m;
+    });
+    return {
+      trabajos:   del_mes.length,
+      terminados: del_mes.filter(t => t.estado === 'resuelto').length,
+      backlog:    del_mes.filter(t => t.estado !== 'resuelto').length
+    };
+  });
+
+  const mesesLabels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const dataTrab = mesesData.map(m => m.trabajos);
+  const dataTerm = mesesData.map(m => m.terminados);
+  const dataBack = mesesData.map(m => m.backlog);
+
+  // Plugin labels
+  const lblPlugin = { id:'lbl', afterDraw(chart) {
+    const ctx = chart.ctx; ctx.save();
+    chart.data.datasets.forEach((ds,di) => {
+      const meta = chart.getDatasetMeta(di);
+      ctx.font = '700 8px system-ui'; ctx.textAlign = 'center';
+      ctx.fillStyle = ds.borderColor || ds.backgroundColor;
+      meta.data.forEach((el,i) => { if(ds.data[i]>0) ctx.fillText(ds.data[i], el.x, el.y-5); });
+    });
+    ctx.restore();
+  }};
+
+  const baseScales = {
+    x: { ticks:{color:axisC,font:{size:8},maxRotation:0}, grid:{display:false}, border:{display:false} },
+    y: { ticks:{color:axisC,font:{size:8},maxTicksLimit:5}, grid:{color:gridC}, border:{display:false} }
+  };
+
+  // Barras
+  if (tkBarrasChart) tkBarrasChart.destroy();
+  tkBarrasChart = new Chart(document.getElementById('tk-barras'), {
+    type: 'bar',
+    data: { labels: mesesLabels, datasets: [
+      { label:'Trabajos',   data: dataTrab, backgroundColor:'#2a78d6' },
+      { label:'Terminados', data: dataTerm, backgroundColor:'#e34948' },
+      { label:'Backlog',    data: dataBack, backgroundColor:'#1baf7a' },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false, layout:{padding:{top:18}},
+      plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+      scales: baseScales
+    },
+    plugins: [lblPlugin]
+  });
+
+  // Línea
+  if (tkLineaChart) tkLineaChart.destroy();
+  tkLineaChart = new Chart(document.getElementById('tk-linea'), {
+    type: 'line',
+    data: { labels: mesesLabels, datasets: [
+      { label:'Trabajos',   data:dataTrab, borderColor:'#2a78d6', backgroundColor:'rgba(42,120,214,0.07)', borderWidth:2, pointRadius:4, pointBackgroundColor:'#2a78d6', tension:.35, fill:true },
+      { label:'Terminados', data:dataTerm, borderColor:'#e34948', backgroundColor:'transparent', borderWidth:2, pointRadius:4, pointBackgroundColor:'#e34948', tension:.35, fill:false },
+      { label:'Backlog',    data:dataBack, borderColor:'#1baf7a', backgroundColor:'transparent', borderWidth:2, pointRadius:4, pointBackgroundColor:'#1baf7a', tension:.35, fill:false },
+    ]},
+    options: { responsive:true, maintainAspectRatio:false, layout:{padding:{top:18}},
+      plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false} },
+      scales: baseScales
+    },
+    plugins: [lblPlugin]
+  });
+
+  // Inicializar filtro de mes con el mes actual
+  const sel = document.getElementById('tk-mes-sel');
+  if (sel) { sel.value = new Date().getMonth(); renderDashboardTicketsMes(); }
+};
+
+window.renderDashboardTicketsMes = function() {
+  const idx = +(document.getElementById('tk-mes-sel')?.value || 0);
+  const del_mes = ticketsData.filter(t => {
+    const f = t.fechaSol || t.creadoEn || '';
+    return f && new Date(f).getMonth() === idx;
+  });
+  const total = del_mes.length;
+  const porTipo = TK_TIPOS.map(t => del_mes.filter(x => x.tipo === t).length);
+
+  document.getElementById('tk-mes-resumen').textContent = `${MESES_FULL[idx]} — ${total} trabajo${total!==1?'s':''}`;
+
+  if (tkPieMesChart) tkPieMesChart.destroy();
+  tkPieMesChart = new Chart(document.getElementById('tk-pie-mes'), {
+    type: 'doughnut',
+    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth: 0, hoverOffset: 5 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'55%',
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}} }
+    }
+  });
+
+  document.getElementById('tk-mes-desglose').innerHTML = TK_TIPOS.map((t,i) => porTipo[i]>0 ? `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.28rem 0;border-bottom:0.5px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]};flex-shrink:0"></div>
+      <span style="font-size:0.73rem;color:var(--ink2);flex:1">${t}</span>
+      <div style="width:70px;background:var(--surface2);border-radius:3px;height:5px;flex-shrink:0">
+        <div style="width:${total>0?Math.round(porTipo[i]/total*100):0}%;height:5px;background:${TK_CORES[i]};border-radius:3px"></div>
+      </div>
+      <span style="font-size:0.78rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${porTipo[i]}</span>
+      <span style="font-size:0.65rem;color:var(--ink3);min-width:30px;text-align:right">${total>0?Math.round(porTipo[i]/total*100):0}%</span>
+    </div>` : '').join('');
+};
+
+// ============================================================
 // TICKETS
 // ============================================================
 let ticketsData = [];
@@ -4612,5 +4821,6 @@ document.getElementById('modal-ticket')?.addEventListener('click', function(e) {
 });
 
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </body>
 </html>
