@@ -57,7 +57,7 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;}
+  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;padding-bottom:4rem;}
   .panel{display:none;}.panel.active{display:block;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
@@ -171,9 +171,9 @@
   .btn-new-obra-dash{background:var(--accent);color:#fff;border:none;padding:0.55rem 1.2rem;border-radius:10px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;min-height:40px;}
   .btn-new-obra-dash:hover{background:#a5471f;}
 
-  .dashboard{display:none;min-height:100vh;background:var(--bg);}
+  .dashboard{display:none;background:var(--bg);}
   .dashboard.active{display:block;}
-  .dash-header{background:var(--ink);color:var(--bg);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .dash-header{display:none !important;}
   .dash-header-brand{font-family:'DM Serif Display',serif;font-size:1.15rem;}
   .dash-header-brand span{color:var(--accent);}
   .dash-header-right{display:flex;align-items:center;gap:1rem;}
@@ -389,6 +389,7 @@
 
   /* ===== LAYOUT CON SIDEBAR ===== */
   html,body{height:100%;overflow:hidden;}
+  .app-right{overflow:hidden;}
   .app-layout{display:flex;height:100vh;overflow:hidden;}
   .sidebar{width:236px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;z-index:300;transition:transform 0.25s ease;}
   .sb-header{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
@@ -410,7 +411,7 @@
   .sb-overlay.visible{display:block;}
 
   /* ===== TOPBAR ===== */
-  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;}
   .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;position:sticky;top:0;}
   .topbar-left{display:flex;align-items:center;gap:0.75rem;}
   .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
@@ -437,10 +438,12 @@
   .notif-sub{font-size:0.71rem;color:var(--ink3);margin-top:1px;}
 
   /* ===== MÓDULOS ===== */
-  .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+  .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;min-height:0;}
   .modulo.active{display:flex;}
+  .modulo > .modulo-inner{overflow-y:auto;flex:1;}
   .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
-  .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow:hidden;}
+  .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
+  .modulo-obras-wrap.active{display:flex;}
   .modulo-obras-wrap.active{display:flex;}
 
   /* ===== DASHBOARD ===== */
@@ -591,6 +594,9 @@
   </div>
 </div>
 
+<!-- MÓDULO OBRAS -->
+<div class="modulo-obras-wrap active" id="mod-obras">
+
 
 <!-- ========== DASHBOARD ========== -->
 <div class="dashboard" id="dashboard">
@@ -681,8 +687,6 @@
   <div class="loading-msg">Conectando con la base de datos...</div>
 </div>
 
-<!-- MÓDULO OBRAS -->
-<div class="modulo-obras-wrap active" id="mod-obras">
 <div class="header" style="display:none">
   <div class="header-brand">Memoria de <span>Obra</span></div>
   <div style="display:flex;align-items:center;gap:1.5rem">
