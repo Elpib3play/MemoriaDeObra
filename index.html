@@ -172,12 +172,12 @@
   .btn-new-obra-dash:hover{background:#a5471f;}
 
   .dashboard{display:none;background:var(--bg);}
-  .dashboard.active{display:block;}
+  .dashboard.active{display:block;width:100%;}
   .dash-header{display:none !important;}
   .dash-header-brand{font-family:'DM Serif Display',serif;font-size:1.15rem;}
   .dash-header-brand span{color:var(--accent);}
   .dash-header-right{display:flex;align-items:center;gap:1rem;}
-  .dash-main{max-width:1100px;margin:0 auto;padding:2rem;}
+  .dash-main{max-width:900px;margin:0 auto;padding:1.5rem;width:100%;}
   .dash-welcome{margin-bottom:2rem;}
   .dash-welcome h1{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--ink);margin-bottom:0.25rem;}
   .dash-welcome p{font-size:0.88rem;color:var(--ink3);}
@@ -390,7 +390,7 @@
   /* ===== LAYOUT CON SIDEBAR ===== */
   html,body{height:100%;overflow:hidden;}
   .app-right{overflow:hidden;}
-  .app-layout{display:flex;height:100vh;overflow:hidden;}
+  .app-layout{display:flex;height:100vh;overflow:hidden;width:100%;}
   .sidebar{width:236px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;z-index:300;transition:transform 0.25s ease;}
   .sb-header{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
   .sb-brand{font-family:DM Serif Display,serif;font-size:1rem;color:var(--bg);line-height:1.2;}
@@ -411,7 +411,7 @@
   .sb-overlay.visible{display:block;}
 
   /* ===== TOPBAR ===== */
-  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;width:0;}
+  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;}
   .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;position:sticky;top:0;}
   .topbar-left{display:flex;align-items:center;gap:0.75rem;}
   .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
@@ -440,7 +440,7 @@
   /* ===== MÓDULOS ===== */
   .modulo{display:none;flex:1;overflow-y:auto;flex-direction:column;min-height:0;width:100%;}
   .modulo.active{display:flex;}
-  .modulo-inner{padding:1.5rem;width:100%;max-width:980px;margin:0 auto;box-sizing:border-box;}
+  .modulo-inner{padding:1.5rem;width:100%;max-width:900px;margin:0 auto;box-sizing:border-box;}
   .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
   .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
   .modulo-obras-wrap.active{display:flex;}
@@ -3649,6 +3649,9 @@ window.navegarA = function(mod) {
   if (mod === 'obras') {
     document.getElementById('mod-obras').classList.add('active');
   } else {
+    // Cuando no es obras, ocultar el dashboard viejo también
+    const dashViejo = document.getElementById('dashboard');
+    if (dashViejo) dashViejo.classList.remove('active');
     const el = document.getElementById('mod-' + mod);
     if (el) el.classList.add('active');
   }
@@ -3912,6 +3915,9 @@ function renderCalendario() {
 // DASHBOARD NUEVO
 // ============================================================
 function renderNuevoDashboard() {
+  // Asegurar que el dashboard viejo de obras quede oculto
+  const dashViejo = document.getElementById('dashboard');
+  if (dashViejo) dashViejo.classList.remove('active');
   const hoy=new Date(); hoy.setHours(0,0,0,0);
   const df=document.getElementById('dash-fecha-nuevo');
   if(df) df.textContent=hoy.toLocaleDateString('es-AR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
@@ -3959,18 +3965,17 @@ function renderNuevoDashboard() {
 // Sobrescribir irAlPanel para usar nueva navegación
 const _origIrAlPanel = window.irAlPanel;
 window.irAlPanel = function() {
-  // Mostrar topbar
   const tb = document.getElementById('main-topbar');
   if (tb) tb.style.display = 'flex';
-  // Mostrar sidebar activo en obras
   document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
   const nav = document.getElementById('nav-obras');
   if (nav) nav.classList.add('active');
+  // Ocultar todos los módulos nuevos
+  document.querySelectorAll('.modulo').forEach(e=>e.classList.remove('active'));
   // Activar módulo obras
-  document.querySelectorAll('.modulo,.modulo-obras-wrap').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.modulo-obras-wrap').forEach(e=>e.classList.remove('active'));
   const mo = document.getElementById('mod-obras');
   if (mo) mo.classList.add('active');
-  // Ejecutar lógica original (mostrar dashboard viejo con las obras)
   if (_origIrAlPanel) _origIrAlPanel();
 };
 
