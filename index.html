@@ -391,9 +391,8 @@
 
   /* ===== LAYOUT CON SIDEBAR ===== */
   html,body{height:100%;overflow:hidden;}
-  .app-right{overflow:hidden;}
-  .app-layout{display:flex;height:100vh;overflow:hidden;width:100%;}
-  .sidebar{width:236px;background:var(--ink);display:flex;flex-direction:column;flex-shrink:0;z-index:300;transition:transform 0.25s ease;}
+  .app-layout{display:flex;height:100vh;overflow:hidden;}
+  .sidebar{width:236px;min-width:236px;background:var(--ink);display:flex;flex-direction:column;z-index:300;transition:transform 0.25s ease;}
   .sb-header{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.08);}
   .sb-brand{font-family:DM Serif Display,serif;font-size:1rem;color:var(--bg);line-height:1.2;}
   .sb-brand span{color:var(--accent);}
@@ -413,8 +412,8 @@
   .sb-overlay.visible{display:block;}
 
   /* ===== TOPBAR ===== */
-  .app-right{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0;}
-  .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;position:sticky;top:0;}
+  .app-right{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+  .main-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 4px rgba(28,26,22,0.06);z-index:200;}
   .topbar-left{display:flex;align-items:center;gap:0.75rem;}
   .btn-hamburger{background:none;border:none;cursor:pointer;color:var(--ink);font-size:1.15rem;padding:0.3rem 0.4rem;border-radius:6px;line-height:1;}
   .btn-hamburger:hover{background:var(--surface2);}
@@ -444,13 +443,13 @@
   .modulo.active{display:flex;}
   .modulo-obras-wrap{display:none;width:100%;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
   .modulo-obras-wrap.active{display:flex;}
-  .modulo-inner{padding:1.5rem 2rem;width:100%;max-width:900px;margin:0 auto;box-sizing:border-box;}
+  .modulo-inner{padding:1.5rem 2rem;width:100%;box-sizing:border-box;}
   .modulo-inner{padding:1.5rem;max-width:980px;margin:0 auto;width:100%;}
   .modulo-obras-wrap{display:none;flex:1;flex-direction:column;overflow-y:auto;min-height:0;}
   .modulo-obras-wrap.active{display:flex;}
 
   /* ===== DASHBOARD ===== */
-  .dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem;}
+  .dash-kpi{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem;}
   .kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.25rem;box-shadow:0 1px 4px rgba(28,26,22,0.04);}
   .kpi-label{font-size:0.68rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.35rem;}
   .kpi-value{font-size:2rem;font-weight:600;font-family:DM Mono,monospace;line-height:1;color:var(--ink);}
@@ -510,6 +509,8 @@
   .modulo-placeholder-title{font-family:DM Serif Display,serif;font-size:1.25rem;color:var(--ink2);}
   .modulo-placeholder-sub{font-size:0.84rem;max-width:280px;line-height:1.6;}
 
+  .sidebar.collapsed{width:0;min-width:0;overflow:hidden;}
+  .sidebar.collapsed + .app-right,.app-right.sidebar-collapsed{flex:1;}
   @media(max-width:768px){
     .sidebar{position:fixed;height:100vh;transform:translateX(-236px);}
     .sidebar.open{transform:translateX(0);}
@@ -912,6 +913,291 @@
 <div class="modulo" id="mod-tickets"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🎫</div><div class="modulo-placeholder-title">Tickets</div><div class="modulo-placeholder-sub">En desarrollo — gestión de solicitudes e incidentes.</div></div></div>
 <div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
 <div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
+
+
+
+
+<div class="modal-overlay" id="modal-finalizar-obra">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:0.75rem">✅</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Finalizar obra</div>
+    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.25rem">Al confirmar, la obra quedará marcada como <strong>Terminada</strong> con la fecha de hoy. Podés modificarla después desde <em>Editar obra</em>.</p>
+    <div class="field" style="margin-bottom:1.5rem;text-align:left">
+      <label>Fecha de finalización</label>
+      <input type="date" id="fin-obra-fecha">
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:center">
+      <button class="btn-primary" style="margin-top:0;background:var(--green)" onclick="confirmarFinalizarObra()">✓ Sí, finalizar obra</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarFinalizarObra()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INFO (reemplaza alert) -->
+<div class="modal-overlay" id="modal-info">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:0.75rem" id="modal-info-icon">✅</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.75rem" id="modal-info-titulo">Listo</div>
+    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6" id="modal-info-texto"></p>
+    <button class="btn-primary" style="margin-top:0" onclick="document.getElementById('modal-info').style.display='none'">Entendido</button>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR REGISTRO -->
+<div class="modal-overlay" id="modal-confirm-reg">
+  <div class="modal-box" style="max-width:380px;text-align:center">
+    <div style="font-size:2rem;margin-bottom:0.75rem">🗑️</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Eliminar registro</div>
+    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.5rem" id="confirm-reg-texto">¿Estás seguro que querés eliminar este registro? Esta acción no se puede deshacer.</p>
+    <div style="display:flex;gap:0.75rem;justify-content:center">
+      <button class="btn-primary" style="margin-top:0;background:var(--red)" onclick="confirmarEliminarRegistro()">Sí, eliminar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarConfirmReg()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INICIAR OBRA -->
+<div class="modal-overlay" id="modal-iniciar-obra">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2rem;margin-bottom:0.75rem">🏗️</div>
+    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Iniciar obra</div>
+    <p style="font-size:0.85rem;color:var(--ink2);margin-bottom:1.25rem">La licitación ya fue cerrada. Ingresá la fecha de inicio de obra para activarla.</p>
+    <div class="field" style="text-align:left;margin-bottom:1.5rem">
+      <label>Fecha de inicio de obra *</label>
+      <input type="date" id="iniciar-obra-fecha">
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:center">
+      <button class="btn-primary" style="margin-top:0;background:#7C3AED" onclick="confirmarIniciarObra()">✓ Iniciar obra</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="document.getElementById('modal-iniciar-obra').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMPLETAR LICITACIÓN -->
+<div class="modal-overlay" id="modal-completar-lic">
+  <div class="modal-completar-lic-box">
+    <div style="font-size:1.5rem;margin-bottom:0.5rem">📋</div>
+    <div class="modal-title">Estado de licitación</div>
+    <div style="font-size:0.82rem;color:var(--ink3);margin-bottom:1.25rem">Indicá si hubo adjudicación para continuar con la obra.</div>
+
+    <!-- Pregunta adjudicación -->
+    <div class="field" style="margin-bottom:1.25rem">
+      <label>¿Hubo adjudicación?</label>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button id="btn-adj-si" onclick="setAdjudicacion(true)"
+          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✓ Sí
+        </button>
+        <button id="btn-adj-no" onclick="setAdjudicacion(false)"
+          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✗ No
+        </button>
+      </div>
+    </div>
+
+    <!-- Campos adjudicación (solo si Sí) -->
+    <div id="lic-campos-adj" style="display:none">
+      <div class="form-grid" style="margin-bottom:1rem">
+        <div class="field"><label>Fecha de adjudicación *</label><input type="date" id="lic-cierre-fecha"></div>
+        <div class="field"><label>Proveedor adjudicado *</label><input type="text" id="lic-cierre-proveedor" placeholder="Empresa seleccionada"></div>
+      </div>
+      <div class="field" style="margin-bottom:1rem">
+        <label>Monto adjudicado ($)</label>
+        <input type="text" id="lic-cierre-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)">
+      </div>
+    </div>
+
+    <!-- Nota siempre visible -->
+    <div class="field" style="margin-bottom:1.25rem">
+      <label>Notas</label>
+      <textarea id="lic-cierre-notas" placeholder="Observaciones, estado del proceso..." style="min-height:70px"></textarea>
+    </div>
+
+    <!-- Botones dinámicos -->
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap" id="lic-botones">
+      <button class="btn-primary" style="margin-top:0;background:#7C3AED;display:none" id="btn-lic-continuar" onclick="cerrarLicitacionYCrearObra()">Continuar → Crear obra</button>
+      <button class="btn-primary" style="margin-top:0;background:var(--ink);display:none" id="btn-lic-volver" onclick="guardarNotaYVolverPanel()">Guardar nota y volver al panel</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="document.getElementById('modal-completar-lic').style.display='none'">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PREVIO: ¿hubo compras? -->
+<div class="modal-overlay" id="modal-previo-compras">
+  <div class="modal-previo-box">
+    <div style="font-size:2.5rem;margin-bottom:1rem">🏗️</div>
+    <div class="modal-previo-title">Nueva obra</div>
+    <div class="modal-previo-sub">¿Esta obra tuvo un proceso de compras o licitación previo al inicio de los trabajos?</div>
+    <div class="modal-previo-btns">
+      <button class="btn-previo-si" onclick="elegirConCompras()">
+        📋 Sí, registrar proceso de compras
+      </button>
+      <button class="btn-previo-no" onclick="elegirSinCompras()">
+        ➜ No, crear obra directamente
+      </button>
+      <button class="btn-previo-cancel" onclick="cerrarModalPrevio();irAlPanel()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMPRAS STANDALONE (antes de crear obra) -->
+<div class="modal-overlay" id="modal-compras-standalone">
+  <div class="modal-compras-box">
+    <div class="modal-title">Proceso de compras / Licitación</div>
+    <div style="font-size:0.82rem;color:var(--ink3);margin-bottom:1.25rem">Indicá el inicio del proceso. Si todavía no hay adjudicación, la obra quedará en estado <strong>Pendiente</strong>.</div>
+
+    <!-- Nombre de la obra/proyecto -->
+    <div class="field" style="margin-bottom:1rem">
+      <label>Nombre de la obra / proyecto *</label>
+      <input type="text" id="pre-comp-nombre" placeholder="Ej: Reforma Lactario — Planta baja">
+    </div>
+
+    <!-- Fecha inicio (siempre visible, obligatoria) -->
+    <div class="field" style="margin-bottom:1rem">
+      <label>Inicio gestión compras *</label>
+      <input type="date" id="pre-comp-inicio">
+    </div>
+
+    <!-- ¿Hubo adjudicación? -->
+    <div class="field" style="margin-bottom:1rem">
+      <label>¿Hubo adjudicación?</label>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button id="pre-btn-adj-si" onclick="setPreAdjudicacion(true)"
+          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✓ Sí
+        </button>
+        <button id="pre-btn-adj-no" onclick="setPreAdjudicacion(false)"
+          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✗ No — crear como Pendiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Campos adjudicación (solo si Sí) -->
+    <div id="pre-campos-adj" style="display:none">
+      <div class="field" style="margin-bottom:1rem">
+        <label>Fecha adjudicación *</label>
+        <input type="date" id="pre-comp-fin">
+      </div>
+      <div class="form-grid" style="margin-bottom:1rem">
+        <div class="field"><label>Proveedor adjudicado *</label><input type="text" id="pre-comp-proveedor" placeholder="Empresa seleccionada"></div>
+        <div class="field"><label>Monto adjudicado ($)</label><input type="text" id="pre-comp-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
+      </div>
+    </div>
+
+    <!-- Nota siempre visible -->
+    <div class="field" style="margin-bottom:1.25rem">
+      <label>Notas del proceso</label>
+      <textarea id="pre-comp-notas" placeholder="Proveedores consultados, observaciones..." style="min-height:70px"></textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+      <button class="btn-primary" style="margin-top:0;display:none" id="pre-btn-continuar" onclick="confirmarComprasYCrearObra()">Continuar → Crear obra</button>
+      <button class="btn-primary" style="margin-top:0;background:var(--ink);display:none" id="pre-btn-pendiente" onclick="confirmarComprasYCrearObra()">Crear como Pendiente</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalComprasStandalone();irAlPanel()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL OBRA -->
+<div class="modal-overlay" id="modal-obra">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-obra-titulo">Nueva obra</div>
+
+    <!-- Pregunta fecha inicio (solo en modo completar) -->
+    <div class="field" id="fo-inicio-pregunta" style="display:none;margin-bottom:1.25rem">
+      <label>¿Tenés fecha de inicio de obra?</label>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button type="button" id="fo-inicio-si" onclick="setTieneFecha(true)"
+          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✓ Sí
+        </button>
+        <button type="button" id="fo-inicio-no" onclick="setTieneFecha(false)"
+          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
+          ✗ No
+        </button>
+      </div>
+    </div>
+    <div class="field" id="fo-inicio-campo" style="display:none;margin-bottom:1rem">
+      <label>Fecha de inicio *</label>
+      <input type="date" id="fo-inicio">
+    </div>
+
+    <div class="field" style="margin-bottom:1rem">
+      <label>Nombre de la obra *</label>
+      <input type="text" id="fo-nombre" placeholder="Ej: Edificio Belgrano — Planta baja">
+    </div>
+    <div class="form-grid" id="fo-prov-ubic-grid" style="margin-bottom:1rem">
+      <div class="field"><label>Proveedor / Empresa</label>
+        <input type="text" id="fo-proveedor" placeholder="Nombre del proveedor o empresa">
+      </div>
+      <div class="field"><label>Ubicación</label>
+        <input type="text" id="fo-ubicacion" placeholder="Lugar del predio donde se va a intervenir">
+        <span class="hint">Lugar del predio donde se va a intervenir</span>
+      </div>
+    </div>
+    <div class="form-grid" id="fo-estado-grid" style="margin-bottom:1rem">
+      <div id="fo-inicio-hint" style="display:none"></div>
+      <div class="field"><label>Estado de obra</label>
+        <select id="fo-estado" onchange="toggleFechaFinObra()">
+          <option value="en-curso">En curso</option>
+          <option value="terminado">Terminado</option>
+        </select>
+      </div>
+    </div>
+    <!-- Campos contratación directa (monto/notas) -->
+    <div id="fo-contratacion-directa-fields" style="display:none;margin-bottom:1rem">
+      <div class="form-grid">
+        <div class="field"><label>Monto contratado ($) <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+          <input type="text" id="fo-monto-directo" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)">
+        </div>
+        <div class="field"><label>Notas / Condiciones <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+          <input type="text" id="fo-notas-directo" placeholder="Ej: Pago en 2 cuotas">
+        </div>
+      </div>
+    </div>
+    <div id="fo-contacto-block">
+    <div style="font-size:0.75rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Contacto del proveedor <span style="font-weight:400;font-style:italic">(opcional)</span></div>
+    <div class="form-grid" style="margin-bottom:1rem">
+      <div class="field"><label>Email</label><input type="email" id="fo-email" placeholder="contacto@empresa.com"></div>
+      <div class="field"><label>Teléfono / Celular</label><input type="text" id="fo-tel" placeholder="Ej: +54 11 1234-5678"></div>
+    </div>
+    </div>
+    <div class="obra-fin-row" id="obra-fin-row" style="margin-bottom:1rem">
+      <div class="field"><label>Fecha de terminación</label>
+        <input type="date" id="fo-fin">
+        <span class="hint">Al guardar se calculará la duración total</span>
+      </div>
+    </div>
+
+    <div class="field" id="fo-notas-obra-block" style="margin-bottom:1rem">
+      <label>Notas <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
+      <textarea id="fo-notas-obra" placeholder="Observaciones generales de la obra..." style="min-height:70px"></textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
+      <button class="btn-primary" style="margin-top:0" id="btn-guardar-obra" onclick="guardarObra()">Crear obra</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra().then(()=>irAlPanel())">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal-box" style="max-width:400px;text-align:center">
+    <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
+    <div class="modal-title">Eliminar obra</div>
+    <p style="font-size:0.9rem;color:var(--ink2);margin-bottom:1.5rem" id="confirm-texto"></p>
+    <div style="display:flex;gap:0.75rem;justify-content:center">
+      <button class="btn-primary" style="margin-top:0;background:var(--red)" onclick="confirmarEliminar()">Sí, eliminar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarConfirm()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE SDK -->
+</div><!-- fin app-right -->
+</div><!-- fin app-layout -->
 
 
 <script type="module">
@@ -2039,8 +2325,8 @@ window.confirmarFinalizarObra = async function() {
 window.logoutApp = async function() {
   obraActiva = null;
   localStorage.removeItem('obraActiva');
-  document.getElementById('dashboard').classList.remove('active');
   await signOut(auth);
+  window.location.reload();
 };
 
 // ========== INIT ==========
@@ -2070,9 +2356,12 @@ window.addEventListener('DOMContentLoaded', () => {
       try {
         await cargarObras();
         setSyncStatus('ok', 'Conectado');
-        // Mostrar dashboard al entrar
         loading.style.display = 'none';
-        mostrarDashboard();
+        // Mostrar topbar y sidebar
+        const tb = document.getElementById('main-topbar');
+        if (tb) tb.style.display = 'flex';
+        // Ir al panel de obras por defecto
+        irAlPanel();
       } catch(e) {
         setSyncStatus('error', 'Sin conexión');
         console.error(e);
@@ -3430,8 +3719,17 @@ window.navegarA = function(mod) {
 };
 
 window.toggleSidebar = function() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sb-overlay').classList.toggle('visible');
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sb-overlay');
+  if (window.innerWidth <= 768) {
+    // Mobile: deslizar desde la izquierda
+    sb.classList.toggle('open');
+    ov.classList.toggle('visible');
+  } else {
+    // Desktop: colapsar/expandir el sidebar
+    sb.classList.toggle('collapsed');
+    document.getElementById('app-right').classList.toggle('sidebar-collapsed');
+  }
 };
 
 // ============================================================
@@ -3726,26 +4024,32 @@ function renderNuevoDashboard() {
 // ============================================================
 // Sobrescribir irAlPanel para usar nueva navegación
 window.irAlPanel = function() {
+  // Mostrar topbar
   const tb = document.getElementById('main-topbar');
   if (tb) tb.style.display = 'flex';
-  // Sidebar
+  // Sidebar activo en obras
   document.querySelectorAll('.sb-item').forEach(e=>e.classList.remove('active'));
   const nav = document.getElementById('nav-obras');
   if (nav) nav.classList.add('active');
   const tt = document.getElementById('topbar-title');
   if (tt) tt.textContent = 'Memorias de Obra';
-  // Ocultar módulos nuevos, mostrar módulo obras
+  // Ocultar todos los módulos nuevos
   document.querySelectorAll('.modulo').forEach(e=>e.classList.remove('active'));
+  // Mostrar módulo obras
   document.querySelectorAll('.modulo-obras-wrap').forEach(e=>e.classList.remove('active'));
   const mo = document.getElementById('mod-obras');
   if (mo) mo.classList.add('active');
-  // Mostrar panel de obras dentro
-  const obraBar = document.querySelector('.obra-bar');
-  const tabs = document.querySelector('.tabs');
-  const main = document.querySelector('.main');
+  // Mostrar elementos de obras (obra-bar, tabs, main)
+  const obraBar = document.querySelector('#mod-obras .obra-bar');
+  const tabs    = document.querySelector('#mod-obras .tabs');
+  const main    = document.querySelector('#mod-obras .main');
   if (obraBar) obraBar.style.display = 'flex';
-  if (tabs) tabs.style.display = 'flex';
-  if (main) main.style.display = 'block';
+  if (tabs)    tabs.style.display    = 'flex';
+  if (main)    main.style.display    = 'block';
+  // Ocultar header viejo de obras (ya está en display:none pero por si acaso)
+  const headerObra = document.querySelector('#mod-obras .header');
+  if (headerObra) headerObra.style.display = 'none';
+  // Renderizar el dashboard de obras (panel de tarjetas)
   if (typeof actualizarFiltrosAniosDash === 'function') actualizarFiltrosAniosDash();
   if (typeof renderDashboard === 'function') renderDashboard();
 };
@@ -3772,295 +4076,12 @@ function actualizarAvatar(user) {
 // Interceptar el onAuthStateChanged ya definido en el código original
 // Lo hacemos observando el estado de auth directamente
 onAuthStateChanged(auth, async (user) => {
-  actualizarAvatar(user);
   if (user) {
+    actualizarAvatar(user);
     await cargarTareas();
   }
 });
 
 </script>
-<div class="modal-overlay" id="modal-finalizar-obra">
-  <div class="modal-box" style="max-width:400px;text-align:center">
-    <div style="font-size:2.5rem;margin-bottom:0.75rem">✅</div>
-    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Finalizar obra</div>
-    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.25rem">Al confirmar, la obra quedará marcada como <strong>Terminada</strong> con la fecha de hoy. Podés modificarla después desde <em>Editar obra</em>.</p>
-    <div class="field" style="margin-bottom:1.5rem;text-align:left">
-      <label>Fecha de finalización</label>
-      <input type="date" id="fin-obra-fecha">
-    </div>
-    <div style="display:flex;gap:0.75rem;justify-content:center">
-      <button class="btn-primary" style="margin-top:0;background:var(--green)" onclick="confirmarFinalizarObra()">✓ Sí, finalizar obra</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarFinalizarObra()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL INFO (reemplaza alert) -->
-<div class="modal-overlay" id="modal-info">
-  <div class="modal-box" style="max-width:400px;text-align:center">
-    <div style="font-size:2.5rem;margin-bottom:0.75rem" id="modal-info-icon">✅</div>
-    <div class="modal-title" style="justify-content:center;margin-bottom:0.75rem" id="modal-info-titulo">Listo</div>
-    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.5rem;line-height:1.6" id="modal-info-texto"></p>
-    <button class="btn-primary" style="margin-top:0" onclick="document.getElementById('modal-info').style.display='none'">Entendido</button>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR ELIMINAR REGISTRO -->
-<div class="modal-overlay" id="modal-confirm-reg">
-  <div class="modal-box" style="max-width:380px;text-align:center">
-    <div style="font-size:2rem;margin-bottom:0.75rem">🗑️</div>
-    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Eliminar registro</div>
-    <p style="font-size:0.88rem;color:var(--ink2);margin-bottom:1.5rem" id="confirm-reg-texto">¿Estás seguro que querés eliminar este registro? Esta acción no se puede deshacer.</p>
-    <div style="display:flex;gap:0.75rem;justify-content:center">
-      <button class="btn-primary" style="margin-top:0;background:var(--red)" onclick="confirmarEliminarRegistro()">Sí, eliminar</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarConfirmReg()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL INICIAR OBRA -->
-<div class="modal-overlay" id="modal-iniciar-obra">
-  <div class="modal-box" style="max-width:400px;text-align:center">
-    <div style="font-size:2rem;margin-bottom:0.75rem">🏗️</div>
-    <div class="modal-title" style="justify-content:center;margin-bottom:0.5rem">Iniciar obra</div>
-    <p style="font-size:0.85rem;color:var(--ink2);margin-bottom:1.25rem">La licitación ya fue cerrada. Ingresá la fecha de inicio de obra para activarla.</p>
-    <div class="field" style="text-align:left;margin-bottom:1.5rem">
-      <label>Fecha de inicio de obra *</label>
-      <input type="date" id="iniciar-obra-fecha">
-    </div>
-    <div style="display:flex;gap:0.75rem;justify-content:center">
-      <button class="btn-primary" style="margin-top:0;background:#7C3AED" onclick="confirmarIniciarObra()">✓ Iniciar obra</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="document.getElementById('modal-iniciar-obra').style.display='none'">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL COMPLETAR LICITACIÓN -->
-<div class="modal-overlay" id="modal-completar-lic">
-  <div class="modal-completar-lic-box">
-    <div style="font-size:1.5rem;margin-bottom:0.5rem">📋</div>
-    <div class="modal-title">Estado de licitación</div>
-    <div style="font-size:0.82rem;color:var(--ink3);margin-bottom:1.25rem">Indicá si hubo adjudicación para continuar con la obra.</div>
-
-    <!-- Pregunta adjudicación -->
-    <div class="field" style="margin-bottom:1.25rem">
-      <label>¿Hubo adjudicación?</label>
-      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
-        <button id="btn-adj-si" onclick="setAdjudicacion(true)"
-          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✓ Sí
-        </button>
-        <button id="btn-adj-no" onclick="setAdjudicacion(false)"
-          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✗ No
-        </button>
-      </div>
-    </div>
-
-    <!-- Campos adjudicación (solo si Sí) -->
-    <div id="lic-campos-adj" style="display:none">
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="field"><label>Fecha de adjudicación *</label><input type="date" id="lic-cierre-fecha"></div>
-        <div class="field"><label>Proveedor adjudicado *</label><input type="text" id="lic-cierre-proveedor" placeholder="Empresa seleccionada"></div>
-      </div>
-      <div class="field" style="margin-bottom:1rem">
-        <label>Monto adjudicado ($)</label>
-        <input type="text" id="lic-cierre-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)">
-      </div>
-    </div>
-
-    <!-- Nota siempre visible -->
-    <div class="field" style="margin-bottom:1.25rem">
-      <label>Notas</label>
-      <textarea id="lic-cierre-notas" placeholder="Observaciones, estado del proceso..." style="min-height:70px"></textarea>
-    </div>
-
-    <!-- Botones dinámicos -->
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap" id="lic-botones">
-      <button class="btn-primary" style="margin-top:0;background:#7C3AED;display:none" id="btn-lic-continuar" onclick="cerrarLicitacionYCrearObra()">Continuar → Crear obra</button>
-      <button class="btn-primary" style="margin-top:0;background:var(--ink);display:none" id="btn-lic-volver" onclick="guardarNotaYVolverPanel()">Guardar nota y volver al panel</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="document.getElementById('modal-completar-lic').style.display='none'">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PREVIO: ¿hubo compras? -->
-<div class="modal-overlay" id="modal-previo-compras">
-  <div class="modal-previo-box">
-    <div style="font-size:2.5rem;margin-bottom:1rem">🏗️</div>
-    <div class="modal-previo-title">Nueva obra</div>
-    <div class="modal-previo-sub">¿Esta obra tuvo un proceso de compras o licitación previo al inicio de los trabajos?</div>
-    <div class="modal-previo-btns">
-      <button class="btn-previo-si" onclick="elegirConCompras()">
-        📋 Sí, registrar proceso de compras
-      </button>
-      <button class="btn-previo-no" onclick="elegirSinCompras()">
-        ➜ No, crear obra directamente
-      </button>
-      <button class="btn-previo-cancel" onclick="cerrarModalPrevio();irAlPanel()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL COMPRAS STANDALONE (antes de crear obra) -->
-<div class="modal-overlay" id="modal-compras-standalone">
-  <div class="modal-compras-box">
-    <div class="modal-title">Proceso de compras / Licitación</div>
-    <div style="font-size:0.82rem;color:var(--ink3);margin-bottom:1.25rem">Indicá el inicio del proceso. Si todavía no hay adjudicación, la obra quedará en estado <strong>Pendiente</strong>.</div>
-
-    <!-- Nombre de la obra/proyecto -->
-    <div class="field" style="margin-bottom:1rem">
-      <label>Nombre de la obra / proyecto *</label>
-      <input type="text" id="pre-comp-nombre" placeholder="Ej: Reforma Lactario — Planta baja">
-    </div>
-
-    <!-- Fecha inicio (siempre visible, obligatoria) -->
-    <div class="field" style="margin-bottom:1rem">
-      <label>Inicio gestión compras *</label>
-      <input type="date" id="pre-comp-inicio">
-    </div>
-
-    <!-- ¿Hubo adjudicación? -->
-    <div class="field" style="margin-bottom:1rem">
-      <label>¿Hubo adjudicación?</label>
-      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
-        <button id="pre-btn-adj-si" onclick="setPreAdjudicacion(true)"
-          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✓ Sí
-        </button>
-        <button id="pre-btn-adj-no" onclick="setPreAdjudicacion(false)"
-          style="flex:1;padding:0.65rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.9rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✗ No — crear como Pendiente
-        </button>
-      </div>
-    </div>
-
-    <!-- Campos adjudicación (solo si Sí) -->
-    <div id="pre-campos-adj" style="display:none">
-      <div class="field" style="margin-bottom:1rem">
-        <label>Fecha adjudicación *</label>
-        <input type="date" id="pre-comp-fin">
-      </div>
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="field"><label>Proveedor adjudicado *</label><input type="text" id="pre-comp-proveedor" placeholder="Empresa seleccionada"></div>
-        <div class="field"><label>Monto adjudicado ($)</label><input type="text" id="pre-comp-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
-      </div>
-    </div>
-
-    <!-- Nota siempre visible -->
-    <div class="field" style="margin-bottom:1.25rem">
-      <label>Notas del proceso</label>
-      <textarea id="pre-comp-notas" placeholder="Proveedores consultados, observaciones..." style="min-height:70px"></textarea>
-    </div>
-
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
-      <button class="btn-primary" style="margin-top:0;display:none" id="pre-btn-continuar" onclick="confirmarComprasYCrearObra()">Continuar → Crear obra</button>
-      <button class="btn-primary" style="margin-top:0;background:var(--ink);display:none" id="pre-btn-pendiente" onclick="confirmarComprasYCrearObra()">Crear como Pendiente</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalComprasStandalone();irAlPanel()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL OBRA -->
-<div class="modal-overlay" id="modal-obra">
-  <div class="modal-box">
-    <div class="modal-title" id="modal-obra-titulo">Nueva obra</div>
-
-    <!-- Pregunta fecha inicio (solo en modo completar) -->
-    <div class="field" id="fo-inicio-pregunta" style="display:none;margin-bottom:1.25rem">
-      <label>¿Tenés fecha de inicio de obra?</label>
-      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
-        <button type="button" id="fo-inicio-si" onclick="setTieneFecha(true)"
-          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✓ Sí
-        </button>
-        <button type="button" id="fo-inicio-no" onclick="setTieneFecha(false)"
-          style="flex:1;padding:0.55rem;border-radius:8px;border:2px solid var(--border);background:var(--surface2);font-family:'DM Sans',sans-serif;font-size:0.88rem;cursor:pointer;font-weight:500;transition:all 0.15s">
-          ✗ No
-        </button>
-      </div>
-    </div>
-    <div class="field" id="fo-inicio-campo" style="display:none;margin-bottom:1rem">
-      <label>Fecha de inicio *</label>
-      <input type="date" id="fo-inicio">
-    </div>
-
-    <div class="field" style="margin-bottom:1rem">
-      <label>Nombre de la obra *</label>
-      <input type="text" id="fo-nombre" placeholder="Ej: Edificio Belgrano — Planta baja">
-    </div>
-    <div class="form-grid" id="fo-prov-ubic-grid" style="margin-bottom:1rem">
-      <div class="field"><label>Proveedor / Empresa</label>
-        <input type="text" id="fo-proveedor" placeholder="Nombre del proveedor o empresa">
-      </div>
-      <div class="field"><label>Ubicación</label>
-        <input type="text" id="fo-ubicacion" placeholder="Lugar del predio donde se va a intervenir">
-        <span class="hint">Lugar del predio donde se va a intervenir</span>
-      </div>
-    </div>
-    <div class="form-grid" id="fo-estado-grid" style="margin-bottom:1rem">
-      <div id="fo-inicio-hint" style="display:none"></div>
-      <div class="field"><label>Estado de obra</label>
-        <select id="fo-estado" onchange="toggleFechaFinObra()">
-          <option value="en-curso">En curso</option>
-          <option value="terminado">Terminado</option>
-        </select>
-      </div>
-    </div>
-    <!-- Campos contratación directa (monto/notas) -->
-    <div id="fo-contratacion-directa-fields" style="display:none;margin-bottom:1rem">
-      <div class="form-grid">
-        <div class="field"><label>Monto contratado ($) <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
-          <input type="text" id="fo-monto-directo" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)">
-        </div>
-        <div class="field"><label>Notas / Condiciones <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
-          <input type="text" id="fo-notas-directo" placeholder="Ej: Pago en 2 cuotas">
-        </div>
-      </div>
-    </div>
-    <div id="fo-contacto-block">
-    <div style="font-size:0.75rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Contacto del proveedor <span style="font-weight:400;font-style:italic">(opcional)</span></div>
-    <div class="form-grid" style="margin-bottom:1rem">
-      <div class="field"><label>Email</label><input type="email" id="fo-email" placeholder="contacto@empresa.com"></div>
-      <div class="field"><label>Teléfono / Celular</label><input type="text" id="fo-tel" placeholder="Ej: +54 11 1234-5678"></div>
-    </div>
-    </div>
-    <div class="obra-fin-row" id="obra-fin-row" style="margin-bottom:1rem">
-      <div class="field"><label>Fecha de terminación</label>
-        <input type="date" id="fo-fin">
-        <span class="hint">Al guardar se calculará la duración total</span>
-      </div>
-    </div>
-
-    <div class="field" id="fo-notas-obra-block" style="margin-bottom:1rem">
-      <label>Notas <span style="font-weight:400;font-style:italic;font-size:0.8rem">(opcional)</span></label>
-      <textarea id="fo-notas-obra" placeholder="Observaciones generales de la obra..." style="min-height:70px"></textarea>
-    </div>
-
-    <div style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
-      <button class="btn-primary" style="margin-top:0" id="btn-guardar-obra" onclick="guardarObra()">Crear obra</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalObra().then(()=>irAlPanel())">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR ELIMINAR -->
-<div class="modal-overlay" id="modal-confirm">
-  <div class="modal-box" style="max-width:400px;text-align:center">
-    <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
-    <div class="modal-title">Eliminar obra</div>
-    <p style="font-size:0.9rem;color:var(--ink2);margin-bottom:1.5rem" id="confirm-texto"></p>
-    <div style="display:flex;gap:0.75rem;justify-content:center">
-      <button class="btn-primary" style="margin-top:0;background:var(--red)" onclick="confirmarEliminar()">Sí, eliminar</button>
-      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarConfirm()">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- FIREBASE SDK -->
-</div><!-- fin app-right -->
-</div><!-- fin app-layout -->
-
-
 </body>
 </html>
