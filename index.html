@@ -4714,7 +4714,7 @@ let ticketContador = 0;
 
 async function cargarTickets() {
   try {
-    const q = query(collection(db, 'tickets'), orderBy('creadoEn','desc'));
+    const q = query(collection(db, 'tickets'), orderBy('numero','asc'));
     const snap = await getDocs(q);
     ticketsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     // Calcular próximo ID
