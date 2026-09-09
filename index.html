@@ -1193,6 +1193,73 @@
       </table>
     </div>
 
+    </div><!-- fin tk-vista-listado -->
+
+    <!-- Vista Dashboard -->
+    <div id="tk-vista-dashboard" style="display:none">
+      <div class="ticket-stats" id="tk-dash-stats"></div>
+      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
+          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Acciones anuales — distribución por tipo</div>
+          <div style="position:relative;height:200px"><canvas id="tk-pie-anual" role="img" aria-label="Torta anual por tipo"></canvas></div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem;justify-content:center" id="tk-pie-legend"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
+          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.6rem">Ranking por tipo — total anual</div>
+          <div id="tk-ranking"></div>
+          <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+            <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Eficiencia de resolución</div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <div style="flex:1;background:var(--surface2);border-radius:4px;height:10px;overflow:hidden">
+                <div id="tk-eficiencia-bar" style="height:10px;background:var(--green);border-radius:4px;width:0%"></div>
+              </div>
+              <span id="tk-eficiencia-pct" style="font-size:0.9rem;font-weight:600;color:var(--green);font-family:DM Mono,monospace">0%</span>
+            </div>
+            <div id="tk-eficiencia-sub" style="font-size:0.65rem;color:var(--ink3);margin-top:0.3rem"></div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.85rem">
+        <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Trabajos, terminados y backlog — por mes</div>
+        <div style="position:relative;height:175px"><canvas id="tk-barras" role="img" aria-label="Barras mensuales"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem">
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#2a78d6"></div>Trabajos</div>
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#e34948"></div>Terminados</div>
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#1baf7a"></div>Backlog</div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.85rem">
+        <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Tendencia mensual</div>
+        <div style="position:relative;height:160px"><canvas id="tk-linea" role="img" aria-label="Línea de tendencia mensual"></canvas></div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem">
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#2a78d6"></div>Trabajos</div>
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#e34948"></div>Terminados</div>
+          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#1baf7a"></div>Backlog</div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem">
+          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Distribución mensual por tipo</div>
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <span style="font-size:0.72rem;color:var(--ink2)">Mes:</span>
+            <select id="tk-mes-sel" onchange="renderDashboardTicketsMes()" style="font-size:0.75rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--ink)">
+              <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option>
+              <option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option>
+              <option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option>
+              <option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:190px 1fr;gap:1.25rem;align-items:center">
+          <div style="position:relative;height:165px"><canvas id="tk-pie-mes" role="img" aria-label="Torta mensual por tipo"></canvas></div>
+          <div>
+            <div id="tk-mes-resumen" style="font-size:0.72rem;color:var(--ink2);margin-bottom:0.6rem;font-weight:500"></div>
+            <div id="tk-mes-desglose"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- fin tk-vista-dashboard -->
+
   </div>
 </div>
 
