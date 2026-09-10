@@ -2791,15 +2791,14 @@ window.addEventListener('DOMContentLoaded', () => {
       btnOut.style.display = 'inline-block';
       setSyncStatus('loading', 'Conectando...');
       try {
+        // Limpiar obra activa ANTES de cargar para siempre ir al panel
+        obraActiva = null;
+        localStorage.removeItem('obraActiva');
         await cargarObras();
         setSyncStatus('ok', 'Conectado');
         loading.style.display = 'none';
-        // Mostrar topbar
         const tb = document.getElementById('main-topbar');
         if (tb) tb.style.display = 'flex';
-        // Siempre ir al panel al iniciar (no restaurar última obra)
-        obraActiva = null;
-        localStorage.removeItem('obraActiva');
         irAlPanel();
       } catch(e) {
         setSyncStatus('error', 'Sin conexión');
