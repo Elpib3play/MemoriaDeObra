@@ -1660,11 +1660,9 @@ let vistaActual = 'cards'; // 'cards' | 'lista'
 
 window.setFiltroEstado = function(estado) {
   const sel = document.getElementById('dash-filtro-estado');
-  if (sel) {
-    // Mapear los valores internos al valor del select
-    const map = { 'licitacion':'licitacion', 'en-curso':'curso', 'terminado':'terminado', '':'' };
-    sel.value = map[estado] !== undefined ? map[estado] : estado;
-  }
+  if (!sel) return;
+  const map = {'':'', 'licitacion':'licitacion', 'en-curso':'curso', 'terminado':'terminado'};
+  sel.value = map[estado] !== undefined ? map[estado] : estado;
   renderDashboard();
 };
 
@@ -1797,17 +1795,13 @@ window.renderDashboard = function() {
   const hayFiltro     = buscar || anio || mes || estado;
 
   document.getElementById('dash-stats-grid').innerHTML = `
-    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('')" title="Ver todas las obras">
+    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('')">
       <div class="dash-stat-label">Total obras${hayFiltro?' <span style="font-size:0.65rem;color:var(--accent);font-weight:500">(filtrado)</span>':''}</div>
       <div class="dash-stat-value">${hayFiltro?lista.length:totalObras}</div>
     </div>
-    ${totalPend>0?`<div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('licitacion')" title="Ver pendientes"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
-    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('en-curso')" title="Ver en curso">
-      <div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div>
-    </div>
-    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('terminado')" title="Ver terminadas">
-      <div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div>
-    </div>
+    ${totalPend>0?`<div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('licitacion')"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
+    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('en-curso')"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
+    <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('terminado')"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
   `;
 
   document.getElementById('dash-count-licitacion').textContent = pendientes.length;
@@ -1992,62 +1986,59 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
       </tr>`;
     }).join('');
-  el.innerHTML = `<div class="obras-tabla-wrap">
-    <table class="obras-tabla">
-      <thead><tr>
-        <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
-        <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
-        <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
-        <th class="col-estado">Estado</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`;
+    el.innerHTML = `<div class="obras-tabla-wrap">
+      <table class="obras-tabla">
+        <thead><tr>
+          <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
+          <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
+          <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
+          <th class="col-estado">Estado</th><th class="col-btn"></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
     return;
   }
-  // Sin agrupación por mes — ordenar por última actualización (creadoEn desc)
-  lista.sort((a,b) => {
+  // Ordenar por última actividad: fin > inicio > creadoEn (más reciente primero)
+  lista.sort((a, b) => {
     const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
     const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
     return fb.localeCompare(fa);
   });
+
   const rows = lista.map(o => {
     const info      = o.info;
     const terminada = info.estadoObra === 'terminado';
     const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
     const diasEC    = calcularDias(info.inicio, null);
     const duracion  = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
-    const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
-    const badgeCls  = terminada ? 'badge-terminada' : esPendiente ? 'badge-licitacion-card' : 'badge-en-curso';
-    const badgeTxt  = terminada ? 'Terminada' : esPendiente ? 'Pendiente' : 'En curso';
+    const badgeCls  = terminada ? 'badge-terminada' : 'badge-en-curso';
+    const badgeTxt  = terminada ? 'Terminada' : 'En curso';
     return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
       <td class="col-obra"><strong>${info.nombre}</strong></td>
       <td class="col-prov">${info.proveedor||'—'}</td>
       <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
-      <td class="col-fecha">${info.inicio?fechaCorta(info.inicio):'<span style="font-size:0.72rem;color:var(--blue);font-weight:500">Pendiente</span>'}</td>
-          <td class="col-fecha">${fechaCorta(info.fin)}</td>
-          <td class="col-dur"><strong>${duracion}</strong></td>
-          <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-          <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">${terminada?'Ver':'Entrar'}</button></td>
-        </tr>`;
-      }).join('');
-      return `<div class="mes-grupo">
-        <div class="mes-separador">${getMesLabel3(mesKey)} <span class="mes-count">${obras.length}</span></div>
-        <div class="obras-tabla-wrap">
-          <table class="obras-tabla">
-            <thead><tr>
-              <th class="col-obra">Obra</th>
-              <th class="col-prov">Proveedor</th>
-              <th class="col-ubic">Ubicación</th>
-              <th class="col-fecha">Inicio</th>
-              <th class="col-fecha">Fin</th>
-              <th class="col-dur">Duración</th>
-              <th class="col-estado">Estado</th>
-              <th class="col-btn"></th>
-            </tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-      </div>`;
+      <td class="col-fecha">${info.inicio?fechaCorta(info.inicio):'—'}</td>
+      <td class="col-fecha">${fechaCorta(info.fin)}</td>
+      <td class="col-dur"><strong>${duracion}</strong></td>
+      <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML = `<div class="obras-tabla-wrap">
+    <table class="obras-tabla">
+      <thead><tr>
+        <th class="col-obra">Obra</th>
+        <th class="col-prov">Proveedor</th>
+        <th class="col-ubic">Ubicación</th>
+        <th class="col-fecha">Inicio</th>
+        <th class="col-fecha">Fin</th>
+        <th class="col-dur">Duración</th>
+        <th class="col-estado">Estado</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
 
 window.ingresarDesdePanel = async function(obraId) {
   const info = obras[obraId] && obras[obraId].info;
@@ -2791,7 +2782,6 @@ window.addEventListener('DOMContentLoaded', () => {
       btnOut.style.display = 'inline-block';
       setSyncStatus('loading', 'Conectando...');
       try {
-        // Limpiar obra activa ANTES de cargar para siempre ir al panel
         obraActiva = null;
         localStorage.removeItem('obraActiva');
         await cargarObras();
