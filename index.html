@@ -1896,7 +1896,7 @@ function buildCard(o) {
     : sinLicitacion ? 'Iniciar obra →'
     : 'Ingresar →';
 
-  return `<div class="obra-card ${cardClass}">
+  return `<div class="obra-card ${cardClass}" style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
     <div class="obra-card-header">
       <div class="obra-card-nombre">${info.nombre}</div>
       <span class="obra-card-badge ${badgeClass}">${badgeText}</span>
@@ -1911,9 +1911,9 @@ function buildCard(o) {
       ${!licitacion&&(terminada?dias:diasEC)!==null?`<span>⏱ <strong>${terminada?dias:diasEC} días</strong></span>`:''}
     </div>
     <div style="margin-top:auto">
-      <button class="btn-ingresar ${btnClass}" ${btnStyle} onclick="ingresarDesdePanel('${o.id}')">
+      <div class="btn-ingresar ${btnClass}" ${btnStyle} style="pointer-events:none">
         ${btnText}
-      </button>
+      </div>
     </div>
   </div>`;
 }
@@ -1937,22 +1937,14 @@ function renderCardsSection(lista, contenedor, tipo) {
       <div class="obra-cards">${cards}</div>`;
     return;
   }
-  const porAnioMes = agruparPorAnioMes(lista);
-  el.innerHTML = porAnioMes.map(([anio, meses]) => {
-    const mesesHtml = meses.map(([mesKey, obras]) => {
-      const cards = obras.map(buildCard).join('');
-      const mesLabel = getMesLabel3(mesKey);
-      const count = obras.length;
-      return `<div class="mes-grupo">
-        <div class="mes-separador">${mesLabel} <span class="mes-count">${count}</span></div>
-        <div class="obra-cards">${cards}</div>
-      </div>`;
-    }).join('');
-    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
-      <div class="anio-separador">${anio}</div>
-      ${mesesHtml}
-    </div>`;
-  }).join('');
+  // Ordenar por última actividad: fin > inicio > creadoEn (más reciente primero)
+  lista.sort((a, b) => {
+    const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
+    const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
+    return fb.localeCompare(fa);
+  });
+  const cards = lista.map(buildCard).join('');
+  el.innerHTML = `<div class="obra-cards">${cards}</div>`;
 }
 
 function fechaCorta(f) {
