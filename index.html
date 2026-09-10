@@ -2048,13 +2048,6 @@ function renderListaSection(lista, contenedor, tipo) {
           </table>
         </div>
       </div>`;
-    }).join('');
-    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
-      <div class="anio-separador" style="${anio==='Sin fecha'?'color:var(--blue);border-color:var(--blue)':''}">${anio==='Sin fecha'?'🔵 Pendiente — por licitación o falta de fecha de inicio de obra':anio}</div>
-      ${mesesHtml}
-    </div>`;
-  }).join('');
-}
 
 window.ingresarDesdePanel = async function(obraId) {
   const info = obras[obraId] && obras[obraId].info;
