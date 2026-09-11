@@ -57,14 +57,14 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:960px;margin:0 auto;padding:1.5rem;padding-bottom:4rem;}
+  .main{width:100%;padding:1.5rem 2.5rem;padding-bottom:4rem;box-sizing:border-box;}
   .panel{display:none;width:100%;box-sizing:border-box;padding:1.5rem 2rem 4rem;}.panel.active{display:block;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
   .section-title small{font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--ink3);font-weight:400;letter-spacing:0.04em;text-transform:uppercase;}
 
   .form-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem 2.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);width:100%;box-sizing:border-box;max-width:100%;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;width:100%;}
   .form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
   .form-grid.full{grid-template-columns:1fr;}
   .field{display:flex;flex-direction:column;gap:0.35rem;}
@@ -920,7 +920,7 @@
         <div class="field"><label>N° Factura / Remito</label><input type="text" id="gasto-nro" placeholder="Ej: A-0001-00123456"></div>
         <div class="field"><label>Monto ($)</label><input type="text" id="gasto-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
         <div class="field"><label>Centro de costo</label><input type="text" id="gasto-centro" placeholder="Ej: Estructura, Terminaciones, Instalaciones..."></div>
-        <div class="field full"><label>Detalle de la factura</label><textarea id="gasto-notas" placeholder="Descripción de los ítems facturados, condición de pago, observaciones..." style="min-height:65px"></textarea></div>
+        <div class="field full"><label>Detalle de la factura</label><textarea id="gasto-notas" placeholder="Descripción de los ítems facturados, condición de pago, observaciones..." style="min-height:100px"></textarea></div>
       </div>
       <div class="editing-banner" id="gasto-editing-banner">✏️ Editando registro — modificá los campos y guardá</div>
       <button class="btn-primary" id="btn-agregar-gasto" onclick="agregarGasto()">Registrar gasto</button>
