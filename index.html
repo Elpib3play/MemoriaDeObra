@@ -58,7 +58,20 @@
   .obra-readonly-banner.visible{display:flex;}
 
   .main{max-width:780px;margin:0 auto;padding:1rem;padding-bottom:4rem;box-sizing:border-box;}
-  .panel{display:none;width:100%;box-sizing:border-box;}.panel.active{display:block;width:100%;box-sizing:border-box;}
+  .panel{
+    position:absolute;
+    visibility:hidden;
+    pointer-events:none;
+    width:100%;
+    box-sizing:border-box;
+  }
+  .panel.active{
+    position:relative;
+    visibility:visible;
+    pointer-events:auto;
+    width:100%;
+    box-sizing:border-box;
+  }
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
   .section-title small{font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--ink3);font-weight:400;letter-spacing:0.04em;text-transform:uppercase;}
@@ -3301,13 +3314,7 @@ window.switchTab = function(tab, el) {
   tabActual = tab;
   const panel = document.getElementById('panel-'+tab);
   panel.classList.add('active');
-  // Igualar ancho del form-card al del panel-libro
-  const libroCard = document.querySelector('#panel-libro .form-card');
-  const panelCard = panel.querySelector('.form-card');
-  if (libroCard && panelCard) {
-    const targetWidth = libroCard.offsetWidth;
-    if (targetWidth > 0) panelCard.style.width = targetWidth + 'px';
-  }
+
   if (tab==='reporte') renderReporte();
   if (tab==='compras') renderCompras();
 };
