@@ -1628,8 +1628,8 @@ let vistaActual = 'cards'; // 'cards' | 'lista'
 window.setFiltroEstado = function(estado) {
   const sel = document.getElementById('dash-filtro-estado');
   if (!sel) return;
-  const map = {'':'', 'licitacion':'licitacion', 'en-curso':'curso', 'terminado':'terminado'};
-  sel.value = map[estado] !== undefined ? map[estado] : estado;
+  // Los values del select son: '' | 'licitacion' | 'en-curso' | 'terminado'
+  sel.value = estado;
   renderDashboard();
 };
 
