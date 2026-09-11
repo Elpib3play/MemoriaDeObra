@@ -3299,7 +3299,15 @@ window.switchTab = function(tab, el) {
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   tabActual = tab;
-  document.getElementById('panel-'+tab).classList.add('active');
+  const panel = document.getElementById('panel-'+tab);
+  panel.classList.add('active');
+  // Igualar ancho del form-card al del panel-libro
+  const libroCard = document.querySelector('#panel-libro .form-card');
+  const panelCard = panel.querySelector('.form-card');
+  if (libroCard && panelCard) {
+    const targetWidth = libroCard.offsetWidth;
+    if (targetWidth > 0) panelCard.style.width = targetWidth + 'px';
+  }
   if (tab==='reporte') renderReporte();
   if (tab==='compras') renderCompras();
 };
