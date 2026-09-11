@@ -1647,12 +1647,10 @@ function getMesLabel(fecha) {
 }
 
 function mostrarDashboard() {
-  // Ocultar módulos nuevos, mostrar módulo obras
   document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.modulo-obras-wrap').forEach(e => e.classList.remove('active'));
   const modObras = document.getElementById('mod-obras');
   if (modObras) modObras.classList.add('active');
-  // Ocultar libro de obra (tabs + main), mostrar panel de obras
   const obraBar    = document.getElementById('obras-panel-bar');
   const obraPanel  = document.getElementById('obras-panel');
   const filtros    = document.getElementById('filtros-bar');
@@ -1661,18 +1659,20 @@ function mostrarDashboard() {
   const header     = document.querySelector('#mod-obras .header');
   const btnPanel   = document.getElementById('btn-panel');
   const readonly   = document.getElementById('obra-readonly-banner');
-  if (obraBar)   obraBar.style.display   = 'flex';
-  if (obraPanel) obraPanel.style.display = 'block';
-  if (filtros)   filtros.style.display   = 'none';
-  if (tabs)      tabs.style.display      = 'none';
-  if (main)      main.style.display      = 'none';
-  if (header)    header.style.display    = 'none';
-  if (btnPanel)  btnPanel.style.display  = 'none';
-  if (readonly)  readonly.style.display  = 'none';
-  // Ocultar botón volver al panel
-  const btnVolver = document.getElementById('btn-volver-panel');
-  if (btnVolver) btnVolver.style.display = 'none';
-  // Renderizar tarjetas
+  const btnEditar  = document.getElementById('btn-editar-obra');
+  const btnEliminar= document.getElementById('btn-eliminar-obra');
+  const btnVolver  = document.getElementById('btn-volver-panel');
+  if (obraBar)    obraBar.style.display    = 'flex';
+  if (obraPanel)  obraPanel.style.display  = 'block';
+  if (filtros)    filtros.style.display    = 'none';
+  if (tabs)       tabs.style.display       = 'none';
+  if (main)       main.style.display       = 'none';
+  if (header)     header.style.display     = 'none';
+  if (btnPanel)   btnPanel.style.display   = 'none';
+  if (readonly)   readonly.style.display   = 'none';
+  if (btnEditar)  btnEditar.style.display  = 'none';
+  if (btnEliminar)btnEliminar.style.display= 'none';
+  if (btnVolver)  btnVolver.style.display  = 'none';
   actualizarFiltrosAniosDash();
   renderDashboard();
 }
@@ -1936,7 +1936,7 @@ function renderListaSection(lista, contenedor, tipo) {
       const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
       const badgeCls = 'badge-licitacion-card';
       const badgeTxt = 'Pendiente';
-      return `<tr>
+      return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
         <td class="col-obra"><strong>${info.nombre}</strong></td>
         <td class="col-prov">${info.proveedor||'—'}</td>
         <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
@@ -1944,7 +1944,6 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-fecha">—</td>
         <td class="col-dur">—</td>
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
       </tr>`;
     }).join('');
     el.innerHTML = `<div class="obras-tabla-wrap">
