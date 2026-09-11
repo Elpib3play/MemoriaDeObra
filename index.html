@@ -32,7 +32,7 @@
   .sync-dot.error{background:var(--red);}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-  .obra-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;overflow-x:hidden;box-sizing:border-box;width:100%;}
+  .obra-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
   .obra-bar label{font-size:0.78rem;color:var(--ink2);text-transform:uppercase;letter-spacing:0.06em;font-weight:500;}
   .obra-bar select,.obra-bar input,.obra-bar button{border:1px solid var(--border);background:var(--bg);font-family:DM Sans,sans-serif;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;color:var(--ink);}
   .btn-new-obra{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;cursor:pointer;font-weight:500;}
@@ -42,7 +42,7 @@
   .btn-del-obra{background:var(--red-light)!important;color:var(--red)!important;border-color:#f5c0c0!important;cursor:pointer;font-weight:500;}
   .btn-del-obra:hover{background:#f5c0c0!important;}
 
-  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 1.25rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;overflow-x:hidden;box-sizing:border-box;width:100%;}
+  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
   .filtros-bar label{font-size:0.74rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
   .filtros-bar select{border:1px solid var(--border);background:var(--surface);font-family:DM Sans,sans-serif;font-size:0.82rem;padding:0.3rem 0.6rem;border-radius:5px;color:var(--ink);}
   .btn-clear-filtro{background:none;border:1px solid var(--border);color:var(--ink3);font-size:0.78rem;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;}
@@ -486,7 +486,6 @@
     height: 100vh;
     width: 100%;
     overflow: hidden;
-    max-width: 100vw;
   }
 
   /* SIDEBAR */
@@ -509,7 +508,6 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: all 0.25s ease;
   }
 
   /* TOPBAR */
@@ -518,16 +516,13 @@
     min-height: 52px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 0 1.25rem;
+    padding: 0 1.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
     box-shadow: 0 1px 4px rgba(28,26,22,0.06);
     z-index: 200;
-    overflow: hidden;
-    box-sizing: border-box;
-    width: 100%;
   }
   .topbar-left  { display:flex; align-items:center; gap:0.75rem; }
   .topbar-right { display:flex; align-items:center; gap:0.75rem; }
@@ -615,13 +610,11 @@
       position: fixed; height: 100vh;
       width: 236px; transform: translateX(-236px);
       transition: transform 0.25s ease;
-      z-index: 300;
     }
     .sidebar.open { transform: translateX(0); }
     .sidebar.collapsed { width: 236px; transform: translateX(-236px); }
-    .app-right { width: 100%; overflow-x: hidden; }
+    .app-right { width: 100%; }
     .modulo-inner { padding: 1rem; }
-    .app-layout { overflow: hidden; }
   }
 
   /* ===== OVERRIDE DEFINITIVO LAYOUT ===== */
@@ -1720,18 +1713,18 @@ function mostrarDashboard() {
 }
 
 function ocultarDashboard() {
-  const obraPanel   = document.getElementById('obras-panel');
-  const tabs        = document.querySelector('#mod-obras .tabs');
-  const main        = document.querySelector('#mod-obras .main');
-  const filtros     = document.getElementById('filtros-bar');
-  const btnPanel    = document.getElementById('btn-panel');
-  const btnVolver   = document.getElementById('btn-volver-panel');
-  if (obraPanel)  obraPanel.style.display  = 'none';
-  if (tabs)       tabs.style.display       = 'flex';
-  if (main)       main.style.display       = 'block';
-  if (filtros)    filtros.style.display    = 'none';  // ocultar filtros dentro de obra
-  if (btnPanel)   btnPanel.style.display   = 'inline-block';
-  if (btnVolver)  btnVolver.style.display  = 'inline-block'; // mostrar ← Panel
+  const obraPanel = document.getElementById('obras-panel');
+  const tabs      = document.querySelector('#mod-obras .tabs');
+  const main      = document.querySelector('#mod-obras .main');
+  const filtros   = document.getElementById('filtros-bar');
+  const btnPanel  = document.getElementById('btn-panel');
+  const btnVolver = document.getElementById('btn-volver-panel');
+  if (obraPanel) obraPanel.style.display = 'none';
+  if (tabs)      tabs.style.display      = 'flex';
+  if (main)      main.style.display      = 'block';
+  if (filtros)   filtros.style.display   = 'none'; // ocultar filtros dentro de obra
+  if (btnPanel)  btnPanel.style.display  = 'inline-block';
+  if (btnVolver) btnVolver.style.display = 'inline-block';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -1949,14 +1942,12 @@ function renderCardsSection(lista, contenedor, tipo) {
       <div class="obra-cards">${cards}</div>`;
     return;
   }
-  // Ordenar por última actividad: fin > inicio > creadoEn (más reciente primero)
-  lista.sort((a, b) => {
+  lista.sort((a,b) => {
     const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
     const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
     return fb.localeCompare(fa);
   });
-  const cards = lista.map(buildCard).join('');
-  el.innerHTML = `<div class="obra-cards">${cards}</div>`;
+  el.innerHTML = `<div class="obra-cards">${lista.map(buildCard).join('')}</div>`;
 }
 
 function fechaCorta(f) {
@@ -1980,7 +1971,7 @@ function renderListaSection(lista, contenedor, tipo) {
       const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
       const badgeCls = 'badge-licitacion-card';
       const badgeTxt = 'Pendiente';
-      return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
+      return `<tr>
         <td class="col-obra"><strong>${info.nombre}</strong></td>
         <td class="col-prov">${info.proveedor||'—'}</td>
         <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
@@ -1988,6 +1979,7 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-fecha">—</td>
         <td class="col-dur">—</td>
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
       </tr>`;
     }).join('');
     el.innerHTML = `<div class="obras-tabla-wrap">
@@ -2002,13 +1994,11 @@ function renderListaSection(lista, contenedor, tipo) {
       </table></div>`;
     return;
   }
-  // Ordenar por última actividad: fin > inicio > creadoEn (más reciente primero)
-  lista.sort((a, b) => {
+  lista.sort((a,b) => {
     const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
     const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
     return fb.localeCompare(fa);
   });
-
   const rows = lista.map(o => {
     const info      = o.info;
     const terminada = info.estadoObra === 'terminado';
@@ -2027,7 +2017,6 @@ function renderListaSection(lista, contenedor, tipo) {
       <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
     </tr>`;
   }).join('');
-
   el.innerHTML = `<div class="obras-tabla-wrap">
     <table class="obras-tabla">
       <thead><tr>
