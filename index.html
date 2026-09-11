@@ -508,6 +508,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    transition: all 0.25s ease;
   }
 
   /* TOPBAR */
@@ -610,11 +611,13 @@
       position: fixed; height: 100vh;
       width: 236px; transform: translateX(-236px);
       transition: transform 0.25s ease;
+      z-index: 300;
     }
     .sidebar.open { transform: translateX(0); }
     .sidebar.collapsed { width: 236px; transform: translateX(-236px); }
-    .app-right { width: 100%; }
+    .app-right { width: 100%; overflow-x: hidden; }
     .modulo-inner { padding: 1rem; }
+    .app-layout { overflow: hidden; }
   }
 
   /* ===== OVERRIDE DEFINITIVO LAYOUT ===== */
@@ -790,6 +793,7 @@
 </div>
 
 <div class="obra-bar" id="obras-panel-bar">
+  <button onclick="irAlPanel()" id="btn-volver-panel" style="display:none;background:var(--blue-light);color:var(--blue);border:1px solid #b0cfe0;padding:0.35rem 0.85rem;border-radius:7px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.82rem;font-weight:500">← Panel</button>
   <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
     <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
     <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
@@ -1703,23 +1707,27 @@ function mostrarDashboard() {
   if (header)    header.style.display    = 'none';
   if (btnPanel)  btnPanel.style.display  = 'none';
   if (readonly)  readonly.style.display  = 'none';
+  // Ocultar botón volver al panel
+  const btnVolver = document.getElementById('btn-volver-panel');
+  if (btnVolver) btnVolver.style.display = 'none';
   // Renderizar tarjetas
   actualizarFiltrosAniosDash();
   renderDashboard();
 }
 
 function ocultarDashboard() {
-  // Ocultar el panel de obras, mostrar el libro de obra
-  const obraPanel = document.getElementById('obras-panel');
-  const tabs      = document.querySelector('#mod-obras .tabs');
-  const main      = document.querySelector('#mod-obras .main');
-  const filtros   = document.getElementById('filtros-bar');
-  const btnPanel  = document.getElementById('btn-panel');
-  if (obraPanel) obraPanel.style.display = 'none';
-  if (tabs)      tabs.style.display      = 'flex';
-  if (main)      main.style.display      = 'block';
-  if (filtros)   filtros.style.display   = 'none';
-  if (btnPanel)  btnPanel.style.display  = 'inline-block';
+  const obraPanel   = document.getElementById('obras-panel');
+  const tabs        = document.querySelector('#mod-obras .tabs');
+  const main        = document.querySelector('#mod-obras .main');
+  const filtros     = document.getElementById('filtros-bar');
+  const btnPanel    = document.getElementById('btn-panel');
+  const btnVolver   = document.getElementById('btn-volver-panel');
+  if (obraPanel)  obraPanel.style.display  = 'none';
+  if (tabs)       tabs.style.display       = 'flex';
+  if (main)       main.style.display       = 'block';
+  if (filtros)    filtros.style.display    = 'none';  // ocultar filtros dentro de obra
+  if (btnPanel)   btnPanel.style.display   = 'inline-block';
+  if (btnVolver)  btnVolver.style.display  = 'inline-block'; // mostrar ← Panel
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
