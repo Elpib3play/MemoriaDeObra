@@ -32,7 +32,7 @@
   .sync-dot.error{background:var(--red);}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-  .obra-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+  .obra-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;overflow-x:hidden;box-sizing:border-box;width:100%;}
   .obra-bar label{font-size:0.78rem;color:var(--ink2);text-transform:uppercase;letter-spacing:0.06em;font-weight:500;}
   .obra-bar select,.obra-bar input,.obra-bar button{border:1px solid var(--border);background:var(--bg);font-family:DM Sans,sans-serif;font-size:0.85rem;padding:0.4rem 0.75rem;border-radius:6px;color:var(--ink);}
   .btn-new-obra{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;cursor:pointer;font-weight:500;}
@@ -42,7 +42,7 @@
   .btn-del-obra{background:var(--red-light)!important;color:var(--red)!important;border-color:#f5c0c0!important;cursor:pointer;font-weight:500;}
   .btn-del-obra:hover{background:#f5c0c0!important;}
 
-  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 1.25rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;overflow-x:hidden;box-sizing:border-box;width:100%;}
   .filtros-bar label{font-size:0.74rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
   .filtros-bar select{border:1px solid var(--border);background:var(--surface);font-family:DM Sans,sans-serif;font-size:0.82rem;padding:0.3rem 0.6rem;border-radius:5px;color:var(--ink);}
   .btn-clear-filtro{background:none;border:1px solid var(--border);color:var(--ink3);font-size:0.78rem;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;}
@@ -486,6 +486,7 @@
     height: 100vh;
     width: 100%;
     overflow: hidden;
+    max-width: 100vw;
   }
 
   /* SIDEBAR */
@@ -517,13 +518,16 @@
     min-height: 52px;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-shrink: 0;
     box-shadow: 0 1px 4px rgba(28,26,22,0.06);
     z-index: 200;
+    overflow: hidden;
+    box-sizing: border-box;
+    width: 100%;
   }
   .topbar-left  { display:flex; align-items:center; gap:0.75rem; }
   .topbar-right { display:flex; align-items:center; gap:0.75rem; }
@@ -793,7 +797,6 @@
 </div>
 
 <div class="obra-bar" id="obras-panel-bar">
-  <button onclick="irAlPanel()" id="btn-volver-panel" style="display:none;background:var(--blue-light);color:var(--blue);border:1px solid #b0cfe0;padding:0.35rem 0.85rem;border-radius:7px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.82rem;font-weight:500">← Panel</button>
   <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
     <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
     <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
@@ -804,6 +807,7 @@
   <button class="btn-new-obra" onclick="abrirModalNuevaObra()">+ Nueva obra</button>
   <button class="btn-edit-obra" id="btn-editar-obra" onclick="abrirModalEditarObra()" style="display:none">✏️ Editar obra</button>
   <button class="btn-del-obra" id="btn-eliminar-obra" onclick="eliminarObra()" style="display:none">🗑 Eliminar</button>
+  <button id="btn-volver-panel" onclick="irAlPanel()" style="display:none;margin-left:auto;background:var(--blue-light);color:var(--blue);border:1px solid #b0cfe0;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.82rem;font-weight:500">← Volver al menú de obras</button>
 </div>
 
 <!-- PANEL DE OBRAS (tarjetas) -->
