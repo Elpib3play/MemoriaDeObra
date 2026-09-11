@@ -42,7 +42,7 @@
   .btn-del-obra{background:var(--red-light)!important;color:var(--red)!important;border-color:#f5c0c0!important;cursor:pointer;font-weight:500;}
   .btn-del-obra:hover{background:#f5c0c0!important;}
 
-  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 2rem;display:none;align-items:center;gap:0.75rem;flex-wrap:wrap;}
+  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
   .filtros-bar label{font-size:0.74rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
   .filtros-bar select{border:1px solid var(--border);background:var(--surface);font-family:DM Sans,sans-serif;font-size:0.82rem;padding:0.3rem 0.6rem;border-radius:5px;color:var(--ink);}
   .btn-clear-filtro{background:none;border:1px solid var(--border);color:var(--ink3);font-size:0.78rem;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;}
@@ -57,27 +57,14 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:780px;margin:0 auto;padding:1rem;padding-bottom:4rem;box-sizing:border-box;}
-  .panel{
-    position:absolute;
-    visibility:hidden;
-    pointer-events:none;
-    width:100%;
-    box-sizing:border-box;
-  }
-  .panel.active{
-    position:relative;
-    visibility:visible;
-    pointer-events:auto;
-    width:100%;
-    box-sizing:border-box;
-  }
+  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;padding-bottom:4rem;}
+  .panel{display:none;}.panel.active{display:block;width:100%;box-sizing:border-box;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
   .section-title small{font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--ink3);font-weight:400;letter-spacing:0.04em;text-transform:uppercase;}
 
   .form-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);width:100%;box-sizing:border-box;}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;width:100%;}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
   .form-grid.full{grid-template-columns:1fr;}
   .field{display:flex;flex-direction:column;gap:0.35rem;}
@@ -500,7 +487,6 @@
     width: 100%;
     overflow: hidden;
   }
-  html, body { overflow: hidden; max-width: 100vw; }
 
   /* SIDEBAR */
   .sidebar {
@@ -593,11 +579,10 @@
     flex: 1;
     flex-direction: column;
     overflow-y: auto;
-    overflow-x: hidden;
     min-height: 0;
     width: 100%;
   }
-  .modulo.active, .modulo-obras-wrap.active { display: flex; width: 100%; }
+  .modulo.active, .modulo-obras-wrap.active { display: flex; }
 
   .modulo-inner {
     padding: 1.5rem 2rem;
@@ -617,8 +602,8 @@
   .modulo-placeholder-sub   { font-size: 0.84rem; max-width: 280px; line-height: 1.6; }
 
   /* OVERLAY MOBILE */
-  .sb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:299; pointer-events:none; }
-  .sb-overlay.visible { display:block; pointer-events:auto; }
+  .sb-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:299; }
+  .sb-overlay.visible { display:block; }
 
   @media (max-width: 768px) {
     .sidebar {
@@ -633,7 +618,42 @@
   }
 
   /* ===== OVERRIDE DEFINITIVO LAYOUT ===== */
-
+  #mod-dashboard, #mod-agenda, #mod-proveedores, 
+  #mod-planos, #mod-tickets, #mod-busqueda, #mod-configuracion {
+    display: none !important;
+    flex: 1 !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #mod-dashboard.active, #mod-agenda.active, #mod-proveedores.active,
+  #mod-planos.active, #mod-tickets.active, #mod-busqueda.active, 
+  #mod-configuracion.active {
+    display: flex !important;
+  }
+  #mod-dashboard .modulo-inner, #mod-agenda .modulo-inner,
+  #mod-proveedores .modulo-inner, #mod-planos .modulo-inner,
+  #mod-tickets .modulo-inner, #mod-busqueda .modulo-inner,
+  #mod-configuracion .modulo-inner {
+    padding: 1.5rem 2rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #app-right {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    max-width: calc(100vw - 236px) !important;
+  }
   /* ===== TICKETS ===== */
   .ticket-tabla{width:100%;border-collapse:collapse;font-size:0.83rem;}
   .ticket-tabla th{font-size:0.67rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;}
@@ -771,7 +791,8 @@
 
 <div class="obra-bar" id="obras-panel-bar">
   <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-    <span id="obra-activa-nombre" style="display:none"></span>
+    <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
+    <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
   </div>
   <select id="obra-select" onchange="cambiarObra()" style="display:none">
     <option value="">Seleccioná una obra...</option>
@@ -783,7 +804,7 @@
 </div>
 
 <!-- PANEL DE OBRAS (tarjetas) -->
-<div id="obras-panel" style="flex:1;overflow-y:auto;overflow-x:hidden;padding:1.5rem 2rem;display:none">
+<div id="obras-panel" style="flex:1;overflow-y:auto;padding:1.5rem 2rem;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
     <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Panel de obras</div>
     <div style="font-size:0.8rem;color:var(--ink3)">Resumen general de todos tus proyectos</div>
@@ -933,7 +954,7 @@
         <div class="field"><label>N° Factura / Remito</label><input type="text" id="gasto-nro" placeholder="Ej: A-0001-00123456"></div>
         <div class="field"><label>Monto ($)</label><input type="text" id="gasto-monto" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
         <div class="field"><label>Centro de costo</label><input type="text" id="gasto-centro" placeholder="Ej: Estructura, Terminaciones, Instalaciones..."></div>
-        <div class="field full"><label>Detalle de la factura</label><textarea id="gasto-notas" placeholder="Descripción de los ítems facturados, condición de pago, observaciones..." style="min-height:100px"></textarea></div>
+        <div class="field full"><label>Detalle de la factura</label><textarea id="gasto-notas" placeholder="Descripción de los ítems facturados, condición de pago, observaciones..." style="min-height:65px"></textarea></div>
       </div>
       <div class="editing-banner" id="gasto-editing-banner">✏️ Editando registro — modificá los campos y guardá</div>
       <button class="btn-primary" id="btn-agregar-gasto" onclick="agregarGasto()">Registrar gasto</button>
@@ -1641,12 +1662,9 @@ let vistaActual = 'cards'; // 'cards' | 'lista'
 window.setFiltroEstado = function(estado) {
   const sel = document.getElementById('dash-filtro-estado');
   if (!sel) return;
-  // Los values del select son: '' | 'licitacion' | 'en-curso' | 'terminado'
   sel.value = estado;
   renderDashboard();
 };
-
-window.setVista = function(v) {
   vistaActual = v;
   document.getElementById('btn-vista-cards').className = 'btn-vista' + (v==='cards'?' active':'');
   document.getElementById('btn-vista-lista').className = 'btn-vista' + (v==='lista'?' active':'');
@@ -1661,10 +1679,12 @@ function getMesLabel(fecha) {
 }
 
 function mostrarDashboard() {
+  // Ocultar módulos nuevos, mostrar módulo obras
   document.querySelectorAll('.modulo').forEach(e => e.classList.remove('active'));
   document.querySelectorAll('.modulo-obras-wrap').forEach(e => e.classList.remove('active'));
   const modObras = document.getElementById('mod-obras');
   if (modObras) modObras.classList.add('active');
+  // Ocultar libro de obra (tabs + main), mostrar panel de obras
   const obraBar    = document.getElementById('obras-panel-bar');
   const obraPanel  = document.getElementById('obras-panel');
   const filtros    = document.getElementById('filtros-bar');
@@ -1673,37 +1693,31 @@ function mostrarDashboard() {
   const header     = document.querySelector('#mod-obras .header');
   const btnPanel   = document.getElementById('btn-panel');
   const readonly   = document.getElementById('obra-readonly-banner');
-  const btnEditar  = document.getElementById('btn-editar-obra');
-  const btnEliminar= document.getElementById('btn-eliminar-obra');
-  const btnVolver  = document.getElementById('btn-volver-panel');
-  if (obraBar)    obraBar.style.display    = 'flex';
-  if (obraPanel)  obraPanel.style.display  = 'block';
-  if (filtros)    filtros.style.display    = 'none';
-  if (tabs)       tabs.style.display       = 'none';
-  if (main)       main.style.display       = 'none';
-  if (header)     header.style.display     = 'none';
-  if (btnPanel)   btnPanel.style.display   = 'none';
-  if (readonly)   readonly.style.display   = 'none';
-  if (btnEditar)  btnEditar.style.display  = 'none';
-  if (btnEliminar)btnEliminar.style.display= 'none';
-  if (btnVolver)  btnVolver.style.display  = 'none';
+  if (obraBar)   obraBar.style.display   = 'flex';
+  if (obraPanel) obraPanel.style.display = 'block';
+  if (filtros)   filtros.style.display   = 'none';
+  if (tabs)      tabs.style.display      = 'none';
+  if (main)      main.style.display      = 'none';
+  if (header)    header.style.display    = 'none';
+  if (btnPanel)  btnPanel.style.display  = 'none';
+  if (readonly)  readonly.style.display  = 'none';
+  // Renderizar tarjetas
   actualizarFiltrosAniosDash();
   renderDashboard();
 }
 
 function ocultarDashboard() {
+  // Ocultar el panel de obras, mostrar el libro de obra
   const obraPanel = document.getElementById('obras-panel');
   const tabs      = document.querySelector('#mod-obras .tabs');
   const main      = document.querySelector('#mod-obras .main');
   const filtros   = document.getElementById('filtros-bar');
   const btnPanel  = document.getElementById('btn-panel');
-  const btnVolver = document.getElementById('btn-volver-panel');
   if (obraPanel) obraPanel.style.display = 'none';
   if (tabs)      tabs.style.display      = 'flex';
   if (main)      main.style.display      = 'block';
-  if (filtros)   filtros.style.display   = 'none'; // ocultar filtros dentro de obra
+  if (filtros)   filtros.style.display   = 'none';
   if (btnPanel)  btnPanel.style.display  = 'inline-block';
-  if (btnVolver) btnVolver.style.display = 'inline-block';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -1950,7 +1964,7 @@ function renderListaSection(lista, contenedor, tipo) {
       const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
       const badgeCls = 'badge-licitacion-card';
       const badgeTxt = 'Pendiente';
-      return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
+      return `<tr>
         <td class="col-obra"><strong>${info.nombre}</strong></td>
         <td class="col-prov">${info.proveedor||'—'}</td>
         <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
@@ -1958,6 +1972,7 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-fecha">—</td>
         <td class="col-dur">—</td>
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
       </tr>`;
     }).join('');
     el.innerHTML = `<div class="obras-tabla-wrap">
@@ -1978,13 +1993,13 @@ function renderListaSection(lista, contenedor, tipo) {
     return fb.localeCompare(fa);
   });
   const rows = lista.map(o => {
-    const info      = o.info;
+    const info = o.info;
     const terminada = info.estadoObra === 'terminado';
-    const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
-    const diasEC    = calcularDias(info.inicio, null);
-    const duracion  = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
-    const badgeCls  = terminada ? 'badge-terminada' : 'badge-en-curso';
-    const badgeTxt  = terminada ? 'Terminada' : 'En curso';
+    const dias = calcularDias(info.inicio, terminada ? info.fin : null);
+    const diasEC = calcularDias(info.inicio, null);
+    const duracion = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
+    const badgeCls = terminada ? 'badge-terminada' : 'badge-en-curso';
+    const badgeTxt = terminada ? 'Terminada' : 'En curso';
     return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
       <td class="col-obra"><strong>${info.nombre}</strong></td>
       <td class="col-prov">${info.proveedor||'—'}</td>
@@ -1998,12 +2013,9 @@ function renderListaSection(lista, contenedor, tipo) {
   el.innerHTML = `<div class="obras-tabla-wrap">
     <table class="obras-tabla">
       <thead><tr>
-        <th class="col-obra">Obra</th>
-        <th class="col-prov">Proveedor</th>
-        <th class="col-ubic">Ubicación</th>
-        <th class="col-fecha">Inicio</th>
-        <th class="col-fecha">Fin</th>
-        <th class="col-dur">Duración</th>
+        <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
+        <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
+        <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
         <th class="col-estado">Estado</th>
       </tr></thead>
       <tbody>${rows}</tbody>
@@ -3210,7 +3222,7 @@ window.guardarObra = async function() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display='none';
+        document.getElementById('filtros-bar').style.display = 'none';
         setModoSoloLectura(false);
         renderAll();
       }, 500);
@@ -3256,7 +3268,7 @@ window.guardarObra = async function() {
       document.getElementById('obra-select').value = obraActiva;
       actualizarHeaderObra();
       mostrarBotonesObra(true);
-      document.getElementById('filtros-bar').style.display='none';
+      document.getElementById('filtros-bar').style.display = 'none';
       setModoSoloLectura(false);
       renderAll();
       // Ir directo a Historial de obra
@@ -3312,9 +3324,7 @@ window.switchTab = function(tab, el) {
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');
   tabActual = tab;
-  const panel = document.getElementById('panel-'+tab);
-  panel.classList.add('active');
-
+  document.getElementById('panel-'+tab).classList.add('active');
   if (tab==='reporte') renderReporte();
   if (tab==='compras') renderCompras();
 };
@@ -4130,6 +4140,7 @@ window.toggleSidebar = function() {
   } else {
     // Desktop: colapsar/expandir el sidebar
     sb.classList.toggle('collapsed');
+    document.getElementById('app-right').classList.toggle('sidebar-collapsed');
   }
 };
 
