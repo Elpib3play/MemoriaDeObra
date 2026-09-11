@@ -800,15 +800,15 @@
     </div>
   </div>
   <div id="dash-section-licitacion" style="display:none">
-    <div class="dash-section-title" style="color:var(--purple);margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
+    <div class="mes-separador" style="color:var(--purple);border-color:var(--purple);margin-bottom:1rem">Pendiente <span id="dash-count-licitacion" class="mes-count"></span></div>
     <div id="dash-cards-licitacion" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-curso" style="display:block">
-    <div class="dash-section-title" style="margin-bottom:0.75rem">En curso <span id="dash-count-curso" class="dash-count"></span></div>
+    <div class="mes-separador" style="margin-bottom:1rem">En curso <span id="dash-count-curso" class="mes-count"></span></div>
     <div id="dash-cards-curso" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-term" style="display:block">
-    <div class="dash-section-title" style="margin-bottom:0.75rem">Terminadas <span id="dash-count-term" class="dash-count"></span></div>
+    <div class="mes-separador" style="color:var(--green);border-color:var(--green);margin-bottom:1rem">Terminadas <span id="dash-count-term" class="mes-count"></span></div>
     <div id="dash-cards-term" class="dash-cards-wrap"></div>
   </div>
 </div>
@@ -1767,8 +1767,8 @@ window.renderDashboard = function() {
 
   document.getElementById('dash-stats-grid').innerHTML = `
     <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('')">
-      <div class="dash-stat-label">Total obras${hayFiltro?' <span style="font-size:0.65rem;color:var(--accent);font-weight:500">(filtrado)</span>':''}</div>
-      <div class="dash-stat-value">${hayFiltro?lista.length:totalObras}</div>
+      <div class="dash-stat-label">Total obras</div>
+      <div class="dash-stat-value">${totalObras}</div>
     </div>
     ${totalPend>0?`<div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('licitacion')"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
     <div class="dash-stat" style="cursor:pointer" onclick="setVista('lista');setFiltroEstado('en-curso')"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
