@@ -57,7 +57,7 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;padding-bottom:4rem;}
+  .main{max-width:900px;margin:0 auto;padding:2rem;padding-bottom:4rem;}
   .panel{display:none;}.panel.active{display:block;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
@@ -579,6 +579,7 @@
     flex: 1;
     flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
     min-height: 0;
     width: 100%;
   }
@@ -618,42 +619,7 @@
   }
 
   /* ===== OVERRIDE DEFINITIVO LAYOUT ===== */
-  #mod-dashboard, #mod-agenda, #mod-proveedores, 
-  #mod-planos, #mod-tickets, #mod-busqueda, #mod-configuracion {
-    display: none !important;
-    flex: 1 !important;
-    flex-direction: column !important;
-    overflow-y: auto !important;
-    min-height: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    box-sizing: border-box !important;
-  }
-  #mod-dashboard.active, #mod-agenda.active, #mod-proveedores.active,
-  #mod-planos.active, #mod-tickets.active, #mod-busqueda.active, 
-  #mod-configuracion.active {
-    display: flex !important;
-  }
-  #mod-dashboard .modulo-inner, #mod-agenda .modulo-inner,
-  #mod-proveedores .modulo-inner, #mod-planos .modulo-inner,
-  #mod-tickets .modulo-inner, #mod-busqueda .modulo-inner,
-  #mod-configuracion .modulo-inner {
-    padding: 1.5rem 2rem !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-  }
-  #app-right {
-    flex: 1 !important;
-    min-width: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-    max-width: calc(100vw - 236px) !important;
-  }
+
   /* ===== TICKETS ===== */
   .ticket-tabla{width:100%;border-collapse:collapse;font-size:0.83rem;}
   .ticket-tabla th{font-size:0.67rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;}
@@ -804,7 +770,7 @@
 </div>
 
 <!-- PANEL DE OBRAS (tarjetas) -->
-<div id="obras-panel" style="flex:1;overflow-y:auto;padding:1.5rem 2rem;display:none">
+<div id="obras-panel" style="flex:1;overflow-x:hidden;padding:1.5rem 2rem;display:none">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
     <div style="font-family:DM Serif Display,serif;font-size:1.5rem;color:var(--ink)">Panel de obras</div>
     <div style="font-size:0.8rem;color:var(--ink3)">Resumen general de todos tus proyectos</div>
@@ -2134,7 +2100,7 @@ window.ingresarDesdePanel = async function(obraId) {
   document.getElementById('obra-select').value = obraId;
   actualizarHeaderObra();
   mostrarBotonesObra(true);
-  document.getElementById('filtros-bar').style.display = 'flex';
+  document.getElementById('filtros-bar').style.display = 'none';
   await cargarSubcolecciones(obraId);
   const terminada = info && info.estadoObra === 'terminado';
   setModoSoloLectura(terminada);
@@ -2817,7 +2783,7 @@ async function cargarObras() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display = 'flex';
+        document.getElementById('filtros-bar').style.display = 'none';
         await cargarSubcolecciones(obraActiva);
         renderAll();
       }
@@ -3232,7 +3198,7 @@ window.guardarObra = async function() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display='flex';
+        document.getElementById('filtros-bar').style.display='none';
         setModoSoloLectura(false);
         renderAll();
       }, 500);
@@ -3278,7 +3244,7 @@ window.guardarObra = async function() {
       document.getElementById('obra-select').value = obraActiva;
       actualizarHeaderObra();
       mostrarBotonesObra(true);
-      document.getElementById('filtros-bar').style.display='flex';
+      document.getElementById('filtros-bar').style.display='none';
       setModoSoloLectura(false);
       renderAll();
       // Ir directo a Historial de obra
