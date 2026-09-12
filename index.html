@@ -57,13 +57,13 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;padding-bottom:4rem;}
-  .panel{display:none;}.panel.active{display:block;width:100%;box-sizing:border-box;}
+  .main{width:100%;max-width:900px;margin:0 auto;padding:2rem;padding-bottom:4rem;box-sizing:border-box;}
+  .panel{display:none;width:100%;}.panel.active{display:block;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
   .section-title small{font-family:DM Sans,sans-serif;font-size:0.78rem;color:var(--ink3);font-weight:400;letter-spacing:0.04em;text-transform:uppercase;}
 
-  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);width:100%;box-sizing:border-box;}
+  .form-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(28,26,22,0.06);}
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .form-grid.g3{grid-template-columns:1fr 1fr 1fr;}
   .form-grid.full{grid-template-columns:1fr;}
@@ -579,7 +579,6 @@
     flex: 1;
     flex-direction: column;
     overflow-y: auto;
-    overflow-x: hidden;
     min-height: 0;
     width: 100%;
   }
@@ -792,7 +791,8 @@
 
 <div class="obra-bar" id="obras-panel-bar">
   <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-    <span id="obra-activa-nombre" style="display:none"></span>
+    <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
+    <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
   </div>
   <select id="obra-select" onchange="cambiarObra()" style="display:none">
     <option value="">Seleccioná una obra...</option>
@@ -800,7 +800,6 @@
   <button class="btn-new-obra" onclick="abrirModalNuevaObra()">+ Nueva obra</button>
   <button class="btn-edit-obra" id="btn-editar-obra" onclick="abrirModalEditarObra()" style="display:none">✏️ Editar obra</button>
   <button class="btn-del-obra" id="btn-eliminar-obra" onclick="eliminarObra()" style="display:none">🗑 Eliminar</button>
-  <button id="btn-volver-panel" onclick="irAlPanel()" style="display:none;margin-left:auto;background:var(--blue-light);color:var(--blue);border:1px solid #b0cfe0;padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-family:DM Sans,sans-serif;font-size:0.82rem;font-weight:500">← Volver al menú de obras</button>
 </div>
 
 <!-- PANEL DE OBRAS (tarjetas) -->
@@ -834,15 +833,15 @@
     </div>
   </div>
   <div id="dash-section-licitacion" style="display:none">
-    <div class="mes-separador" style="color:var(--purple);border-color:var(--purple);margin-bottom:1rem">Pendiente <span id="dash-count-licitacion" class="mes-count"></span></div>
+    <div class="dash-section-title" style="color:var(--purple);margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
     <div id="dash-cards-licitacion" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-curso" style="display:block">
-    <div class="mes-separador" style="margin-bottom:1rem"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--amber);margin-right:0.4rem;flex-shrink:0"></span>En curso <span id="dash-count-curso" class="mes-count"></span></div>
+    <div class="dash-section-title" style="margin-bottom:0.75rem">En curso <span id="dash-count-curso" class="dash-count"></span></div>
     <div id="dash-cards-curso" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-term" style="display:block">
-    <div class="mes-separador" style="color:var(--green);border-color:var(--green);margin-bottom:1rem"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);margin-right:0.4rem;flex-shrink:0"></span>Terminadas <span id="dash-count-term" class="mes-count"></span></div>
+    <div class="dash-section-title" style="margin-bottom:0.75rem">Terminadas <span id="dash-count-term" class="dash-count"></span></div>
     <div id="dash-cards-term" class="dash-cards-wrap"></div>
   </div>
 </div>
@@ -1659,13 +1658,6 @@ function setSyncStatus(status, msg) {
 // ========== DASHBOARD ==========
 let vistaActual = 'cards'; // 'cards' | 'lista'
 
-window.setFiltroEstado = function(estado) {
-  const sel = document.getElementById('dash-filtro-estado');
-  if (!sel) return;
-  sel.value = estado;
-  renderDashboard();
-};
-
 window.setVista = function(v) {
   vistaActual = v;
   document.getElementById('btn-vista-cards').className = 'btn-vista' + (v==='cards'?' active':'');
@@ -1695,42 +1687,31 @@ function mostrarDashboard() {
   const header     = document.querySelector('#mod-obras .header');
   const btnPanel   = document.getElementById('btn-panel');
   const readonly   = document.getElementById('obra-readonly-banner');
-  if (obraBar)    obraBar.style.display    = 'flex';
-  if (obraPanel)  obraPanel.style.display  = 'block';
-  if (filtros)    filtros.style.display    = 'none';
-  if (tabs)       tabs.style.display       = 'none';
-  if (main)       main.style.display       = 'none';
-  if (header)     header.style.display     = 'none';
-  if (btnPanel)   btnPanel.style.display   = 'none';
-  if (readonly)   readonly.style.display   = 'none';
-  const btnVolver  = document.getElementById('btn-volver-panel');
-  const btnEditar  = document.getElementById('btn-editar-obra');
-  const btnEliminar= document.getElementById('btn-eliminar-obra');
-  if (btnVolver)   btnVolver.style.display  = 'none';
-  if (btnEditar)   btnEditar.style.display  = 'none';
-  if (btnEliminar) btnEliminar.style.display = 'none';
+  if (obraBar)   obraBar.style.display   = 'flex';
+  if (obraPanel) obraPanel.style.display = 'block';
+  if (filtros)   filtros.style.display   = 'none';
+  if (tabs)      tabs.style.display      = 'none';
+  if (main)      main.style.display      = 'none';
+  if (header)    header.style.display    = 'none';
+  if (btnPanel)  btnPanel.style.display  = 'none';
+  if (readonly)  readonly.style.display  = 'none';
   // Renderizar tarjetas
   actualizarFiltrosAniosDash();
   renderDashboard();
 }
 
 function ocultarDashboard() {
-  const obraPanel  = document.getElementById('obras-panel');
-  const tabs       = document.querySelector('#mod-obras .tabs');
-  const main       = document.querySelector('#mod-obras .main');
-  const filtros    = document.getElementById('filtros-bar');
-  const btnPanel   = document.getElementById('btn-panel');
-  const btnVolver  = document.getElementById('btn-volver-panel');
-  const btnEditar  = document.getElementById('btn-editar-obra');
-  const btnEliminar= document.getElementById('btn-eliminar-obra');
-  if (obraPanel)  obraPanel.style.display  = 'none';
-  if (tabs)       tabs.style.display       = 'flex';
-  if (main)       main.style.display       = 'block';
-  if (filtros)    filtros.style.display    = 'none';
-  if (btnPanel)   btnPanel.style.display   = 'inline-block';
-  if (btnVolver)  btnVolver.style.display  = 'inline-block';
-  if (btnEditar)  btnEditar.style.display  = 'inline-block';
-  if (btnEliminar)btnEliminar.style.display= 'inline-block';
+  // Ocultar el panel de obras, mostrar el libro de obra
+  const obraPanel = document.getElementById('obras-panel');
+  const tabs      = document.querySelector('#mod-obras .tabs');
+  const main      = document.querySelector('#mod-obras .main');
+  const filtros   = document.getElementById('filtros-bar');
+  const btnPanel  = document.getElementById('btn-panel');
+  if (obraPanel) obraPanel.style.display = 'none';
+  if (tabs)      tabs.style.display      = 'flex';
+  if (main)      main.style.display      = 'block';
+  if (filtros)   filtros.style.display   = 'none';
+  if (btnPanel)  btnPanel.style.display  = 'inline-block';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -1806,13 +1787,13 @@ window.renderDashboard = function() {
   const hayFiltro     = buscar || anio || mes || estado;
 
   document.getElementById('dash-stats-grid').innerHTML = `
-    <div class="dash-stat" style="cursor:pointer" onclick="setFiltroEstado('')">
-      <div class="dash-stat-label">Total obras</div>
-      <div class="dash-stat-value">${totalObras}</div>
+    <div class="dash-stat">
+      <div class="dash-stat-label">Total obras${hayFiltro?' <span style="font-size:0.65rem;color:var(--accent);font-weight:500">(filtrado)</span>':''}</div>
+      <div class="dash-stat-value">${hayFiltro?lista.length:totalObras}</div>
     </div>
-    ${totalPend>0?`<div class="dash-stat" style="cursor:pointer" onclick="setFiltroEstado('licitacion')"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
-    <div class="dash-stat" style="cursor:pointer" onclick="setFiltroEstado('en-curso')"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
-    <div class="dash-stat" style="cursor:pointer" onclick="setFiltroEstado('terminado')"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
+    ${totalPend>0?`<div class="dash-stat"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
+    <div class="dash-stat"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
+    <div class="dash-stat"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
   `;
 
   document.getElementById('dash-count-licitacion').textContent = pendientes.length;
@@ -1907,7 +1888,7 @@ function buildCard(o) {
     : sinLicitacion ? 'Iniciar obra →'
     : 'Ingresar →';
 
-  return `<div class="obra-card ${cardClass}" style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
+  return `<div class="obra-card ${cardClass}">
     <div class="obra-card-header">
       <div class="obra-card-nombre">${info.nombre}</div>
       <span class="obra-card-badge ${badgeClass}">${badgeText}</span>
@@ -1922,9 +1903,9 @@ function buildCard(o) {
       ${!licitacion&&(terminada?dias:diasEC)!==null?`<span>⏱ <strong>${terminada?dias:diasEC} días</strong></span>`:''}
     </div>
     <div style="margin-top:auto">
-      <div class="btn-ingresar ${btnClass}" ${btnStyle} style="pointer-events:none">
+      <button class="btn-ingresar ${btnClass}" ${btnStyle} onclick="ingresarDesdePanel('${o.id}')">
         ${btnText}
-      </div>
+      </button>
     </div>
   </div>`;
 }
@@ -1948,12 +1929,22 @@ function renderCardsSection(lista, contenedor, tipo) {
       <div class="obra-cards">${cards}</div>`;
     return;
   }
-  lista.sort((a,b) => {
-    const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
-    const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
-    return fb.localeCompare(fa);
-  });
-  el.innerHTML = `<div class="obra-cards">${lista.map(buildCard).join('')}</div>`;
+  const porAnioMes = agruparPorAnioMes(lista);
+  el.innerHTML = porAnioMes.map(([anio, meses]) => {
+    const mesesHtml = meses.map(([mesKey, obras]) => {
+      const cards = obras.map(buildCard).join('');
+      const mesLabel = getMesLabel3(mesKey);
+      const count = obras.length;
+      return `<div class="mes-grupo">
+        <div class="mes-separador">${mesLabel} <span class="mes-count">${count}</span></div>
+        <div class="obra-cards">${cards}</div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
+      <div class="anio-separador">${anio}</div>
+      ${mesesHtml}
+    </div>`;
+  }).join('');
 }
 
 function fechaCorta(f) {
@@ -1977,7 +1968,7 @@ function renderListaSection(lista, contenedor, tipo) {
       const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
       const badgeCls = 'badge-licitacion-card';
       const badgeTxt = 'Pendiente';
-      return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
+      return `<tr>
         <td class="col-obra"><strong>${info.nombre}</strong></td>
         <td class="col-prov">${info.proveedor||'—'}</td>
         <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
@@ -1985,6 +1976,7 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-fecha">—</td>
         <td class="col-dur">—</td>
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
       </tr>`;
     }).join('');
     el.innerHTML = `<div class="obras-tabla-wrap">
@@ -1999,40 +1991,53 @@ function renderListaSection(lista, contenedor, tipo) {
       </table></div>`;
     return;
   }
-  lista.sort((a,b) => {
-    const fa = a.info.fin || a.info.inicio || a.info.creadoEn || '';
-    const fb = b.info.fin || b.info.inicio || b.info.creadoEn || '';
-    return fb.localeCompare(fa);
-  });
-  const rows = lista.map(o => {
-    const info = o.info;
-    const terminada = info.estadoObra === 'terminado';
-    const dias = calcularDias(info.inicio, terminada ? info.fin : null);
-    const diasEC = calcularDias(info.inicio, null);
-    const duracion = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
-    const badgeCls = terminada ? 'badge-terminada' : 'badge-en-curso';
-    const badgeTxt = terminada ? 'Terminada' : 'En curso';
-    return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
-      <td class="col-obra"><strong>${info.nombre}</strong></td>
-      <td class="col-prov">${info.proveedor||'—'}</td>
-      <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
-      <td class="col-fecha">${info.inicio?fechaCorta(info.inicio):'—'}</td>
-      <td class="col-fecha">${fechaCorta(info.fin)}</td>
-      <td class="col-dur"><strong>${duracion}</strong></td>
-      <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-    </tr>`;
+  const porAnioMes = agruparPorAnioMes(lista);
+  el.innerHTML = porAnioMes.map(([anio, meses]) => {
+    const mesesHtml = meses.map(([mesKey, obras]) => {
+      const rows = obras.map(o => {
+        const info      = o.info;
+        const terminada = info.estadoObra === 'terminado';
+        const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
+        const diasEC    = calcularDias(info.inicio, null);
+        const duracion  = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
+        const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
+        const badgeCls  = terminada ? 'badge-terminada' : esPendiente ? 'badge-licitacion-card' : 'badge-en-curso';
+        const badgeTxt  = terminada ? 'Terminada' : esPendiente ? 'Pendiente' : 'En curso';
+        return `<tr>
+          <td class="col-obra"><strong>${info.nombre}</strong></td>
+          <td class="col-prov">${info.proveedor||'—'}</td>
+          <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
+          <td class="col-fecha">${info.inicio?fechaCorta(info.inicio):'<span style="font-size:0.72rem;color:var(--blue);font-weight:500">Pendiente</span>'}</td>
+          <td class="col-fecha">${fechaCorta(info.fin)}</td>
+          <td class="col-dur"><strong>${duracion}</strong></td>
+          <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+          <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">${terminada?'Ver':'Entrar'}</button></td>
+        </tr>`;
+      }).join('');
+      return `<div class="mes-grupo">
+        <div class="mes-separador">${getMesLabel3(mesKey)} <span class="mes-count">${obras.length}</span></div>
+        <div class="obras-tabla-wrap">
+          <table class="obras-tabla">
+            <thead><tr>
+              <th class="col-obra">Obra</th>
+              <th class="col-prov">Proveedor</th>
+              <th class="col-ubic">Ubicación</th>
+              <th class="col-fecha">Inicio</th>
+              <th class="col-fecha">Fin</th>
+              <th class="col-dur">Duración</th>
+              <th class="col-estado">Estado</th>
+              <th class="col-btn"></th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
+      <div class="anio-separador" style="${anio==='Sin fecha'?'color:var(--blue);border-color:var(--blue)':''}">${anio==='Sin fecha'?'🔵 Pendiente — por licitación o falta de fecha de inicio de obra':anio}</div>
+      ${mesesHtml}
+    </div>`;
   }).join('');
-  el.innerHTML = `<div class="obras-tabla-wrap">
-    <table class="obras-tabla">
-      <thead><tr>
-        <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
-        <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
-        <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
-        <th class="col-estado">Estado</th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
 }
 
 window.ingresarDesdePanel = async function(obraId) {
@@ -2136,7 +2141,7 @@ window.ingresarDesdePanel = async function(obraId) {
   document.getElementById('obra-select').value = obraId;
   actualizarHeaderObra();
   mostrarBotonesObra(true);
-  document.getElementById('filtros-bar').style.display = 'none';
+  document.getElementById('filtros-bar').style.display = 'flex';
   await cargarSubcolecciones(obraId);
   const terminada = info && info.estadoObra === 'terminado';
   setModoSoloLectura(terminada);
@@ -2777,13 +2782,15 @@ window.addEventListener('DOMContentLoaded', () => {
       btnOut.style.display = 'inline-block';
       setSyncStatus('loading', 'Conectando...');
       try {
-        obraActiva = null;
-        localStorage.removeItem('obraActiva');
         await cargarObras();
         setSyncStatus('ok', 'Conectado');
         loading.style.display = 'none';
+        // Mostrar topbar
         const tb = document.getElementById('main-topbar');
         if (tb) tb.style.display = 'flex';
+        // Siempre ir al panel al iniciar (no restaurar última obra)
+        obraActiva = null;
+        localStorage.removeItem('obraActiva');
         irAlPanel();
       } catch(e) {
         setSyncStatus('error', 'Sin conexión');
@@ -2819,7 +2826,7 @@ async function cargarObras() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display = 'none';
+        document.getElementById('filtros-bar').style.display = 'flex';
         await cargarSubcolecciones(obraActiva);
         renderAll();
       }
@@ -2875,7 +2882,7 @@ window.cambiarObra = async function() {
   actualizarHeaderObra();
   const hayObra = !!(obraActiva && obras[obraActiva]);
   mostrarBotonesObra(hayObra);
-  document.getElementById('filtros-bar').style.display = 'none';
+  document.getElementById('filtros-bar').style.display = hayObra ? 'flex' : 'none';
   if (hayObra) {
     localStorage.setItem('obraActiva', obraActiva);
     await cargarSubcolecciones(obraActiva);
@@ -3234,7 +3241,7 @@ window.guardarObra = async function() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display = 'none';
+        document.getElementById('filtros-bar').style.display='flex';
         setModoSoloLectura(false);
         renderAll();
       }, 500);
@@ -3280,7 +3287,7 @@ window.guardarObra = async function() {
       document.getElementById('obra-select').value = obraActiva;
       actualizarHeaderObra();
       mostrarBotonesObra(true);
-      document.getElementById('filtros-bar').style.display = 'none';
+      document.getElementById('filtros-bar').style.display='flex';
       setModoSoloLectura(false);
       renderAll();
       // Ir directo a Historial de obra
