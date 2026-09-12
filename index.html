@@ -791,8 +791,7 @@
 
 <div class="obra-bar" id="obras-panel-bar">
   <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-    <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
-    <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
+    <span id="obra-activa-nombre" style="display:none"></span>
   </div>
   <select id="obra-select" onchange="cambiarObra()" style="display:none">
     <option value="">Seleccioná una obra...</option>
@@ -1966,7 +1965,7 @@ function renderListaSection(lista, contenedor, tipo) {
       const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
       const badgeCls = 'badge-licitacion-card';
       const badgeTxt = 'Pendiente';
-      return `<tr>
+      return `<tr style="cursor:pointer" onclick="ingresarDesdePanel('${o.id}')">
         <td class="col-obra"><strong>${info.nombre}</strong></td>
         <td class="col-prov">${info.proveedor||'—'}</td>
         <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
@@ -1974,7 +1973,6 @@ function renderListaSection(lista, contenedor, tipo) {
         <td class="col-fecha">—</td>
         <td class="col-dur">—</td>
         <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
       </tr>`;
     }).join('');
     el.innerHTML = `<div class="obras-tabla-wrap">
