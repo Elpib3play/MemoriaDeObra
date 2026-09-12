@@ -57,7 +57,7 @@
   .obra-readonly-banner{background:var(--green-light);border-bottom:1px solid #b0d9c0;padding:0.4rem 2rem;font-size:0.78rem;color:var(--green);font-weight:500;display:none;align-items:center;gap:0.5rem;}
   .obra-readonly-banner.visible{display:flex;}
 
-  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-x:hidden;padding-bottom:4rem;}
+  .main{max-width:900px;margin:0 auto;padding:2rem;overflow-y:auto;overflow-x:hidden;padding-bottom:4rem;height:100%;box-sizing:border-box;}
   .panel{display:none;}.panel.active{display:block;width:100%;box-sizing:border-box;}
 
   .section-title{font-family:DM Serif Display,serif;font-size:1.4rem;margin-bottom:1.5rem;color:var(--ink);display:flex;align-items:baseline;gap:0.75rem;}
@@ -578,7 +578,7 @@
     display: none;
     flex: 1;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
     min-height: 0;
     width: 100%;
   }
