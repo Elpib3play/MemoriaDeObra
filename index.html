@@ -1665,6 +1665,8 @@ window.setFiltroEstado = function(estado) {
   sel.value = estado;
   renderDashboard();
 };
+
+window.setVista = function(v) {
   vistaActual = v;
   document.getElementById('btn-vista-cards').className = 'btn-vista' + (v==='cards'?' active':'');
   document.getElementById('btn-vista-lista').className = 'btn-vista' + (v==='lista'?' active':'');
