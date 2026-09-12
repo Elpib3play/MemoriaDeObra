@@ -41,13 +41,9 @@
   .btn-edit-obra:hover{background:#b0cfe0!important;}
   .btn-del-obra{background:var(--red-light)!important;color:var(--red)!important;border-color:#f5c0c0!important;cursor:pointer;font-weight:500;}
   .btn-del-obra:hover{background:#f5c0c0!important;}
+  .btn-volver-obras{background:var(--blue-light)!important;color:var(--blue)!important;border-color:#b0cfe0!important;cursor:pointer;font-weight:500;}
+  .btn-volver-obras:hover{background:#b0cfe0!important;}
 
-  .filtros-bar{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.5rem 2rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;}
-  .filtros-bar label{font-size:0.74rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
-  .filtros-bar select{border:1px solid var(--border);background:var(--surface);font-family:DM Sans,sans-serif;font-size:0.82rem;padding:0.3rem 0.6rem;border-radius:5px;color:var(--ink);}
-  .btn-clear-filtro{background:none;border:1px solid var(--border);color:var(--ink3);font-size:0.78rem;padding:0.3rem 0.6rem;border-radius:5px;cursor:pointer;font-family:DM Sans,sans-serif;}
-  .btn-clear-filtro:hover{color:var(--accent);border-color:var(--accent);}
-  .filtro-badge{font-size:0.74rem;background:var(--accent-light);color:var(--accent);padding:0.25rem 0.6rem;border-radius:20px;font-weight:500;}
 
   .tabs{display:flex;padding:0 2rem;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 2px 4px rgba(28,26,22,0.04);}
   .tab{padding:0.75rem 1.25rem;font-size:0.83rem;font-weight:500;color:var(--ink2);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
@@ -199,6 +195,18 @@
   /* Secciones */
   .dash-section{margin-bottom:2.5rem;}
   .dash-section-title{display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;}
+  /* Separacion entre grupos de estado. Antes la daba el contenedor del año,
+     que se quito al agrupar solo por estado. */
+  #dash-section-licitacion,#dash-section-curso,#dash-section-term{margin-bottom:2.25rem;}
+  #dash-section-term{margin-bottom:1rem;}
+  /* Bolita de color por estado en los titulos de seccion */
+  .dash-section-title.con-bolita::before{
+    content:'';width:10px;height:10px;border-radius:50%;flex-shrink:0;
+    background:var(--bolita,var(--ink3));
+  }
+  .dash-section-title.estado-pend {--bolita:#7C3AED;}
+  .dash-section-title.estado-curso{--bolita:var(--amber);}
+  .dash-section-title.estado-term {--bolita:var(--green);}
   .dash-section-title h2{font-family:'DM Serif Display',serif;font-size:1.3rem;color:var(--ink);}
   .dash-section-title .count{font-size:0.78rem;font-weight:500;padding:0.2rem 0.65rem;border-radius:20px;}
   .count-curso{background:var(--amber-light);color:var(--amber);}
@@ -244,6 +252,10 @@
   .obras-tabla td{padding:0.85rem 1rem;border-bottom:0.5px solid var(--border);color:var(--ink);vertical-align:middle;}
   .obras-tabla tr:last-child td{border-bottom:none;}
   .obras-tabla tbody tr:hover td{background:var(--accent-light);}
+  /* Filas clickeables en vista lista, en TODOS los estados (incluye pendientes) */
+  .obras-tabla tbody tr.fila-obra{cursor:pointer;}
+  /* Tarjeta clickeable completa */
+  .obra-card.clickeable{cursor:pointer;}
   .obras-tabla .col-obra{min-width:150px;}
   .obras-tabla .col-prov{min-width:110px;}
   .obras-tabla .col-ubic{min-width:110px;}
@@ -304,6 +316,10 @@
   .obra-card.esperando{border:1.5px solid #AFA9EC;border-top:3px solid #7F77DD;}
   .badge-licitacion-card{background:#EDE9FE;color:#5B21B6;font-size:0.68rem;font-weight:500;padding:0.2rem 0.65rem;border-radius:20px;white-space:nowrap;}
   .dash-stat-value.purple{color:#7C3AED;}
+  /* KPIs clickeables */
+  .dash-stat.kpi{cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;user-select:none;}
+  .dash-stat.kpi:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(28,26,22,0.10);transform:translateY(-1px);}
+  .dash-stat.kpi-activo{border-color:var(--accent);box-shadow:0 0 0 2px rgba(196,87,42,0.20);}
   .dash-stat-value.amber-dark{color:#92400E;}
   .count-licitacion{background:#EDE9FE;color:#5B21B6;}
   .anio-separador.licitacion{color:#7C3AED;border-color:#7C3AED;}
@@ -335,8 +351,7 @@
     .main{padding:1rem;}
     .header{padding:0 1rem;}
     .tabs{padding:0 1rem;overflow-x:auto;}
-    .obra-bar,.filtros-bar{padding:0.75rem 1rem;}
-  }
+    .obra-bar,  }
 
   /* ===== MEJORAS ESTÉTICAS v7 ===== */
   /* Animación fade-in cards */
@@ -652,7 +667,11 @@
     display: flex !important;
     flex-direction: column !important;
     overflow: hidden !important;
-    max-width: calc(100vw - 236px) !important;
+    /* FIX: antes era calc(100vw - 236px), que asumia el sidebar siempre
+       visible y dejaba 236px muertos al colapsarlo. flex:1 + min-width:0
+       ya reparten el espacio solos. */
+    max-width: 100% !important;
+    width: auto !important;
   }
   /* ===== TICKETS ===== */
   .ticket-tabla{width:100%;border-collapse:collapse;font-size:0.83rem;}
@@ -674,6 +693,15 @@
   .badge-estado.no-iniciado{background:var(--surface2);color:var(--ink3);}
   .badge-tipo{font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:20px;background:var(--surface2);color:var(--ink2);white-space:nowrap;}
   .ticket-obs{font-size:0.76rem;color:var(--ink2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  /* Dos tortas del mes, una al lado de la otra */
+  .tk-mes-tortas{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .tk-mes-tit{font-size:0.68rem;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.5rem;text-align:center;}
+  .tk-mes-n{font-family:DM Mono,monospace;color:var(--accent);font-weight:700;}
+  @media (max-width:720px){ .tk-mes-tortas{grid-template-columns:1fr;} }
+  /* Aviso de tickets sin fecha */
+  .tk-aviso{background:var(--amber-light);border:1px solid #e0cc9a;color:#6b5418;border-radius:10px;
+            padding:0.6rem 0.85rem;font-size:0.75rem;line-height:1.5;margin-bottom:0.85rem;}
+  .tk-aviso b{font-family:DM Mono,monospace;}
   .ticket-acciones{display:flex;gap:4px;justify-content:flex-end;}
   .ticket-acciones button{background:none;border:1px solid var(--border);border-radius:5px;padding:0.2rem 0.45rem;cursor:pointer;font-size:0.75rem;color:var(--ink2);}
   .ticket-acciones button:hover{background:var(--surface2);}
@@ -685,6 +713,11 @@
   .ticket-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;display:flex;flex-direction:column;gap:0.15rem;min-width:80px;}
   .ticket-stat-val{font-size:1.4rem;font-weight:600;font-family:DM Mono,monospace;color:var(--ink);line-height:1;}
   .ticket-stat-lbl{font-size:0.65rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;}
+  /* KPIs del listado de tickets, clickeables como filtro (igual que en obras) */
+  .ticket-stat.kpi{cursor:pointer;transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease;user-select:none;}
+  .ticket-stat.kpi:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(28,26,22,0.10);transform:translateY(-1px);}
+  .ticket-stat.kpi-activo{border-color:var(--accent);box-shadow:0 0 0 2px rgba(196,87,42,0.20);}
+  .ticket-stat-sub{font-size:0.6rem;color:var(--accent);font-weight:500;}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -790,16 +823,16 @@
 </div>
 
 <div class="obra-bar" id="obras-panel-bar">
-  <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
-    <span style="font-size:0.78rem;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Obra activa:</span>
-    <span id="obra-activa-nombre" style="font-size:0.9rem;font-weight:500;color:var(--ink);padding:0.3rem 0;"></span>
-  </div>
+  <!-- "Obra activa: xxx" eliminado. Se conserva el span oculto porque
+       varias funciones le escriben el nombre de la obra. -->
+  <span id="obra-activa-nombre" style="display:none"></span>
   <select id="obra-select" onchange="cambiarObra()" style="display:none">
     <option value="">Seleccioná una obra...</option>
   </select>
-  <button class="btn-new-obra" onclick="abrirModalNuevaObra()">+ Nueva obra</button>
+  <button class="btn-new-obra" id="btn-nueva-obra" onclick="abrirModalNuevaObra()">+ Nueva obra</button>
   <button class="btn-edit-obra" id="btn-editar-obra" onclick="abrirModalEditarObra()" style="display:none">✏️ Editar obra</button>
   <button class="btn-del-obra" id="btn-eliminar-obra" onclick="eliminarObra()" style="display:none">🗑 Eliminar</button>
+  <button class="btn-volver-obras" id="btn-volver-obras" onclick="irAlPanel()" style="display:none;margin-left:auto">← Volver al menú de obras</button>
 </div>
 
 <!-- PANEL DE OBRAS (tarjetas) -->
@@ -833,38 +866,25 @@
     </div>
   </div>
   <div id="dash-section-licitacion" style="display:none">
-    <div class="dash-section-title" style="color:var(--purple);margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
+    <div class="dash-section-title con-bolita estado-pend" style="color:#7C3AED;margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
     <div id="dash-cards-licitacion" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-curso" style="display:block">
-    <div class="dash-section-title" style="margin-bottom:0.75rem">En curso <span id="dash-count-curso" class="dash-count"></span></div>
+    <div class="dash-section-title con-bolita estado-curso" style="color:var(--amber);margin-bottom:0.75rem">En curso <span id="dash-count-curso" class="dash-count"></span></div>
     <div id="dash-cards-curso" class="dash-cards-wrap"></div>
   </div>
   <div id="dash-section-term" style="display:block">
-    <div class="dash-section-title" style="margin-bottom:0.75rem">Terminadas <span id="dash-count-term" class="dash-count"></span></div>
+    <div class="dash-section-title con-bolita estado-term" style="color:var(--green);margin-bottom:0.75rem">Terminadas <span id="dash-count-term" class="dash-count"></span></div>
     <div id="dash-cards-term" class="dash-cards-wrap"></div>
   </div>
 </div>
 
-<div class="obra-readonly-banner" id="obra-readonly-banner">✓ Obra terminada — modo solo lectura &nbsp;·&nbsp; <span style="font-weight:400">Usá <strong>✏️ Editar obra</strong> para reactivarla</span></div>
+<div class="obra-readonly-banner" id="obra-readonly-banner">✓ Obra terminada — modo solo lectura &nbsp;·&nbsp; <span style="font-weight:400">Usá <strong>↩️ Reactivar obra</strong> para volver a abrirla</span></div>
 
-<div class="filtros-bar" id="filtros-bar" style="display:none">
-  <label>Filtrar por:</label>
-  <select id="filtro-anio" onchange="aplicarFiltros()">
-    <option value="">Todos los años</option>
-  </select>
-  <select id="filtro-mes" onchange="aplicarFiltros()">
-    <option value="">Todos los meses</option>
-    <option value="01">Enero</option><option value="02">Febrero</option>
-    <option value="03">Marzo</option><option value="04">Abril</option>
-    <option value="05">Mayo</option><option value="06">Junio</option>
-    <option value="07">Julio</option><option value="08">Agosto</option>
-    <option value="09">Septiembre</option><option value="10">Octubre</option>
-    <option value="11">Noviembre</option><option value="12">Diciembre</option>
-  </select>
-  <button class="btn-clear-filtro" onclick="limpiarFiltros()">✕ Limpiar</button>
-  <span id="filtro-resultado" style="display:none" class="filtro-badge"></span>
-</div>
+<!-- Barra "Filtrar por:" (año/mes dentro de una obra) eliminada por completo.
+     Los filtros del PANEL DE OBRAS son otros (dash-filtro-anio / dash-filtro-mes)
+     y siguen funcionando. filtroAnio/filtroMes quedan siempre vacios, con lo cual
+     filtrar() devuelve todo y el Historial y el PDF muestran la obra completa. -->
 
 <div class="tabs">
   <div class="tab active" onclick="switchTab('libro',this)">Libro de obra</div>
@@ -996,7 +1016,10 @@
     <div id="reporte-preview"></div>
     <div class="pdf-btn-wrap" style="justify-content:flex-start">
       <button class="btn-pdf" onclick="generarPDF()">⬇ Descargar PDF</button>
-      <button class="btn-secondary" onclick="renderReporte()">↺ Actualizar vista</button>
+      <!-- "↺ Actualizar vista" eliminado: llamaba a renderReporte(), que vive en
+           el scope del modulo y no en window, asi que tiraba ReferenceError y no
+           hacia nada. Tampoco hacia falta: onSnapshot mantiene los datos vivos y
+           renderAll() ya redibuja el Historial cuando tabActual==='reporte'. -->
       <button id="btn-finalizar-obra" onclick="abrirFinalizarObra()" style="background:var(--accent);color:#fff;border:none;padding:0.6rem 1.2rem;border-radius:6px;font-size:0.85rem;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:500;margin-top:1rem;display:none;margin-left:auto">✓ Finalizar obra</button>
     </div>
   </div>
@@ -1152,6 +1175,9 @@
       <input type="text" id="tk-buscar" placeholder="Buscar ticket..." style="flex:1;min-width:160px;font-size:0.83rem" oninput="renderTickets()">
       <select id="tk-filtro-estado" onchange="renderTickets()" style="font-size:0.83rem;min-width:130px">
         <option value="">Todos los estados</option>
+        <!-- "abiertos" no es un estado guardado: agrupa todo lo que no esta
+             resuelto, para que el KPI "Abiertos" se pueda filtrar. -->
+        <option value="abiertos">Abiertos (sin resolver)</option>
         <option value="no-iniciado">No iniciado</option>
         <option value="en-curso">En curso</option>
         <option value="en-espera">En espera</option>
@@ -1201,6 +1227,7 @@
     <!-- Vista Dashboard -->
     <div id="tk-vista-dashboard" style="display:none">
       <div class="ticket-stats" id="tk-dash-stats"></div>
+      <div id="tk-aviso-fechas"></div>
       <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
           <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Acciones anuales — distribución por tipo</div>
@@ -1244,6 +1271,7 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem">
           <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Distribución mensual por tipo</div>
           <div style="display:flex;align-items:center;gap:0.5rem">
+            <span style="font-size:0.68rem;color:var(--ink3)">o tocá una barra del gráfico de arriba</span>
             <span style="font-size:0.72rem;color:var(--ink2)">Mes:</span>
             <select id="tk-mes-sel" onchange="renderDashboardTicketsMes()" style="font-size:0.75rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--ink)">
               <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option>
@@ -1253,11 +1281,18 @@
             </select>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:190px 1fr;gap:1.25rem;align-items:center">
-          <div style="position:relative;height:165px"><canvas id="tk-pie-mes" role="img" aria-label="Torta mensual por tipo"></canvas></div>
+        <div id="tk-mes-resumen" style="font-size:0.75rem;color:var(--ink2);margin-bottom:0.85rem;font-weight:500"></div>
+        <!-- Dos tortas pegadas: todo el mes / solo lo resuelto en el mes -->
+        <div class="tk-mes-tortas">
           <div>
-            <div id="tk-mes-resumen" style="font-size:0.72rem;color:var(--ink2);margin-bottom:0.6rem;font-weight:500"></div>
-            <div id="tk-mes-desglose"></div>
+            <div class="tk-mes-tit">Todo el mes <span id="tk-mes-tot" class="tk-mes-n"></span></div>
+            <div style="position:relative;height:158px"><canvas id="tk-pie-mes" role="img" aria-label="Torta del mes por tipo"></canvas></div>
+            <div id="tk-mes-desglose" style="margin-top:0.6rem"></div>
+          </div>
+          <div>
+            <div class="tk-mes-tit">Resueltos en el mes <span id="tk-mes-res-n" class="tk-mes-n"></span></div>
+            <div style="position:relative;height:158px"><canvas id="tk-pie-mes-res" role="img" aria-label="Torta de resueltos del mes por tipo"></canvas></div>
+            <div id="tk-mes-desglose-res" style="margin-top:0.6rem"></div>
           </div>
         </div>
       </div>
@@ -1665,6 +1700,16 @@ window.setVista = function(v) {
   renderDashboard();
 };
 
+// Filtra por estado desde los KPIs. CLAVE: no toca vistaActual, asi que si
+// estabas en modo tarjeta seguis en tarjeta, y si estabas en lista seguis en
+// lista. Volver a tocar el mismo KPI limpia el filtro.
+window.setFiltroEstado = function(estado) {
+  const sel = document.getElementById('dash-filtro-estado');
+  if (!sel) return;
+  sel.value = (sel.value === estado && estado !== '') ? '' : estado;
+  renderDashboard();
+};
+
 function getMesLabel(fecha) {
   if (!fecha) return '';
   const meses = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -1681,7 +1726,6 @@ function mostrarDashboard() {
   // Ocultar libro de obra (tabs + main), mostrar panel de obras
   const obraBar    = document.getElementById('obras-panel-bar');
   const obraPanel  = document.getElementById('obras-panel');
-  const filtros    = document.getElementById('filtros-bar');
   const tabs       = document.querySelector('#mod-obras .tabs');
   const main       = document.querySelector('#mod-obras .main');
   const header     = document.querySelector('#mod-obras .header');
@@ -1689,15 +1733,56 @@ function mostrarDashboard() {
   const readonly   = document.getElementById('obra-readonly-banner');
   if (obraBar)   obraBar.style.display   = 'flex';
   if (obraPanel) obraPanel.style.display = 'block';
-  if (filtros)   filtros.style.display   = 'none';
   if (tabs)      tabs.style.display      = 'none';
   if (main)      main.style.display      = 'none';
   if (header)    header.style.display    = 'none';
   if (btnPanel)  btnPanel.style.display  = 'none';
   if (readonly)  readonly.style.display  = 'none';
+  // En el panel de obras la barra solo muestra "+ Nueva obra":
+  // Editar / Eliminar / Volver son acciones de una obra abierta.
+  ['btn-editar-obra','btn-eliminar-obra','btn-volver-obras'].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.style.display = 'none';
+  });
+  // "+ Nueva obra" es accion del panel, asi que aca si va.
+  const bNueva = document.getElementById('btn-nueva-obra');
+  if (bNueva) bNueva.style.display = 'inline-block';
   // Renderizar tarjetas
   actualizarFiltrosAniosDash();
   renderDashboard();
+  autocorregirEstadosLicitacion(); // async: no bloquea el render
+}
+
+// El badge de la tarjeta dependia de la subcoleccion compras/proceso, que en el
+// panel NUNCA se carga (cargarObras deja compras:{} en todas las obras). Por eso
+// una obra con la licitacion ya cerrada se mostraba como "Licitado — sin inicio"
+// solo despues de entrar a ella, y volvia a "En licitación" al recargar con F5
+// (ofreciendo ademas "Cerrar licitación" sobre una licitacion ya cerrada).
+// Esto lee el proceso de las pendientes al abrir el panel y deja el estado
+// escrito en el doc de la obra, una sola vez, para que el badge no dependa mas
+// de la subcoleccion.
+async function autocorregirEstadosLicitacion() {
+  const candidatas = Object.entries(obras).filter(([, o]) => {
+    const i = (o && o.info) || {};
+    return !i.inicio && i.estadoObra === 'licitacion';
+  });
+  if (!candidatas.length) return;
+  let corregidas = 0;
+  for (const [id] of candidatas) {
+    try {
+      await cargarCompras(id);
+      const proc = obras[id] && obras[id].compras && obras[id].compras.proceso;
+      if (proc && proc.fin) {
+        // Sigue en el grupo Pendiente, asi que sellarEstado conserva estadoDesde
+        // y la obra no salta de lugar en el orden.
+        const infoNueva = sellarEstado({ ...obras[id].info, estadoObra: 'licitado-sin-inicio' }, obras[id].info);
+        await setDoc(doc(db,'obras',id), infoNueva);
+        obras[id].info = infoNueva;
+        corregidas++;
+      }
+    } catch(e) { /* si una falla, seguimos con el resto */ }
+  }
+  if (corregidas) renderDashboard();
 }
 
 function ocultarDashboard() {
@@ -1705,13 +1790,21 @@ function ocultarDashboard() {
   const obraPanel = document.getElementById('obras-panel');
   const tabs      = document.querySelector('#mod-obras .tabs');
   const main      = document.querySelector('#mod-obras .main');
-  const filtros   = document.getElementById('filtros-bar');
   const btnPanel  = document.getElementById('btn-panel');
   if (obraPanel) obraPanel.style.display = 'none';
   if (tabs)      tabs.style.display      = 'flex';
   if (main)      main.style.display      = 'block';
-  if (filtros)   filtros.style.display   = 'none';
   if (btnPanel)  btnPanel.style.display  = 'inline-block';
+  // Dentro de una obra sí aparecen Editar / Eliminar / Volver al menú
+  const bEdit = document.getElementById('btn-editar-obra');
+  const bDel  = document.getElementById('btn-eliminar-obra');
+  const bVol  = document.getElementById('btn-volver-obras');
+  const bNva  = document.getElementById('btn-nueva-obra');
+  if (bEdit) bEdit.style.display = 'inline-block';
+  if (bDel)  bDel.style.display  = 'inline-block';
+  if (bVol)  bVol.style.display  = 'inline-block';
+  // Dentro de una obra no se crea otra obra: se vuelve al menu y se crea ahi.
+  if (bNva)  bNva.style.display  = 'none';
 }
 
 window.irAlPanel = function() { ocultarDashboard(); mostrarDashboard(); };
@@ -1736,6 +1829,45 @@ function actualizarFiltrosAniosDash() {
     const op = document.createElement('option'); op.value=a; op.textContent=a; sel.appendChild(op);
   });
   if (val) sel.value = val;
+}
+
+// Sello del momento en que una obra entra a un estado. Se guarda en el campo
+// 'estadoDesde' cada vez que cambia estadoObra (crear, iniciar, finalizar,
+// reactivar), y es lo que define el orden dentro de cada grupo del panel.
+// En que grupo del panel cae una obra. Ojo: no lo define solo estadoObra —
+// una obra sin fecha de inicio va a Pendiente aunque diga 'en-curso'. Usamos
+// la misma regla que renderDashboard() para que el sello se dispare tambien si
+// lo que cambia es la fecha de inicio, no el estado.
+function grupoDe(info) {
+  if (!info) return null;
+  if (info.estadoObra === 'terminado') return 'terminada';
+  return info.inicio ? 'curso' : 'pendiente';
+}
+
+function sellarEstado(infoNueva, infoAnterior) {
+  const cambioDeGrupo = grupoDe(infoAnterior) !== grupoDe(infoNueva);
+  infoNueva.estadoDesde = cambioDeGrupo
+    ? new Date().toISOString()            // entro al grupo ahora → va primera
+    : (infoAnterior.estadoDesde || infoNueva.estadoDesde || infoAnterior.creadoEn || new Date().toISOString());
+  return infoNueva;
+}
+
+// Clave numerica de orden. Prioriza 'estadoDesde'. Las obras cargadas antes de
+// que existiera ese campo no lo tienen, asi que para esas caemos a la fecha del
+// hecho que las puso en su grupo, que es lo mas cercano disponible.
+function claveOrden(o) {
+  const i = (o && o.info) || {};
+  let f = i.estadoDesde;
+  if (!f) {
+    const g = grupoDe(i);
+    f = g === 'terminada' ? (i.fin || i.inicio || i.creadoEn)
+      : g === 'pendiente' ? (i.creadoEn)
+      : (i.inicio || i.creadoEn);
+  }
+  if (!f) return 0;
+  // 'YYYY-MM-DD' y 'YYYY-MM-DDTHH:mm:ssZ' conviven: normalizamos a timestamp
+  // para que dos cambios del mismo dia se ordenen por hora y no por largo.
+  return Date.parse(String(f).length <= 10 ? f + 'T00:00:00Z' : f) || 0;
 }
 
 window.renderDashboard = function() {
@@ -1773,11 +1905,16 @@ window.renderDashboard = function() {
   const enCurso    = lista.filter(o => !!o.info.inicio && o.info.estadoObra !== 'terminado');
   const terminadas = lista.filter(o => o.info.estadoObra === 'terminado');
 
-  // Ordenar por fecha de creación desc (más nueva primero)
-  const sortPorCreacion = (a,b) => (b.info.creadoEn||'').localeCompare(a.info.creadoEn||'');
-  pendientes.sort(sortPorCreacion);
-  enCurso.sort(sortPorCreacion);
-  terminadas.sort(sortPorCreacion);
+  // Orden: la ultima obra que ENTRO al grupo va primera. No se ordena por las
+  // fechas de inicio/fin que se cargan a mano, sino por 'estadoDesde', el sello
+  // del momento en que la obra paso a su estado actual. Asi, si finalizas una
+  // obra ahora, queda primera entre las Terminadas aunque le pongas una fecha
+  // de fin vieja, y una obra creada hace meses que recien arranca queda primera
+  // entre las En curso.
+  const sortPorEstadoDesde = (a,b) => claveOrden(b) - claveOrden(a);
+  pendientes.sort(sortPorEstadoDesde);
+  enCurso.sort(sortPorEstadoDesde);
+  terminadas.sort(sortPorEstadoDesde);
 
   // Stats globales siempre del total real
   const totalObras    = Object.keys(obras).length;
@@ -1786,14 +1923,18 @@ window.renderDashboard = function() {
   const totalTerm     = Object.values(obras).filter(o=>o.info.estadoObra==='terminado').length;
   const hayFiltro     = buscar || anio || mes || estado;
 
+  // KPIs clickeables. El valor de "Total obras" NUNCA cambia al filtrar:
+  // muestra siempre el total real. Si hay filtro activo se aclara cuántas
+  // quedaron visibles, pero el número grande se mantiene.
+  const kpiSel = estado; // cuál KPI está activo
   document.getElementById('dash-stats-grid').innerHTML = `
-    <div class="dash-stat">
-      <div class="dash-stat-label">Total obras${hayFiltro?' <span style="font-size:0.65rem;color:var(--accent);font-weight:500">(filtrado)</span>':''}</div>
-      <div class="dash-stat-value">${hayFiltro?lista.length:totalObras}</div>
+    <div class="dash-stat kpi${kpiSel===''?' kpi-activo':''}" onclick="setFiltroEstado('')" title="Ver todas las obras">
+      <div class="dash-stat-label">Total obras${hayFiltro?` <span style="font-size:0.65rem;color:var(--accent);font-weight:500">(${lista.length} visibles)</span>`:''}</div>
+      <div class="dash-stat-value">${totalObras}</div>
     </div>
-    ${totalPend>0?`<div class="dash-stat"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
-    <div class="dash-stat"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
-    <div class="dash-stat"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
+    ${totalPend>0?`<div class="dash-stat kpi${kpiSel==='licitacion'?' kpi-activo':''}" onclick="setFiltroEstado('licitacion')" title="Filtrar pendientes"><div class="dash-stat-label">Pendiente</div><div class="dash-stat-value purple">${totalPend}</div></div>`:''}
+    <div class="dash-stat kpi${kpiSel==='en-curso'?' kpi-activo':''}" onclick="setFiltroEstado('en-curso')" title="Filtrar en curso"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
+    <div class="dash-stat kpi${kpiSel==='terminado'?' kpi-activo':''}" onclick="setFiltroEstado('terminado')" title="Filtrar terminadas"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
   `;
 
   document.getElementById('dash-count-licitacion').textContent = pendientes.length;
@@ -1888,7 +2029,7 @@ function buildCard(o) {
     : sinLicitacion ? 'Iniciar obra →'
     : 'Ingresar →';
 
-  return `<div class="obra-card ${cardClass}">
+  return `<div class="obra-card ${cardClass} clickeable" onclick="ingresarDesdePanel('${o.id}')">
     <div class="obra-card-header">
       <div class="obra-card-nombre">${info.nombre}</div>
       <span class="obra-card-badge ${badgeClass}">${badgeText}</span>
@@ -1903,7 +2044,7 @@ function buildCard(o) {
       ${!licitacion&&(terminada?dias:diasEC)!==null?`<span>⏱ <strong>${terminada?dias:diasEC} días</strong></span>`:''}
     </div>
     <div style="margin-top:auto">
-      <button class="btn-ingresar ${btnClass}" ${btnStyle} onclick="ingresarDesdePanel('${o.id}')">
+      <button class="btn-ingresar ${btnClass}" ${btnStyle} onclick="event.stopPropagation();ingresarDesdePanel('${o.id}')">
         ${btnText}
       </button>
     </div>
@@ -1918,33 +2059,10 @@ function renderCardsSection(lista, contenedor, tipo) {
     el.innerHTML = `<div class="empty-dash"><div class="empty-dash-icon">${icons[tipo]||'📋'}</div>${msgs[tipo]||'Sin registros'}</div>`;
     return;
   }
-  // Pendientes: todas juntas sin agrupar por año/mes
-  if (tipo === 'licitacion') {
-    const cards = lista.map(buildCard).join('');
-    el.innerHTML = `
-      <div class="mes-separador" style="color:var(--blue);border-color:var(--blue);margin-bottom:1rem">
-        🔵 Pendiente — por licitación o falta de fecha de inicio de obra
-        <span class="mes-count">${lista.length}</span>
-      </div>
-      <div class="obra-cards">${cards}</div>`;
-    return;
-  }
-  const porAnioMes = agruparPorAnioMes(lista);
-  el.innerHTML = porAnioMes.map(([anio, meses]) => {
-    const mesesHtml = meses.map(([mesKey, obras]) => {
-      const cards = obras.map(buildCard).join('');
-      const mesLabel = getMesLabel3(mesKey);
-      const count = obras.length;
-      return `<div class="mes-grupo">
-        <div class="mes-separador">${mesLabel} <span class="mes-count">${count}</span></div>
-        <div class="obra-cards">${cards}</div>
-      </div>`;
-    }).join('');
-    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
-      <div class="anio-separador">${anio}</div>
-      ${mesesHtml}
-    </div>`;
-  }).join('');
+  // SIN agrupacion por anio/mes: la unica agrupacion es por estado, y de eso
+  // ya se encarga el titulo de seccion (Pendiente / En curso / Terminadas).
+  // Orden: mas reciente primero, definido en renderDashboard().
+  el.innerHTML = `<div class="obra-cards">${lista.map(buildCard).join('')}</div>`;
 }
 
 function fechaCorta(f) {
@@ -1961,83 +2079,52 @@ function renderListaSection(lista, contenedor, tipo) {
     el.innerHTML = `<div class="empty-dash"><div class="empty-dash-icon">${icons[tipo]||'📋'}</div>${msgs[tipo]||'Sin registros'}</div>`;
     return;
   }
-  // Pendientes: tabla simple sin agrupar por año/mes
-  if (tipo === 'licitacion') {
-    const rows = lista.map(o => {
-      const info = o.info;
-      const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
-      const badgeCls = 'badge-licitacion-card';
-      const badgeTxt = 'Pendiente';
-      return `<tr>
-        <td class="col-obra"><strong>${info.nombre}</strong></td>
-        <td class="col-prov">${info.proveedor||'—'}</td>
-        <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
-        <td class="col-fecha">—</td>
-        <td class="col-fecha">—</td>
-        <td class="col-dur">—</td>
-        <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-        <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">Ver →</button></td>
-      </tr>`;
-    }).join('');
-    el.innerHTML = `<div class="obras-tabla-wrap">
-      <table class="obras-tabla">
-        <thead><tr>
-          <th class="col-obra">Obra</th><th class="col-prov">Proveedor</th>
-          <th class="col-ubic">Ubicación</th><th class="col-fecha">Inicio</th>
-          <th class="col-fecha">Fin</th><th class="col-dur">Duración</th>
-          <th class="col-estado">Estado</th><th class="col-btn"></th>
-        </tr></thead>
-        <tbody>${rows}</tbody>
-      </table></div>`;
-    return;
-  }
-  const porAnioMes = agruparPorAnioMes(lista);
-  el.innerHTML = porAnioMes.map(([anio, meses]) => {
-    const mesesHtml = meses.map(([mesKey, obras]) => {
-      const rows = obras.map(o => {
-        const info      = o.info;
-        const terminada = info.estadoObra === 'terminado';
-        const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
-        const diasEC    = calcularDias(info.inicio, null);
-        const duracion  = terminada ? (dias!==null?dias+' días':'—') : (diasEC!==null?diasEC+' días':'—');
-        const esPendiente = !info.inicio && info.estadoObra !== 'terminado';
-        const badgeCls  = terminada ? 'badge-terminada' : esPendiente ? 'badge-licitacion-card' : 'badge-en-curso';
-        const badgeTxt  = terminada ? 'Terminada' : esPendiente ? 'Pendiente' : 'En curso';
-        return `<tr>
-          <td class="col-obra"><strong>${info.nombre}</strong></td>
-          <td class="col-prov">${info.proveedor||'—'}</td>
-          <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
-          <td class="col-fecha">${info.inicio?fechaCorta(info.inicio):'<span style="font-size:0.72rem;color:var(--blue);font-weight:500">Pendiente</span>'}</td>
-          <td class="col-fecha">${fechaCorta(info.fin)}</td>
-          <td class="col-dur"><strong>${duracion}</strong></td>
-          <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-          <td class="col-btn"><button class="btn-ir" onclick="ingresarDesdePanel('${o.id}')">${terminada?'Ver':'Entrar'}</button></td>
-        </tr>`;
-      }).join('');
-      return `<div class="mes-grupo">
-        <div class="mes-separador">${getMesLabel3(mesKey)} <span class="mes-count">${obras.length}</span></div>
-        <div class="obras-tabla-wrap">
-          <table class="obras-tabla">
-            <thead><tr>
-              <th class="col-obra">Obra</th>
-              <th class="col-prov">Proveedor</th>
-              <th class="col-ubic">Ubicación</th>
-              <th class="col-fecha">Inicio</th>
-              <th class="col-fecha">Fin</th>
-              <th class="col-dur">Duración</th>
-              <th class="col-estado">Estado</th>
-              <th class="col-btn"></th>
-            </tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
-      </div>`;
-    }).join('');
-    return `<div style="margin-bottom:2.5rem;width:100%;display:block">
-      <div class="anio-separador" style="${anio==='Sin fecha'?'color:var(--blue);border-color:var(--blue)':''}">${anio==='Sin fecha'?'🔵 Pendiente — por licitación o falta de fecha de inicio de obra':anio}</div>
-      ${mesesHtml}
-    </div>`;
-  }).join('');
+  // SIN agrupacion por anio/mes: una sola tabla por estado. El titulo de
+  // seccion ya indica el estado. Orden: mas reciente primero.
+  const rows = lista.map(buildFilaLista).join('');
+  el.innerHTML = `<div class="obras-tabla-wrap">
+    <table class="obras-tabla">
+      <thead><tr>
+        <th class="col-obra">Obra</th>
+        <th class="col-prov">Proveedor</th>
+        <th class="col-ubic">Ubicación</th>
+        <th class="col-fecha">Inicio</th>
+        <th class="col-fecha">Fin</th>
+        <th class="col-dur">Duración</th>
+        <th class="col-estado">Estado</th>
+        <th class="col-btn"></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// Una sola fila para los tres estados (pendiente / en curso / terminada).
+function buildFilaLista(o) {
+  const info      = o.info;
+  const terminada = info.estadoObra === 'terminado';
+  const pendiente = !info.inicio && !terminada;
+  const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
+  const diasEC    = calcularDias(info.inicio, null);
+  const duracion  = pendiente ? '—'
+    : terminada ? (dias  !== null ? dias  +' días' : '—')
+                : (diasEC !== null ? diasEC+' días' : '—');
+  const badgeCls  = terminada ? 'badge-terminada' : pendiente ? 'badge-licitacion-card' : 'badge-en-curso';
+  const badgeTxt  = terminada ? 'Terminada'       : pendiente ? 'Pendiente'            : 'En curso';
+  const btnTxt    = terminada ? 'Ver' : pendiente ? 'Ver →' : 'Entrar';
+  const inicioTd  = info.inicio
+    ? fechaCorta(info.inicio)
+    : '<span style="font-size:0.72rem;color:var(--blue);font-weight:500">Pendiente</span>';
+  return `<tr class="fila-obra" onclick="ingresarDesdePanel('${o.id}')">
+    <td class="col-obra"><strong>${info.nombre}</strong></td>
+    <td class="col-prov">${info.proveedor||'—'}</td>
+    <td class="col-ubic">${info.ubicacion||info.direccion||'—'}</td>
+    <td class="col-fecha">${inicioTd}</td>
+    <td class="col-fecha">${fechaCorta(info.fin)}</td>
+    <td class="col-dur"><strong>${duracion}</strong></td>
+    <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
+    <td class="col-btn"><button class="btn-ir" onclick="event.stopPropagation();ingresarDesdePanel('${o.id}')">${btnTxt}</button></td>
+  </tr>`;
 }
 
 window.ingresarDesdePanel = async function(obraId) {
@@ -2141,7 +2228,6 @@ window.ingresarDesdePanel = async function(obraId) {
   document.getElementById('obra-select').value = obraId;
   actualizarHeaderObra();
   mostrarBotonesObra(true);
-  document.getElementById('filtros-bar').style.display = 'flex';
   await cargarSubcolecciones(obraId);
   const terminada = info && info.estadoObra === 'terminado';
   setModoSoloLectura(terminada);
@@ -2339,7 +2425,7 @@ window.confirmarIniciarObra = async function() {
   setSyncStatus('loading','Guardando...');
   try {
     const infoActual = obras[obraId].info;
-    const infoNueva  = { ...infoActual, inicio: fecha, estadoObra: 'en-curso' };
+    const infoNueva  = sellarEstado({ ...infoActual, inicio: fecha, estadoObra: 'en-curso' }, infoActual);
     await setDoc(doc(db,'obras',obraId), infoNueva);
     obras[obraId].info = infoNueva;
     setSyncStatus('ok','Obra iniciada ✓');
@@ -2370,6 +2456,14 @@ window.cerrarLicitacionYCrearObra = async function() {
   };
   await setDoc(doc(db,'obras',obraId,'compras','proceso'), compActualizada);
   obras[obraId].compras.proceso = compActualizada;
+
+  // La licitacion queda cerrada: dejarlo escrito en el doc de la obra. Antes
+  // esto solo vivia en la subcoleccion y el badge se perdia al recargar (F5).
+  if (obras[obraId].info && !obras[obraId].info.inicio && obras[obraId].info.estadoObra !== 'terminado') {
+    const infoLic = sellarEstado({ ...obras[obraId].info, estadoObra: 'licitado-sin-inicio' }, obras[obraId].info);
+    await setDoc(doc(db,'obras',obraId), infoLic);
+    obras[obraId].info = infoLic;
+  }
 
   // Guardar compras como previas y abrir form de obra
   comprasPrevias   = compActualizada;
@@ -2433,6 +2527,14 @@ window.guardarCompras = async function() {
     // Actualizar objeto local inmediatamente
     if (!obras[obraActiva].compras) obras[obraActiva].compras = {};
     obras[obraActiva].compras.proceso = compras;
+    // Si se completo la fecha de cierre y la obra todavia no arranco, el estado
+    // pasa a "licitado sin inicio" y queda guardado en el doc de la obra.
+    const inf = obras[obraActiva].info || {};
+    if (compras.fin && !inf.inicio && inf.estadoObra !== 'terminado' && inf.estadoObra !== 'licitado-sin-inicio') {
+      const infoLic = sellarEstado({ ...inf, estadoObra: 'licitado-sin-inicio' }, inf);
+      await setDoc(doc(db,'obras',obraActiva), infoLic);
+      obras[obraActiva].info = infoLic;
+    }
     setSyncStatus('ok','Guardado ✓');
     toggleFormCompras(false);
     // Limpiar campos
@@ -2733,7 +2835,7 @@ window.confirmarFinalizarObra = async function() {
   const fecha = document.getElementById('fin-obra-fecha').value;
   if (!fecha) { alert('Ingresá la fecha de finalización'); return; }
   const infoActual = obras[obraActiva].info;
-  const infoNueva  = { ...infoActual, estadoObra: 'terminado', fin: fecha };
+  const infoNueva  = sellarEstado({ ...infoActual, estadoObra: 'terminado', fin: fecha }, infoActual);
   setSyncStatus('loading', 'Guardando...');
   try {
     await setDoc(doc(db,'obras',obraActiva), infoNueva);
@@ -2826,7 +2928,6 @@ async function cargarObras() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display = 'flex';
         await cargarSubcolecciones(obraActiva);
         renderAll();
       }
@@ -2852,7 +2953,6 @@ async function cargarSubcolecciones(obraId) {
     const unsub = onSnapshot(query(ref, orderBy('fecha','asc')), snap => {
       if (!obras[obraId]) return;
       obras[obraId][sec] = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      actualizarFiltrosAnio();
       renderAll();
     });
     unsubSubs[obraId].push(unsub);
@@ -2875,14 +2975,9 @@ function renderObraSelect() {
 
 window.cambiarObra = async function() {
   obraActiva = document.getElementById('obra-select').value || null;
-  filtroAnio = ''; filtroMes = '';
-  document.getElementById('filtro-anio').value = '';
-  document.getElementById('filtro-mes').value  = '';
-  document.getElementById('filtro-resultado').style.display = 'none';
   actualizarHeaderObra();
   const hayObra = !!(obraActiva && obras[obraActiva]);
   mostrarBotonesObra(hayObra);
-  document.getElementById('filtros-bar').style.display = hayObra ? 'flex' : 'none';
   if (hayObra) {
     localStorage.setItem('obraActiva', obraActiva);
     await cargarSubcolecciones(obraActiva);
@@ -2900,44 +2995,26 @@ function actualizarHeaderObra() {
 }
 
 function mostrarBotonesObra(v) {
-  ['btn-editar-obra','btn-eliminar-obra'].forEach(id =>
-    document.getElementById(id).style.display = v ? 'inline-block' : 'none'
-  );
-}
-
-function actualizarFiltrosAnio() {
-  if (!obraActiva || !obras[obraActiva]) return;
-  const o = obras[obraActiva];
-  const anios = new Set();
-  [...o.libro,...o.problemas,...o.gastos].forEach(r => { if(r.fecha) anios.add(r.fecha.split('-')[0]); });
-  const sel = document.getElementById('filtro-anio');
-  const val = sel.value;
-  sel.innerHTML = '<option value="">Todos los años</option>';
-  [...anios].sort().reverse().forEach(a => {
-    const op = document.createElement('option'); op.value=a; op.textContent=a; sel.appendChild(op);
+  // btn-volver-obras va junto con Editar/Eliminar: los tres son acciones
+  // de una obra abierta y no deben aparecer en el panel de obras.
+  ['btn-editar-obra','btn-eliminar-obra','btn-volver-obras'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = v ? 'inline-block' : 'none';
   });
-  if (val) sel.value = val;
+  // Y al reves: "+ Nueva obra" es accion de panel, no de obra abierta.
+  // Dentro de una obra quedaba al lado de "Eliminar", con el mismo peso
+  // visual y un alcance distinto.
+  const bNueva = document.getElementById('btn-nueva-obra');
+  if (bNueva) bNueva.style.display = v ? 'none' : 'inline-block';
 }
 
 // ========== FILTROS ==========
-window.aplicarFiltros = function() {
-  filtroAnio = document.getElementById('filtro-anio').value;
-  filtroMes  = document.getElementById('filtro-mes').value;
-  const badge = document.getElementById('filtro-resultado');
-  const meses = ['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  if (filtroAnio||filtroMes) {
-    badge.textContent = (filtroAnio||'')+(filtroMes?(filtroAnio?' — ':'')+meses[+filtroMes]:'');
-    badge.style.display = 'inline-block';
-  } else { badge.style.display='none'; }
-  renderAll();
-};
-window.limpiarFiltros = function() {
-  filtroAnio=''; filtroMes='';
-  document.getElementById('filtro-anio').value='';
-  document.getElementById('filtro-mes').value='';
-  document.getElementById('filtro-resultado').style.display='none';
-  renderAll();
-};
+// La barra "Filtrar por:" de año/mes dentro de una obra se elimino, junto con
+// actualizarFiltrosAnio(), aplicarFiltros() y limpiarFiltros(), que solo
+// existian para alimentarla. filtroAnio y filtroMes quedan siempre en '', asi
+// que filtrar() devuelve la lista completa y tanto el Historial como el PDF
+// muestran siempre la obra entera. El resto del codigo que los consulta
+// (totales, encabezado del PDF) sigue funcionando sin cambios.
 function filtrar(lista) {
   if (!filtroAnio && !filtroMes) return lista;
   return lista.filter(r => {
@@ -3044,7 +3121,10 @@ async function crearObraPendienteLicitacion(nombre, compData) {
       estadoObra: 'licitacion',
       fin:        '',
       email:      '',
-      tel:        ''
+      tel:        '',
+      // Faltaban: sin creadoEn esta obra quedaba al fondo de Pendiente.
+      creadoEn:    new Date().toISOString(),
+      estadoDesde: new Date().toISOString()
     };
     const docRef = await addDoc(collection(db,'obras'), infoObra);
     await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), compData);
@@ -3113,7 +3193,9 @@ window.abrirModalEditarObra = function() {
   if (!obraActiva || !obras[obraActiva]) return;
   modoModal = 'editar';
   const info = obras[obraActiva].info;
-  document.getElementById('modal-obra-titulo').textContent = 'Editar obra';
+  // Mismo modal, dos intenciones: corregir datos vs. reactivar una terminada.
+  const esTerminada = info.estadoObra === 'terminado';
+  document.getElementById('modal-obra-titulo').textContent = esTerminada ? 'Reactivar obra' : 'Editar obra';
   document.getElementById('btn-guardar-obra').textContent  = 'Guardar cambios';
   document.getElementById('fo-nombre').value    = info.nombre    || '';
   document.getElementById('fo-proveedor').value = info.proveedor || '';
@@ -3204,6 +3286,7 @@ window.guardarObra = async function() {
       if (esModoEtiqueta || !inicio) {
         infoNueva.estadoObra = 'pendiente'; // sin fecha = pendiente (contratación directa)
         infoNueva.creadoEn   = new Date().toISOString();
+        sellarEstado(infoNueva, null); // obra nueva: entra a Pendiente ahora
         const docRef = await addDoc(collection(db,'obras'), infoNueva);
         if (comprasPrevias) {
           await setDoc(doc(db,'obras',docRef.id,'compras','proceso'), comprasPrevias);
@@ -3220,6 +3303,7 @@ window.guardarObra = async function() {
         irAlPanel();
         return;
       }
+      sellarEstado(infoNueva, null); // obra nueva: entra a su estado ahora
       const docRef = await addDoc(collection(db,'obras'), infoNueva);
       obraActiva = docRef.id;
       localStorage.setItem('obraActiva', obraActiva);
@@ -3241,7 +3325,6 @@ window.guardarObra = async function() {
         document.getElementById('obra-select').value = obraActiva;
         actualizarHeaderObra();
         mostrarBotonesObra(true);
-        document.getElementById('filtros-bar').style.display='flex';
         setModoSoloLectura(false);
         renderAll();
       }, 500);
@@ -3250,6 +3333,7 @@ window.guardarObra = async function() {
       // Si no hay fecha de inicio → guardar como licitado sin inicio y volver al panel
       if (!infoNueva.inicio) {
         infoNueva.estadoObra = 'licitado-sin-inicio';
+        sellarEstado(infoNueva, obras[obraId]?.info || null);
         await setDoc(doc(db,'obras',obraId), infoNueva);
         if (obras[obraId]) obras[obraId].info = infoNueva;
         infoAntesDeCerrar = null;
@@ -3263,6 +3347,7 @@ window.guardarObra = async function() {
         return;
       }
       infoNueva.estadoObra = 'en-curso';
+      sellarEstado(infoNueva, obras[obraId]?.info || null);
       await setDoc(doc(db,'obras',obraId), infoNueva);
       if (comprasPrevias) {
         await setDoc(doc(db,'obras',obraId,'compras','proceso'), comprasPrevias);
@@ -3287,13 +3372,14 @@ window.guardarObra = async function() {
       document.getElementById('obra-select').value = obraActiva;
       actualizarHeaderObra();
       mostrarBotonesObra(true);
-      document.getElementById('filtros-bar').style.display='flex';
       setModoSoloLectura(false);
       renderAll();
       // Ir directo a Historial de obra
       const tabRep = document.querySelector(".tab[onclick*='reporte']");
       if (tabRep) switchTab('reporte', tabRep);
     } else {
+      // Editar / reactivar: solo se re-sella si el estado efectivamente cambio.
+      sellarEstado(infoNueva, obras[obraActiva]?.info || null);
       await setDoc(doc(db,'obras',obraActiva), infoNueva);
       const esTerminada = infoNueva.estadoObra === 'terminado';
       setModoSoloLectura(esTerminada);
@@ -3368,11 +3454,16 @@ function setModoSoloLectura(soloLectura) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-reporte').classList.add('active');
     tabActual = 'reporte';
+    // FIX: mostrarDashboard() deja style.display='none' inline, y el inline le
+    // gana a la clase .visible, asi que despues de pasar por el panel el
+    // banner no volvia a aparecer nunca. Lo seteamos inline tambien.
     banner.classList.add('visible');
+    banner.style.display = 'flex';
     renderReporte();
   } else {
     tabs.forEach(t => t.classList.remove('disabled'));
     banner.classList.remove('visible');
+    banner.style.display = 'none';
     // Activar libro por defecto
     tabs.forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -3380,6 +3471,10 @@ function setModoSoloLectura(soloLectura) {
     document.getElementById('panel-libro').classList.add('active');
     tabActual = 'libro';
   }
+  // El boton hace dos cosas distintas segun el estado: con la obra en curso
+  // corrige datos, con la obra terminada la reactiva. Que el texto lo diga.
+  const btnEd = document.getElementById('btn-editar-obra');
+  if (btnEd) btnEd.textContent = soloLectura ? '↩️ Reactivar obra' : '✏️ Editar obra';
 }
 
 function obraOk() {
@@ -4517,6 +4612,7 @@ let tkPieAnualChart = null;
 let tkBarrasChart   = null;
 let tkLineaChart    = null;
 let tkPieMesChart   = null;
+let tkPieMesResChart = null;
 
 window.switchTicketTab = function(tab, el) {
   document.querySelectorAll('.tk-tab').forEach(t => {
@@ -4530,6 +4626,76 @@ window.switchTicketTab = function(tab, el) {
   document.getElementById('btn-nuevo-ticket').style.display   = tab === 'listado'   ? 'inline-block' : 'none';
   if (tab === 'dashboard') renderDashboardTickets();
 };
+
+// ===== MODELO MENSUAL DE TICKETS (stock y flujo) =====
+// Criterio pedido por Ezequiel, igual a su planilla:
+//   total(M)     = backlog(M-1) + los que se abrieron en M
+//   resueltos(M) = los que CERRARON en M (no los que hoy figuran resueltos)
+//   backlog(M)   = total(M) - resueltos(M)   y arrastra al mes siguiente
+// Un ticket que abre y cierra el mismo mes es el "1" de la planilla; uno que
+// abre y no cierra es el "0", y su "1" cae en el mes en que cierra.
+// El arrastre cruza el fin de año: lo que queda abierto en diciembre entra al
+// total de enero del año siguiente.
+// La apertura es fechaSol y el cierre fechaFin. Un ticket sin fechaSol no se
+// puede ubicar en el tiempo, asi que queda FUERA del calculo y se reporta en el
+// aviso, en vez de inventarle un mes.
+function mesKey(f) {
+  if (!f) return null;
+  const s = String(f).slice(0,7);          // 'YYYY-MM'
+  return /^\d{4}-\d{2}$/.test(s) ? s : null;
+}
+function mesKeyDe(anio, mes) { return anio + '-' + String(mes+1).padStart(2,'0'); }
+
+// Devuelve {meses:[{total,resueltos,backlog,abiertos,cerrados}x12], sinFechaSol,
+//           resueltosSinFechaFin, arrastreInicial}
+function calcularMensualTickets(anio, lista) {
+  const datos = (lista || []).filter(t => mesKey(t.fechaSol));
+  const sinFechaSol = (lista || []).length - datos.length;
+  const resueltosSinFechaFin = (lista || []).filter(
+    t => t.estado === 'resuelto' && mesKey(t.fechaSol) && !mesKey(t.fechaFin)
+  ).length;
+
+  // Arrastre que entra a enero: abiertos antes de este anio y no cerrados antes
+  const eneroKey = mesKeyDe(anio, 0);
+  let arrastreInicial = 0;
+  datos.forEach(t => {
+    const ap = mesKey(t.fechaSol), ci = mesKey(t.fechaFin);
+    if (ap < eneroKey && (!ci || ci >= eneroKey)) arrastreInicial++;
+  });
+
+  const meses = [];
+  let backlogPrevio = arrastreInicial;
+  for (let m = 0; m < 12; m++) {
+    const k = mesKeyDe(anio, m);
+    const abiertos = datos.filter(t => mesKey(t.fechaSol) === k).length;
+    const cerrados = datos.filter(t => mesKey(t.fechaFin)  === k).length;
+    const total    = backlogPrevio + abiertos;
+    const backlog  = total - cerrados;
+    meses.push({ total, resueltos: cerrados, backlog, abiertos, cerrados });
+    backlogPrevio = backlog;
+  }
+  return { meses, sinFechaSol, resueltosSinFechaFin, arrastreInicial };
+}
+
+// Los tickets que componen un mes: los que venian abiertos + los que abrieron.
+function ticketsDelMes(anio, mes, lista) {
+  const k = mesKeyDe(anio, mes);
+  return (lista || []).filter(t => {
+    const ap = mesKey(t.fechaSol); if (!ap || ap > k) return false;
+    const ci = mesKey(t.fechaFin);
+    return !ci || ci >= k;   // seguia abierto al empezar el mes, o cerro en el mes
+  });
+}
+function ticketsCerradosEnMes(anio, mes, lista) {
+  const k = mesKeyDe(anio, mes);
+  return (lista || []).filter(t => mesKey(t.fechaFin) === k);
+}
+// Año de trabajo del dashboard: el del ticket mas reciente, o el actual.
+function anioDashboardTickets() {
+  const keys = (ticketsData||[]).map(t => mesKey(t.fechaSol) || mesKey(t.fechaFin)).filter(Boolean);
+  if (!keys.length) return new Date().getFullYear();
+  return +keys.sort()[keys.length-1].slice(0,4);
+}
 
 window.renderDashboardTickets = function() {
   const axisC = '#898781';
@@ -4601,18 +4767,26 @@ window.renderDashboardTickets = function() {
     }
   });
 
-  // Datos mensuales desde ticketsData
-  const mesesData = Array.from({length:12}, (_,m) => {
-    const del_mes = ticketsData.filter(t => {
-      const f = t.fechaSol || t.creadoEn || '';
-      return f && new Date(f).getMonth() === m;
-    });
-    return {
-      trabajos:   del_mes.length,
-      terminados: del_mes.filter(t => t.estado === 'resuelto').length,
-      backlog:    del_mes.filter(t => t.estado !== 'resuelto').length
-    };
-  });
+  // Datos mensuales con el modelo de stock y flujo (ver calcularMensualTickets)
+  const anioTk   = anioDashboardTickets();
+  const calc     = calcularMensualTickets(anioTk, ticketsData);
+  const mesesData = calc.meses.map(m => ({
+    trabajos: m.total, terminados: m.resueltos, backlog: m.backlog
+  }));
+
+  // Aviso de datos faltantes: preferimos avisar antes que inventar un mes.
+  const avisoEl = document.getElementById('tk-aviso-fechas');
+  if (avisoEl) {
+    const partes = [];
+    if (calc.sinFechaSol)
+      partes.push(`<b>${calc.sinFechaSol}</b> de <b>${ticketsData.length}</b> tickets no tienen <strong>Fecha solicitada</strong>, así que no entran en el cálculo mensual.`);
+    if (calc.resueltosSinFechaFin)
+      partes.push(`<b>${calc.resueltosSinFechaFin}</b> figuran resueltos pero sin <strong>Fecha terminada</strong>: cuentan como abiertos en el backlog hasta que les cargues la fecha de cierre.`);
+    if (calc.arrastreInicial)
+      partes.push(`Enero arranca con <b>${calc.arrastreInicial}</b> arrastrados de ${anioTk-1}.`);
+    avisoEl.innerHTML = partes.length
+      ? `<div class="tk-aviso">⚠️ ${partes.join(' ')}</div>` : '';
+  }
 
   const mesesLabels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const dataTrab = mesesData.map(m => m.trabajos);
@@ -4647,7 +4821,21 @@ window.renderDashboardTickets = function() {
     ]},
     options: { responsive:true, maintainAspectRatio:false, layout:{padding:{top:18}},
       plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false} },
-      scales: baseScales
+      scales: baseScales,
+      // Tocar una barra selecciona ese mes y actualiza las dos tortas de abajo.
+      onClick: (evt, els, chart) => {
+        let i = els && els.length ? els[0].index : null;
+        if (i === null) {
+          const pts = chart.getElementsAtEventForMode(evt, 'index', {intersect:false}, true);
+          if (pts && pts.length) i = pts[0].index;
+        }
+        if (i === null) return;
+        const s = document.getElementById('tk-mes-sel');
+        if (s) { s.value = i; renderDashboardTicketsMes(); }
+      },
+      onHover: (evt, els, chart) => {
+        if (chart && chart.canvas) chart.canvas.style.cursor = 'pointer';
+      }
     },
     plugins: [lblPlugin]
   });
@@ -4668,41 +4856,80 @@ window.renderDashboardTickets = function() {
     plugins: [lblPlugin]
   });
 
-  // Inicializar filtro de mes con el mes actual
+  // Filtro de mes: arranca en el mes actual, pero si ese mes no tiene nada y si
+  // hay datos en otro, va al ultimo mes con movimiento para no abrir en blanco.
   const sel = document.getElementById('tk-mes-sel');
-  if (sel) { sel.value = new Date().getMonth(); renderDashboardTicketsMes(); }
+  if (sel) {
+    let mIni = new Date().getMonth();
+    if (!calc.meses[mIni].total) {
+      for (let m = 11; m >= 0; m--) { if (calc.meses[m].total) { mIni = m; break; } }
+    }
+    sel.value = mIni;
+    renderDashboardTicketsMes();
+  }
 };
 
-window.renderDashboardTicketsMes = function() {
-  const idx = +(document.getElementById('tk-mes-sel')?.value || 0);
-  const del_mes = ticketsData.filter(t => {
-    const f = t.fechaSol || t.creadoEn || '';
-    return f && new Date(f).getMonth() === idx;
-  });
-  const total = del_mes.length;
-  const porTipo = TK_TIPOS.map(t => del_mes.filter(x => x.tipo === t).length);
+// Desglose por tipo (lista de barritas debajo de cada torta)
+function desgloseTipos(porTipo, total) {
+  const filas = TK_TIPOS.map((t,i) => porTipo[i] > 0 ? `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.26rem 0;border-bottom:0.5px solid var(--border)">
+      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]};flex-shrink:0"></div>
+      <span style="font-size:0.72rem;color:var(--ink2);flex:1;min-width:0">${t}</span>
+      <span style="font-size:0.78rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${porTipo[i]}</span>
+      <span style="font-size:0.65rem;color:var(--ink3);min-width:32px;text-align:right">${total>0?Math.round(porTipo[i]/total*100):0}%</span>
+    </div>` : '').join('');
+  return filas || '<div style="font-size:0.72rem;color:var(--ink3);padding:0.4rem 0">Sin tickets en el período</div>';
+}
 
-  document.getElementById('tk-mes-resumen').textContent = `${MESES_FULL[idx]} — ${total} trabajo${total!==1?'s':''}`;
+// Dos tortas del mes elegido: TODO lo del mes (arrastrado + nuevo) y, al lado,
+// solo lo que CERRO en ese mes. Misma escala de colores por tipo en las dos.
+window.renderDashboardTicketsMes = function() {
+  const idx   = +(document.getElementById('tk-mes-sel')?.value || 0);
+  const anio  = anioDashboardTickets();
+  const delMes    = ticketsDelMes(anio, idx, ticketsData);
+  const cerrados  = ticketsCerradosEnMes(anio, idx, ticketsData);
+
+  const total    = delMes.length;
+  const totalRes = cerrados.length;
+  const porTipo    = TK_TIPOS.map(t => delMes.filter(x => x.tipo === t).length);
+  const porTipoRes = TK_TIPOS.map(t => cerrados.filter(x => x.tipo === t).length);
+  const backlog  = total - totalRes;
+
+  const resumen = document.getElementById('tk-mes-resumen');
+  if (resumen) resumen.innerHTML =
+    `${MESES_FULL[idx]} ${anio} — <b style="font-family:DM Mono,monospace">${total}</b> trabajo${total!==1?'s':''} · ` +
+    `<b style="font-family:DM Mono,monospace;color:var(--green)">${totalRes}</b> resuelto${totalRes!==1?'s':''} · ` +
+    `<b style="font-family:DM Mono,monospace;color:var(--accent)">${backlog}</b> de backlog`;
+
+  const nTot = document.getElementById('tk-mes-tot');
+  const nRes = document.getElementById('tk-mes-res-n');
+  if (nTot) nTot.textContent = total;
+  if (nRes) nRes.textContent = totalRes;
+
+  const opcionesTorta = (t) => ({
+    responsive:true, maintainAspectRatio:false, cutout:'55%',
+    plugins: { legend:{display:false},
+      tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}${t>0?' ('+Math.round(c.raw/t*100)+'%)':''}`}} }
+  });
 
   if (tkPieMesChart) tkPieMesChart.destroy();
   tkPieMesChart = new Chart(document.getElementById('tk-pie-mes'), {
     type: 'doughnut',
-    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth: 0, hoverOffset: 5 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'55%',
-      plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}`}} }
-    }
+    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth:0, hoverOffset:5 }] },
+    options: opcionesTorta(total)
   });
 
-  document.getElementById('tk-mes-desglose').innerHTML = TK_TIPOS.map((t,i) => porTipo[i]>0 ? `
-    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.28rem 0;border-bottom:0.5px solid var(--border)">
-      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]};flex-shrink:0"></div>
-      <span style="font-size:0.73rem;color:var(--ink2);flex:1">${t}</span>
-      <div style="width:70px;background:var(--surface2);border-radius:3px;height:5px;flex-shrink:0">
-        <div style="width:${total>0?Math.round(porTipo[i]/total*100):0}%;height:5px;background:${TK_CORES[i]};border-radius:3px"></div>
-      </div>
-      <span style="font-size:0.78rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${porTipo[i]}</span>
-      <span style="font-size:0.65rem;color:var(--ink3);min-width:30px;text-align:right">${total>0?Math.round(porTipo[i]/total*100):0}%</span>
-    </div>` : '').join('');
+  if (tkPieMesResChart) tkPieMesResChart.destroy();
+  tkPieMesResChart = new Chart(document.getElementById('tk-pie-mes-res'), {
+    type: 'doughnut',
+    data: { labels: TK_TIPOS, datasets: [{ data: porTipoRes, backgroundColor: TK_CORES, borderWidth:0, hoverOffset:5 }] },
+    options: opcionesTorta(totalRes)
+  });
+
+  const d1 = document.getElementById('tk-mes-desglose');
+  const d2 = document.getElementById('tk-mes-desglose-res');
+  if (d1) d1.innerHTML = desgloseTipos(porTipo, total);
+  if (d2) d2.innerHTML = desgloseTipos(porTipoRes, totalRes);
 };
 
 // ============================================================
@@ -4736,6 +4963,16 @@ function renderTicketsBadge() {
   }
 }
 
+// Filtra el listado desde los KPIs. Volver a tocar el KPI activo lo limpia,
+// igual que en el panel de obras. Los demas filtros (busqueda, tipo,
+// prioridad) quedan como estan: se combinan con este.
+window.setFiltroTicket = function(estado) {
+  const sel = document.getElementById('tk-filtro-estado');
+  if (!sel) return;
+  sel.value = (sel.value === estado && estado !== '') ? '' : estado;
+  renderTickets();
+};
+
 window.renderTickets = function() {
   const buscar  = (document.getElementById('tk-buscar')?.value||'').toLowerCase();
   const estado  = document.getElementById('tk-filtro-estado')?.value||'';
@@ -4746,7 +4983,9 @@ window.renderTickets = function() {
     if (buscar && !t.nombre?.toLowerCase().includes(buscar) && 
         !t.obs?.toLowerCase().includes(buscar) &&
         !t.pedidoA?.toLowerCase().includes(buscar)) return false;
-    if (estado && t.estado !== estado) return false;
+    // 'abiertos' es un grupo, no un estado: todo lo que no esta resuelto.
+    if (estado === 'abiertos') { if (t.estado === 'resuelto') return false; }
+    else if (estado && t.estado !== estado) return false;
     if (tipo   && t.tipo   !== tipo)   return false;
     if (prio   && t.prioridad !== prio) return false;
     return true;
@@ -4760,13 +4999,24 @@ window.renderTickets = function() {
     const curso    = ticketsData.filter(t=>t.estado==='en-curso').length;
     const espera   = ticketsData.filter(t=>t.estado==='en-espera').length;
     const resuelto = ticketsData.filter(t=>t.estado==='resuelto').length;
-    statsEl.innerHTML = `
-      <div class="ticket-stat"><div class="ticket-stat-val">${total}</div><div class="ticket-stat-lbl">Total</div></div>
-      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--accent)">${abiertos}</div><div class="ticket-stat-lbl">Abiertos</div></div>
-      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--blue)">${curso}</div><div class="ticket-stat-lbl">En curso</div></div>
-      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--amber)">${espera}</div><div class="ticket-stat-lbl">En espera</div></div>
-      <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--green)">${resuelto}</div><div class="ticket-stat-lbl">Resueltos</div></div>
-    `;
+    // KPIs clickeables: filtran la tabla y se marcan. Los numeros son SIEMPRE
+    // los totales reales — no cambian al filtrar. Solo el recuadro Total agrega
+    // cuantos quedan visibles, igual que en el panel de obras.
+    const hayFiltro = !!(buscar || estado || tipo || prio);
+    const kpi = (val, lbl, color, filtro, sub) => `
+      <div class="ticket-stat kpi${estado===filtro?' kpi-activo':''}"
+           onclick="setFiltroTicket('${filtro}')"
+           title="${filtro?'Filtrar: '+lbl:'Ver todos los tickets'}">
+        <div class="ticket-stat-val"${color?` style="color:${color}"`:''}>${val}</div>
+        <div class="ticket-stat-lbl">${lbl}</div>
+        ${sub?`<div class="ticket-stat-sub">${sub}</div>`:''}
+      </div>`;
+    statsEl.innerHTML =
+      kpi(total,    'Total',     '',             '',          hayFiltro?lista.length+' visibles':'') +
+      kpi(abiertos, 'Abiertos',  'var(--accent)','abiertos') +
+      kpi(curso,    'En curso',  'var(--blue)',  'en-curso') +
+      kpi(espera,   'En espera', 'var(--amber)', 'en-espera') +
+      kpi(resuelto, 'Resueltos', 'var(--green)', 'resuelto');
   }
 
   // Tabla
