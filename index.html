@@ -198,6 +198,82 @@
   /* Separacion entre grupos de estado. Antes la daba el contenedor del año,
      que se quito al agrupar solo por estado. */
   #dash-section-licitacion,#dash-section-curso,#dash-section-term{margin-bottom:2.25rem;}
+
+  /* ===== VISTA GANTT ===== */
+  .gantt-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+  .gantt-tiles{display:flex;gap:0.55rem;flex-wrap:wrap;}
+  .gt{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:0.55rem 0.9rem;min-width:112px;}
+  .gt .v{font-family:DM Mono,monospace;font-size:1.4rem;font-weight:500;line-height:1;}
+  .gt .l{font-size:0.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-top:0.28rem;}
+  .gt .d{font-size:0.65rem;color:var(--ink2);margin-top:0.15rem;}
+  .gt.pico{border-color:#1A5F8A;box-shadow:0 0 0 2px rgba(26,95,138,0.12);}
+  .gt.pico .v{color:#1A5F8A;}
+  .gantt-anios{display:flex;gap:0.35rem;align-items:center;}
+  .gantt-anios button{padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);
+    background:var(--surface2);color:var(--ink);font-size:0.78rem;cursor:pointer;font-family:DM Sans,sans-serif;}
+  .gantt-anios button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+
+  .gantt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .gantt-scroll{overflow-x:auto;}
+  .gantt-lienzo{min-width:980px;}
+  .gfila{display:grid;grid-template-columns:230px 1fr;align-items:stretch;}
+  .gcab{border-bottom:1px solid var(--border);background:var(--surface2);}
+  .gcab .rot{display:flex;align-items:flex-end;padding:0.5rem 0.85rem;font-size:0.62rem;font-weight:600;
+    color:var(--ink3);text-transform:uppercase;letter-spacing:0.06em;}
+  .gpista{position:relative;height:56px;}
+  .gmes{position:absolute;top:0;bottom:0;border-left:1px solid var(--border);}
+  .gmes b{position:absolute;top:4px;left:5px;font-size:0.64rem;font-weight:600;color:var(--ink2);text-transform:uppercase;}
+  .gsem{position:absolute;bottom:0;height:6px;border-left:1px solid #E4DFD5;}
+  .gsem.q{height:11px;border-left-color:var(--border);}
+  .gsem em{position:absolute;bottom:11px;left:2px;font-style:normal;font-size:0.54rem;color:var(--ink3);font-family:DM Mono,monospace;}
+  .ggrupo{padding:0.62rem 0.85rem 0.24rem;display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;
+    font-weight:600;grid-column:1 / -1;border-top:1px solid var(--border);}
+  .ggrupo:first-of-type{border-top:none;}
+  .ggrupo .n{font-family:DM Mono,monospace;font-weight:500;color:var(--ink3);font-size:0.7rem;}
+  .gobra{border-top:1px solid #EFEBE3;cursor:pointer;}
+  .gobra:hover .grot,.gobra:hover .glane{background:#FBF8F2;}
+  .grot{padding:0.42rem 0.85rem;display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .grot .nom{font-size:0.78rem;font-weight:500;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .grot .prov{font-size:0.66rem;color:var(--ink3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .glane{position:relative;height:38px;}
+  .gband{position:absolute;top:0;bottom:0;border-left:1px solid #EFEBE3;}
+  .gband.par{background:rgba(237,233,224,0.4);}
+  .gbar{position:absolute;top:9px;height:19px;border-radius:5px;box-shadow:0 1px 2px rgba(28,26,22,0.12);}
+  .gbar.t{background:#17875A;} .gbar.c{background:var(--amber);} .gbar.p{background:#7C3AED;opacity:0.92;}
+  .gbar.abierta{border-top-right-radius:0;border-bottom-right-radius:0;}
+  .gcola{position:absolute;top:9px;height:19px;border-radius:0 5px 5px 0;
+    background:repeating-linear-gradient(135deg,rgba(160,112,32,0.55) 0 4px,rgba(160,112,32,0.16) 4px 8px);}
+  .getiq{position:absolute;top:11px;font-size:0.64rem;color:var(--ink2);font-family:DM Mono,monospace;
+    white-space:nowrap;z-index:4;background:rgba(253,251,247,0.88);padding:1px 4px;border-radius:4px;}
+  .ghoy{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--accent);z-index:3;}
+  .ghoy-cab{position:absolute;top:20px;transform:translateX(-50%);background:var(--accent);color:#fff;
+    font-size:0.58rem;font-weight:600;padding:1px 6px;border-radius:20px;white-space:nowrap;}
+  .gtit{padding:0.7rem 0.85rem 0.1rem;grid-column:1 / -1;border-top:1px solid var(--border);}
+  .gtit b{font-size:0.76rem;font-weight:600;}
+  .gtit small{display:block;font-size:0.68rem;color:var(--ink3);margin-top:2px;line-height:1.45;}
+  .gejeY{position:relative;}
+  .gejeY i{position:absolute;right:8px;transform:translateY(-50%);font-style:normal;font-size:0.6rem;
+    color:var(--ink3);font-family:DM Mono,monospace;}
+  .gcarga{position:relative;height:126px;padding-top:6px;}
+  .grej{position:absolute;left:0;right:0;border-top:1px solid #EDE9E0;}
+  .gcol{position:absolute;bottom:0;background:#BCD6E6;border-radius:4px 4px 0 0;}
+  .gcol.on{background:#1A5F8A;}
+  .gcol.pico{background:var(--accent);}
+  .gcol.fut{background:repeating-linear-gradient(135deg,#E4E0D7 0 3px,#F1EEE7 3px 6px);}
+  .gpico-lbl{position:absolute;transform:translateX(-50%);font-size:0.62rem;font-weight:600;
+    color:var(--accent);font-family:DM Mono,monospace;white-space:nowrap;z-index:5;}
+  .gsin{border-top:1px solid var(--border);padding:0.75rem 0.85rem;background:#FAF7F1;}
+  .gsin h4{font-size:0.68rem;font-weight:600;color:var(--ink2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.4rem;}
+  .gsin .it{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;padding:0.18rem 0;cursor:pointer;}
+  .gsin .it:hover{color:var(--accent);}
+  .gsin .prov{color:var(--ink3);font-size:0.68rem;}
+  #gantt-tip{position:fixed;z-index:900;background:var(--ink);color:#F5F2EC;font-size:0.71rem;line-height:1.5;
+    padding:0.5rem 0.7rem;border-radius:8px;pointer-events:none;opacity:0;transition:opacity .12s;
+    box-shadow:0 6px 20px rgba(28,26,22,0.28);max-width:290px;}
+  #gantt-tip b{color:#fff;display:block;margin-bottom:3px;}
+  #gantt-tip .k{color:#A09890;}
+  #gantt-tip ul{margin:3px 0 0 0;padding-left:14px;}
+  @media (max-width:720px){ .gfila{grid-template-columns:140px 1fr;} }
   #dash-section-term{margin-bottom:1rem;}
   /* Bolita de color por estado en los titulos de seccion */
   .dash-section-title.con-bolita::before{
@@ -678,6 +754,8 @@
   .ticket-tabla th{font-size:0.67rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;padding:0.5rem 0.75rem;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap;}
   .ticket-tabla td{padding:0.55rem 0.75rem;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--ink);}
   .ticket-tabla tr:hover td{background:var(--surface2);}
+  /* Filas clickeables del listado de tickets (tambien al filtrar por un KPI) */
+  .ticket-tabla tbody tr.fila-ticket{cursor:pointer;}
   .ticket-tabla tr:last-child td{border-bottom:none;}
   .ticket-id{font-family:DM Mono,monospace;font-size:0.75rem;color:var(--ink3);white-space:nowrap;}
   .ticket-tarea{font-weight:500;color:var(--ink);max-width:280px;}
@@ -690,7 +768,6 @@
   .badge-estado.en-curso{background:#DBEAFE;color:#1E40AF;}
   .badge-estado.resuelto{background:#D1FAE5;color:#065F46;}
   .badge-estado.en-espera{background:#FEF3C7;color:#92400E;}
-  .badge-estado.no-iniciado{background:var(--surface2);color:var(--ink3);}
   .badge-tipo{font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:20px;background:var(--surface2);color:var(--ink2);white-space:nowrap;}
   .ticket-obs{font-size:0.76rem;color:var(--ink2);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   /* Dos tortas del mes, una al lado de la otra */
@@ -719,10 +796,60 @@
   .ticket-stat.kpi-activo{border-color:var(--accent);box-shadow:0 0 0 2px rgba(196,87,42,0.20);}
   .ticket-stat-sub{font-size:0.6rem;color:var(--accent);font-weight:500;}
 
+
+  /* ===== PUERTA DE SESION =====================================================
+     Hasta que Firebase confirme la sesion, la aplicacion NO se dibuja: solo se
+     ve la pantalla de verificacion y, si corresponde, el login.
+
+     Por que en CSS y no en JS: el <script> es type="module", o sea que es
+     diferido, y ademas importa el SDK de Firebase desde el CDN. En una conexion
+     lenta eso tarda varios segundos, y durante todo ese rato el HTML ya habia
+     pintado el sidebar y el contenido, con sus campos tipeables. Esta regla
+     vale desde el primer pintado, sin esperar a que corra una linea de JS.
+
+     Por que al final del <style>: mas abajo hay un bloque de overrides con
+     !important sobre #app-right. Si esta regla fuera antes, perderia.
+
+     Esto es defensa en profundidad y prolijidad visual, NO el control de
+     acceso. Lo que realmente protege los datos es la regla de Firestore
+     (allow read, write: if request.auth != null), que se aplica en el servidor.
+     ========================================================================= */
+  .app-layout { display: none !important; }
+  body.sesion-activa .app-layout { display: flex !important; }
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
+<!-- OVERLAYS DE SESION -->
+<!-- Estos dos viven FUERA de .app-layout a proposito. Antes estaban adentro
+     de #app-right, asi que no se podia tapar la app sin tapar tambien el
+     login. Son overlays position:fixed: no necesitan estar anidados. -->
+<div class="loading-screen" id="loading-screen">
+  <div class="brand">Memoria de <span>Obra</span></div>
+  <div class="loading-spinner"></div>
+  <div class="loading-msg">Verificando sesión...</div>
+</div>
+<div class="login-screen" id="login-screen" style="display:none">
+  <div class="login-box">
+    <div class="login-brand">Memoria de <span>Obra</span></div>
+    <div class="login-sub">Ingresá tus credenciales para continuar</div>
+    <div class="login-error" id="login-error"></div>
+    <div class="field" style="margin-bottom:1rem">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')loginSubmit()">
+    </div>
+    <div class="field" style="margin-bottom:1.5rem">
+      <label>Contraseña</label>
+      <div style="position:relative">
+        <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginSubmit()" style="width:100%;padding-right:2.5rem">
+        <button type="button" onclick="toggleVerPass()" id="btn-ver-pass" style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink3);font-size:1rem;line-height:1;padding:0">👁</button>
+      </div>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:0;padding:0.75rem" onclick="loginSubmit()" id="btn-login">Ingresar</button>
+  </div>
+</div>
+
 
 <div class="sb-overlay" id="sb-overlay" onclick="toggleSidebar()"></div>
 
@@ -778,36 +905,12 @@
     <div class="notif-list" id="notif-list"><div style="padding:1.25rem;text-align:center;color:var(--ink3);font-size:0.84rem">Sin alertas ✓</div></div>
   </div>
 
-<!-- LOGIN -->
-<div class="login-screen" id="login-screen" style="display:none">
-  <div class="login-box">
-    <div class="login-brand">Memoria de <span>Obra</span></div>
-    <div class="login-sub">Ingresá tus credenciales para continuar</div>
-    <div class="login-error" id="login-error"></div>
-    <div class="field" style="margin-bottom:1rem">
-      <label>Email</label>
-      <input type="email" id="login-email" placeholder="tu@email.com" onkeydown="if(event.key==='Enter')loginSubmit()">
-    </div>
-    <div class="field" style="margin-bottom:1.5rem">
-      <label>Contraseña</label>
-      <div style="position:relative">
-        <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginSubmit()" style="width:100%;padding-right:2.5rem">
-        <button type="button" onclick="toggleVerPass()" id="btn-ver-pass" style="position:absolute;right:0.6rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink3);font-size:1rem;line-height:1;padding:0">👁</button>
-      </div>
-    </div>
-    <button class="btn-primary" style="width:100%;margin-top:0;padding:0.75rem" onclick="loginSubmit()" id="btn-login">Ingresar</button>
-  </div>
-</div>
 
 <!-- MÓDULO OBRAS -->
 <div class="modulo-obras-wrap active" id="mod-obras">
 
 <!-- LOADING -->
-<div class="loading-screen" id="loading-screen" style="display:none">
-  <div class="brand">Memoria de <span>Obra</span></div>
-  <div class="loading-spinner"></div>
-  <div class="loading-msg">Conectando con la base de datos...</div>
-</div>
+
 
 <div class="header" style="display:none">
   <div class="header-brand">Memoria de <span>Obra</span></div>
@@ -863,8 +966,14 @@
     <div style="display:flex;gap:0.5rem">
       <button id="btn-vista-cards" onclick="setVista('cards')" class="btn-vista active" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--ink);color:var(--bg);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">🃏 Tarjetas</button>
       <button id="btn-vista-lista" onclick="setVista('lista')" class="btn-vista" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">☰ Lista</button>
+      <button id="btn-vista-gantt" onclick="setVista('gantt')" class="btn-vista" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">📅 Gantt</button>
     </div>
   </div>
+  <!-- Vista Gantt: una sola linea de tiempo con todas las obras filtradas,
+       mas la banda de obras simultaneas. Convive con las secciones por estado
+       de abajo: cuando esta activa, esas se ocultan. -->
+  <div id="dash-gantt" style="display:none"></div>
+
   <div id="dash-section-licitacion" style="display:none">
     <div class="dash-section-title con-bolita estado-pend" style="color:#7C3AED;margin-bottom:0.75rem">Pendiente <span id="dash-count-licitacion" class="dash-count"></span></div>
     <div id="dash-cards-licitacion" class="dash-cards-wrap"></div>
@@ -1178,7 +1287,6 @@
         <!-- "abiertos" no es un estado guardado: agrupa todo lo que no esta
              resuelto, para que el KPI "Abiertos" se pueda filtrar. -->
         <option value="abiertos">Abiertos (sin resolver)</option>
-        <option value="no-iniciado">No iniciado</option>
         <option value="en-curso">En curso</option>
         <option value="en-espera">En espera</option>
         <option value="resuelto">Resuelto</option>
@@ -1322,7 +1430,6 @@
     <div class="form-grid" style="margin-bottom:0.85rem">
       <div class="field"><label>Estado</label>
         <select id="tk-estado">
-          <option value="no-iniciado">No iniciado</option>
           <option value="en-curso">En curso</option>
           <option value="en-espera">En espera</option>
           <option value="resuelto">Resuelto</option>
@@ -1695,8 +1802,13 @@ let vistaActual = 'cards'; // 'cards' | 'lista'
 
 window.setVista = function(v) {
   vistaActual = v;
-  document.getElementById('btn-vista-cards').className = 'btn-vista' + (v==='cards'?' active':'');
-  document.getElementById('btn-vista-lista').className = 'btn-vista' + (v==='lista'?' active':'');
+  ['cards','lista','gantt'].forEach(x => {
+    const b = document.getElementById('btn-vista-'+x);
+    if (!b) return;
+    b.className = 'btn-vista' + (v===x ? ' active' : '');
+    b.style.background = v===x ? 'var(--ink)'     : 'var(--surface2)';
+    b.style.color      = v===x ? 'var(--bg)'      : 'var(--ink)';
+  });
   renderDashboard();
 };
 
@@ -1870,6 +1982,246 @@ function claveOrden(o) {
   return Date.parse(String(f).length <= 10 ? f + 'T00:00:00Z' : f) || 0;
 }
 
+// ===================== VISTA GANTT =====================
+// Calendario anual de obras + banda de obras en ejecucion simultanea.
+// Usa datos que ya existen: inicio, fin y estadoObra. Para las pendientes usa
+// ademas el proceso de compras, que vive en una subcoleccion y no se carga en
+// el panel, asi que se pide al vuelo la primera vez (ver cargarComprasGantt).
+let gantAnio = null;                 // anio que se esta mirando
+const gComprasPedidas = new Set();   // para no repedir la misma obra
+
+const gMES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const gMES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const gHoyISO = () => new Date().toISOString().split('T')[0];
+
+function gDatosObra(o) {
+  const i = o.info || {};
+  const comp = (o.compras && o.compras.proceso) || null;
+  return {
+    id: o.id, nombre: i.nombre || '(sin nombre)', prov: i.proveedor || '',
+    ini: i.inicio || '', fin: i.fin || '',
+    grupo: i.estadoObra === 'terminado' ? 'term' : (i.inicio ? 'curso' : 'pend'),
+    comp: comp && comp.inicio ? { desde: comp.inicio, hasta: comp.fin || '' } : null
+  };
+}
+
+// Anios con actividad, para el selector
+function gAnios(lista) {
+  const s = new Set();
+  lista.map(gDatosObra).forEach(d => {
+    [d.ini, d.fin, d.comp && d.comp.desde, d.comp && d.comp.hasta]
+      .filter(Boolean).forEach(f => s.add(+String(f).slice(0,4)));
+  });
+  if (!s.size) s.add(new Date().getFullYear());
+  return [...s].sort();
+}
+
+// Trae el proceso de compras de las pendientes que todavia no lo tienen, y
+// vuelve a dibujar una sola vez cuando termina.
+async function cargarComprasGantt(lista) {
+  const faltan = lista.filter(o => {
+    const i = o.info || {};
+    if (i.inicio || i.estadoObra === 'terminado') return false;      // no es pendiente
+    if (o.compras && o.compras.proceso) return false;                 // ya esta
+    return !gComprasPedidas.has(o.id);
+  });
+  if (!faltan.length) return;
+  faltan.forEach(o => gComprasPedidas.add(o.id));
+  let alguna = false;
+  for (const o of faltan) {
+    try { await cargarCompras(o.id); if (obras[o.id]?.compras?.proceso) alguna = true; } catch(e){}
+  }
+  if (alguna && vistaActual === 'gantt') renderDashboard();
+}
+
+window.renderGantt = function(lista) {
+  const cont = document.getElementById('dash-gantt');
+  if (!cont) return;
+
+  const anios = gAnios(lista);
+  if (gantAnio === null || !anios.includes(gantAnio)) {
+    const actual = new Date().getFullYear();
+    gantAnio = anios.includes(actual) ? actual : anios[anios.length-1];
+  }
+  const A = gantAnio;
+  const d0   = new Date(A,0,1);
+  const DIAS = Math.round((new Date(A+1,0,1) - d0)/86400000);
+  const dia  = s => Math.round((new Date(s+'T00:00:00') - d0)/86400000);
+  const pct  = d => d/DIAS*100;
+  const clamp= d => Math.max(0, Math.min(DIAS, d));
+  const hoyISO = gHoyISO();
+  const hoyReal = dia(hoyISO);
+  const hoyD = clamp(hoyReal);                       // si el anio ya paso, tope a fin de anio
+  const anioCorriente = +hoyISO.slice(0,4) === A;
+  const dur = (a,b) => Math.max(1, Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000));
+  const semN = n => Math.max(1, Math.round(n/7));
+  const esc = t => String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // ---- que obras entran en este anio ----
+  const datos = lista.map(gDatosObra);
+  const enAnio = d => {
+    const r = [];
+    if (d.ini) r.push([d.ini, d.fin || (anioCorriente ? hoyISO : d.ini)]);
+    if (!d.ini && d.comp) r.push([d.comp.desde, d.comp.hasta || (anioCorriente ? hoyISO : d.comp.desde)]);
+    return r.some(([a,b]) => +a.slice(0,4) <= A && +b.slice(0,4) >= A);
+  };
+  const ubicables = datos.filter(d => (d.ini || d.comp) && enAnio(d));
+  const sinFecha  = datos.filter(d => !d.ini && !d.comp);
+
+  // ---- carga simultanea: solo lo que YA se ejecuta (tiene fecha de inicio) ----
+  const ejec = ubicables.filter(d => d.ini);
+  const SEM = [];
+  for (let s=0; s<52; s++) {
+    const a = s*7, b = Math.min(s*7+6, DIAS-1);
+    const act = ejec.filter(d => {
+      const x = clamp(dia(d.ini));
+      const y = d.fin ? clamp(dia(d.fin)) : hoyD;
+      return x <= b && y >= a;
+    });
+    SEM.push({ s, a, b, fut: anioCorriente && a > hoyD, act });
+  }
+  const pas  = SEM.filter(w => !w.fut);
+  const MAX  = Math.max(1, ...pas.map(w => w.act.length));
+  const iPico= pas.findIndex(w => w.act.length === MAX);
+  const conO = pas.filter(w => w.act.length > 0).length;
+  const prom = pas.length ? pas.reduce((t,w)=>t+w.act.length,0)/pas.length : 0;
+  const mesDe= d => new Date(d0.getTime()+d*86400000).getMonth();
+
+  // ---- cabecera ----
+  let mesesH='', semH='', bandas='';
+  for (let m=0;m<12;m++) {
+    const a = Math.round((new Date(A,m,1)-d0)/86400000);
+    const b = Math.round((new Date(A,m+1,1)-d0)/86400000);
+    mesesH += `<div class="gmes" style="left:${pct(a)}%"><b>${gMES[m]}</b></div>`;
+    bandas += `<div class="gband${m%2?' par':''}" style="left:${pct(a)}%;width:${pct(b-a)}%"></div>`;
+  }
+  for (let s=0;s<53;s++) {
+    const d=s*7; if (d>DIAS) break;
+    const q=s%4===0;
+    semH += `<div class="gsem${q?' q':''}" style="left:${pct(d)}%">${q?`<em>S${s+1}</em>`:''}</div>`;
+  }
+  const lineaHoy = anioCorriente ? `<div class="ghoy" style="left:${pct(hoyD)}%"></div>` : '';
+
+  // ---- filas ----
+  const grupos = [
+    {k:'curso', t:'En curso',   c:'var(--amber)'},
+    {k:'pend',  t:'Pendiente',  c:'#7C3AED'},
+    {k:'term',  t:'Terminadas', c:'#17875A'},
+  ];
+  let filas='';
+  grupos.forEach(g => {
+    const del = ubicables.filter(d => d.grupo === g.k);
+    if (!del.length) return;
+    filas += `<div class="gfila"><div class="ggrupo" style="color:${g.c}">
+        <i class="punto" style="background:${g.c}"></i>${g.t}<span class="n">${del.length}</span></div></div>`;
+    del.forEach(d => {
+      let barras='', tip='';
+      if (d.ini) {
+        const hasta = d.fin || (anioCorriente ? hoyISO : d.ini);
+        const L = pct(clamp(dia(d.ini)));
+        const W = Math.max(0.4, pct(clamp(dia(hasta))) - L);
+        const ab = !d.fin;
+        const dd = dur(d.ini, hasta);
+        barras += `<div class="gbar ${d.grupo==='term'?'t':'c'}${ab?' abierta':''}" style="left:${L}%;width:${W}%"></div>`;
+        if (ab) barras += `<div class="gcola" style="left:${L+W}%;width:2%"></div>`;
+        barras += `<div class="getiq" style="left:${Math.min(88, L+W+(ab?2.4:0.7))}%">${dd} días · ${semN(dd)} sem${ab?' (sigue)':''}</div>`;
+        tip = `<b>${esc(d.nombre)}</b>${d.prov?`<span class="k">Proveedor:</span> ${esc(d.prov)}<br>`:''}
+               <span class="k">Inicio:</span> ${formatFecha(d.ini)}<br>
+               <span class="k">Fin:</span> ${d.fin?formatFecha(d.fin):'sin fecha de fin cargada'}<br>
+               <span class="k">Transcurrido:</span> ${dd} días (${semN(dd)} semanas)`;
+      } else {
+        const hasta = d.comp.hasta || (anioCorriente ? hoyISO : d.comp.desde);
+        const L = pct(clamp(dia(d.comp.desde)));
+        const W = Math.max(0.4, pct(clamp(dia(hasta))) - L);
+        const dd = dur(d.comp.desde, hasta);
+        barras += `<div class="gbar p" style="left:${L}%;width:${W}%"></div>`;
+        barras += `<div class="getiq" style="left:${Math.min(88, L+W+0.7)}%">licitación · ${dd} días</div>`;
+        tip = `<b>${esc(d.nombre)}</b><span class="k">Estado:</span> pendiente, sin inicio de obra<br>
+               <span class="k">Compras:</span> ${formatFecha(d.comp.desde)}${d.comp.hasta?' → '+formatFecha(d.comp.hasta):' → en curso'}<br>
+               <span class="k">No suma carga:</span> todavía no se ejecuta`;
+      }
+      filas += `<div class="gfila gobra" onclick="ingresarDesdePanel('${d.id}')">
+          <div class="grot"><span class="nom">${esc(d.nombre)}</span><span class="prov">${esc(d.prov)}</span></div>
+          <div class="glane" data-gtip="${esc(tip)}">${bandas}${barras}${lineaHoy}</div></div>`;
+    });
+  });
+
+  // ---- banda de carga ----
+  const H=106, base=120;
+  let rej='', eje='', cols='';
+  for (let v=0; v<=MAX; v++) {
+    const y = base - (v/MAX)*H;
+    rej += `<div class="grej" style="top:${y}px"></div>`;
+    eje += `<i style="top:${y+6}px">${v}</i>`;
+  }
+  SEM.forEach((w,i) => {
+    const n=w.act.length, L=pct(w.a), W=pct(7)-0.12;
+    const h = w.fut ? 6 : (n/MAX)*H;
+    const cls = w.fut ? 'fut' : (i===iPico ? 'pico' : (n>0 ? 'on' : ''));
+    const lista_ = n ? '<ul>'+w.act.map(x=>`<li>${esc(x.nombre)}</li>`).join('')+'</ul>' : '';
+    const t = w.fut
+      ? `<b>Semana ${w.s+1}</b><span class="k">Todavía no ocurrió.</span>`
+      : `<b>Semana ${w.s+1} · ${gMES_L[mesDe(w.a)]}</b><span class="k">Obras en ejecución:</span> ${n}${lista_}`;
+    cols += `<div class="gcol ${cls}" style="left:${L}%;width:${W}%;height:${Math.max(h,2)}px" data-gtip="${esc(t)}"></div>`;
+  });
+  const wPico = SEM[iPico] || SEM[0];
+  const picoLbl = MAX>0 ? `<div class="gpico-lbl" style="left:${pct(wPico.a+3.5)}%;top:${base-H-15}px">pico ${MAX}</div>` : '';
+
+  const banda = ejec.length ? `
+    <div class="gfila"><div class="gtit"><b>Obras en ejecución simultánea</b>
+      <small>Cuántas obras hubo abiertas a la vez, semana a semana. Solo cuentan las que ya arrancaron:
+      una obra en licitación no suma.${anioCorriente?' El tramo rayado todavía no ocurrió.':''}</small></div></div>
+    <div class="gfila"><div class="gejeY">${eje}</div>
+      <div class="gcarga">${bandas}${rej}${cols}${picoLbl}${lineaHoy}</div></div>` : '';
+
+  const sinH = sinFecha.length ? `<div class="gsin"><h4>Sin fechas — no se pueden ubicar en el calendario</h4>
+    ${sinFecha.map(d=>`<div class="it" onclick="ingresarDesdePanel('${d.id}')">
+      <i class="punto" style="background:#7C3AED"></i>${esc(d.nombre)}${d.prov?` <span class="prov">· ${esc(d.prov)}</span>`:''}</div>`).join('')}</div>` : '';
+
+  const botonesAnio = anios.map(y =>
+    `<button class="${y===A?'on':''}" onclick="setGanttAnio(${y})">${y}</button>`).join('');
+
+  cont.innerHTML = `
+    <div class="gantt-top">
+      <div class="gantt-tiles">
+        <div class="gt pico"><div class="v">${MAX}</div><div class="l">Pico simultáneo</div>
+          <div class="d">${MAX?`semana ${wPico.s+1}, ${gMES_L[mesDe(wPico.a)]}`:'—'}</div></div>
+        <div class="gt"><div class="v">${prom.toFixed(1)}</div><div class="l">Promedio a la vez</div>
+          <div class="d">sobre ${pas.length} semanas</div></div>
+        <div class="gt"><div class="v">${conO}</div><div class="l">Semanas con obra</div>
+          <div class="d">de ${pas.length} ${anioCorriente?'transcurridas':'del año'}</div></div>
+        <div class="gt"><div class="v">${ejec.length}</div><div class="l">Obras ejecutadas</div>
+          <div class="d">las que ya arrancaron</div></div>
+      </div>
+      <div class="gantt-anios">${botonesAnio}</div>
+    </div>
+    <div class="gantt-card"><div class="gantt-scroll"><div class="gantt-lienzo">
+      <div class="gfila gcab"><div class="rot">Obra</div>
+        <div class="gpista">${mesesH}${semH}${lineaHoy}
+          ${anioCorriente?`<div class="ghoy-cab" style="left:${pct(hoyD)}%">hoy ${formatFecha(hoyISO)}</div>`:''}</div></div>
+      ${filas || '<div class="gfila"><div class="gtit"><b>No hay obras con fechas en '+A+'</b><small>Probá con otro año o revisá los filtros.</small></div></div>'}
+      ${banda}${sinH}
+    </div></div></div>`;
+
+  gantTooltips();
+  cargarComprasGantt(lista);   // async: si aparecen compras, redibuja una vez
+};
+
+window.setGanttAnio = function(y) { gantAnio = y; renderDashboard(); };
+
+function gantTooltips() {
+  let tip = document.getElementById('gantt-tip');
+  if (!tip) { tip = document.createElement('div'); tip.id='gantt-tip'; document.body.appendChild(tip); }
+  document.querySelectorAll('#dash-gantt [data-gtip]').forEach(el => {
+    el.addEventListener('mousemove', e => {
+      tip.innerHTML = el.dataset.gtip; tip.style.opacity = 1;
+      tip.style.left = Math.min(e.clientX+14, innerWidth - tip.offsetWidth - 10) + 'px';
+      tip.style.top  = Math.max(8, e.clientY - tip.offsetHeight - 12) + 'px';
+    });
+    el.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  });
+}
+
 window.renderDashboard = function() {
   // Guard: solo ejecutar si los elementos del panel de obras existen
   if (!document.getElementById('dash-stats-grid')) return;
@@ -1945,6 +2297,17 @@ window.renderDashboard = function() {
   const secLic   = document.getElementById('dash-section-licitacion');
   const secCurso = document.getElementById('dash-section-curso');
   const secTerm  = document.getElementById('dash-section-term');
+  const secGantt = document.getElementById('dash-gantt');
+
+  // Vista Gantt: una sola linea de tiempo, asi que se ocultan las tres
+  // secciones por estado y se dibuja el calendario con la lista ya filtrada.
+  if (vistaActual === 'gantt') {
+    secLic.style.display = secCurso.style.display = secTerm.style.display = 'none';
+    secGantt.style.display = 'block';
+    renderGantt(lista);
+    return;
+  }
+  secGantt.style.display = 'none';
 
   if (estado === 'licitacion') {
     secLic.style.display='block'; secCurso.style.display='none'; secTerm.style.display='none';
@@ -2092,7 +2455,6 @@ function renderListaSection(lista, contenedor, tipo) {
         <th class="col-fecha">Fin</th>
         <th class="col-dur">Duración</th>
         <th class="col-estado">Estado</th>
-        <th class="col-btn"></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
@@ -2111,7 +2473,10 @@ function buildFilaLista(o) {
                 : (diasEC !== null ? diasEC+' días' : '—');
   const badgeCls  = terminada ? 'badge-terminada' : pendiente ? 'badge-licitacion-card' : 'badge-en-curso';
   const badgeTxt  = terminada ? 'Terminada'       : pendiente ? 'Pendiente'            : 'En curso';
-  const btnTxt    = terminada ? 'Ver' : pendiente ? 'Ver →' : 'Entrar';
+  // Sin boton "Ver"/"Entrar": la fila entera ya abre la obra y hacia lo mismo
+  // (ingresarDesdePanel). En la vista de TARJETAS el boton sigue, porque ahi el
+  // texto informa que va a pasar ("Cerrar licitación →", "Iniciar obra →"),
+  // mientras que aca solo repetia lo que ya dice la columna Estado.
   const inicioTd  = info.inicio
     ? fechaCorta(info.inicio)
     : '<span style="font-size:0.72rem;color:var(--blue);font-weight:500">Pendiente</span>';
@@ -2123,7 +2488,6 @@ function buildFilaLista(o) {
     <td class="col-fecha">${fechaCorta(info.fin)}</td>
     <td class="col-dur"><strong>${duracion}</strong></td>
     <td class="col-estado"><span class="badge-sm ${badgeCls}">${badgeTxt}</span></td>
-    <td class="col-btn"><button class="btn-ir" onclick="event.stopPropagation();ingresarDesdePanel('${o.id}')">${btnTxt}</button></td>
   </tr>`;
 }
 
@@ -2871,13 +3235,29 @@ window.addEventListener('DOMContentLoaded', () => {
   const loginSc = document.getElementById('login-screen');
   const btnOut  = document.getElementById('btn-logout');
 
-  // Mostrar login por defecto mientras Firebase verifica
-  loginSc.style.display = 'flex';
-  loading.style.display  = 'none';
+  // Mientras Firebase verifica no se muestra ni la app ni el login: solo la
+  // pantalla de verificacion, que ya viene visible desde el HTML.
+  loginSc.style.display = 'none';
+  loading.style.display = 'flex';
+
+  // Red de seguridad: si la sesion no resuelve (SDK bloqueado, sin red, CDN
+  // caido), a los 12 segundos se muestra el login en vez de dejar la pantalla
+  // de verificacion girando para siempre. Nunca se muestra la app.
+  let authResuelta = false;
+  const reloj = setTimeout(() => {
+    if (authResuelta) return;
+    loading.style.display = 'none';
+    loginSc.style.display = 'flex';
+    const err = document.getElementById('login-error');
+    if (err) { err.textContent = 'No se pudo verificar la sesión. Revisá tu conexión e ingresá de nuevo.'; err.style.display = 'block'; }
+  }, 12000);
 
   onAuthStateChanged(auth, async (user) => {
+    authResuelta = true;
+    clearTimeout(reloj);
     if (user) {
-      // Logueado: ocultar login, mostrar loading, cargar datos
+      // Logueado: recien aca se habilita el dibujado de la app
+      document.body.classList.add('sesion-activa');
       loginSc.style.display = 'none';
       loading.style.display = 'flex';
       document.querySelector('.loading-msg').textContent = 'Cargando datos...';
@@ -2900,7 +3280,9 @@ window.addEventListener('DOMContentLoaded', () => {
         loading.style.display = 'none';
       }
     } else {
-      // No logueado: mostrar login
+      // No logueado: solo el login. La app vuelve a quedar sin dibujar, asi que
+      // tampoco queda alcanzable despues de cerrar sesion.
+      document.body.classList.remove('sesion-activa');
       loading.style.display = 'none';
       loginSc.style.display = 'flex';
       btnOut.style.display  = 'none';
@@ -4703,10 +5085,12 @@ window.renderDashboardTickets = function() {
 
   // Calcular datos desde ticketsData
   const totalT    = ticketsData.length;
-  const resueltos = ticketsData.filter(t => t.estado === 'resuelto').length;
-  const enCurso   = ticketsData.filter(t => t.estado === 'en-curso').length;
-  const enEspera  = ticketsData.filter(t => t.estado === 'en-espera').length;
-  const noIniciado= ticketsData.filter(t => t.estado === 'no-iniciado').length;
+  // Se cuenta con el estado normalizado, para que los recuadros coincidan con
+  // lo que muestra la tabla en los tickets sin estado o con el estado viejo.
+  const est       = t => normalizarEstadoTicket(t.estado);
+  const resueltos = ticketsData.filter(t => est(t) === 'resuelto').length;
+  const enCurso   = ticketsData.filter(t => est(t) === 'en-curso').length;
+  const enEspera  = ticketsData.filter(t => est(t) === 'en-espera').length;
   const eficiencia = totalT > 0 ? Math.round(resueltos / totalT * 100) : 0;
 
   // Stats del dashboard
@@ -4716,7 +5100,6 @@ window.renderDashboardTickets = function() {
     <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--green)">${resueltos}</div><div class="ticket-stat-lbl">Resueltos</div></div>
     <div class="ticket-stat"><div class="ticket-stat-val" style="color:#2a78d6">${enCurso}</div><div class="ticket-stat-lbl">En curso</div></div>
     <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--amber)">${enEspera}</div><div class="ticket-stat-lbl">En espera</div></div>
-    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--accent)">${noIniciado}</div><div class="ticket-stat-lbl">No iniciado</div></div>
   `;
 
   // Eficiencia
@@ -4954,8 +5337,16 @@ async function cargarTickets() {
   } catch(e) { console.error('cargarTickets:', e); }
 }
 
+// Los estados validos de un ticket son tres: en-curso, en-espera y resuelto.
+// "no-iniciado" existia antes y se retiro; cualquier ticket viejo que lo tenga
+// guardado, o uno sin estado, se trata como "en-espera".
+function normalizarEstadoTicket(estado) {
+  return (estado === 'en-curso' || estado === 'en-espera' || estado === 'resuelto')
+    ? estado : 'en-espera';
+}
+
 function renderTicketsBadge() {
-  const abiertos = ticketsData.filter(t => t.estado !== 'resuelto').length;
+  const abiertos = ticketsData.filter(t => normalizarEstadoTicket(t.estado) !== 'resuelto').length;
   const badge = document.getElementById('badge-tickets');
   if (badge) {
     badge.textContent = abiertos;
@@ -4984,8 +5375,9 @@ window.renderTickets = function() {
         !t.obs?.toLowerCase().includes(buscar) &&
         !t.pedidoA?.toLowerCase().includes(buscar)) return false;
     // 'abiertos' es un grupo, no un estado: todo lo que no esta resuelto.
-    if (estado === 'abiertos') { if (t.estado === 'resuelto') return false; }
-    else if (estado && t.estado !== estado) return false;
+    const estT = normalizarEstadoTicket(t.estado);
+    if (estado === 'abiertos') { if (estT === 'resuelto') return false; }
+    else if (estado && estT !== estado) return false;
     if (tipo   && t.tipo   !== tipo)   return false;
     if (prio   && t.prioridad !== prio) return false;
     return true;
@@ -4995,10 +5387,9 @@ window.renderTickets = function() {
   const statsEl = document.getElementById('ticket-stats');
   if (statsEl) {
     const total    = ticketsData.length;
-    const abiertos = ticketsData.filter(t=>t.estado!=='resuelto').length;
-    const curso    = ticketsData.filter(t=>t.estado==='en-curso').length;
-    const espera   = ticketsData.filter(t=>t.estado==='en-espera').length;
-    const resuelto = ticketsData.filter(t=>t.estado==='resuelto').length;
+    const curso    = ticketsData.filter(t=>normalizarEstadoTicket(t.estado)==='en-curso').length;
+    const espera   = ticketsData.filter(t=>normalizarEstadoTicket(t.estado)==='en-espera').length;
+    const resuelto = ticketsData.filter(t=>normalizarEstadoTicket(t.estado)==='resuelto').length;
     // KPIs clickeables: filtran la tabla y se marcan. Los numeros son SIEMPRE
     // los totales reales — no cambian al filtrar. Solo el recuadro Total agrega
     // cuantos quedan visibles, igual que en el panel de obras.
@@ -5011,9 +5402,11 @@ window.renderTickets = function() {
         <div class="ticket-stat-lbl">${lbl}</div>
         ${sub?`<div class="ticket-stat-sub">${sub}</div>`:''}
       </div>`;
+    // Los recuadros cubren los tres estados que existen, asi que
+    // En curso + En espera + Resueltos siempre da el Total.
+    // El desplegable conserva ademas "Abiertos (sin resolver)" como atajo.
     statsEl.innerHTML =
       kpi(total,    'Total',     '',             '',          hayFiltro?lista.length+' visibles':'') +
-      kpi(abiertos, 'Abiertos',  'var(--accent)','abiertos') +
       kpi(curso,    'En curso',  'var(--blue)',  'en-curso') +
       kpi(espera,   'En espera', 'var(--amber)', 'en-espera') +
       kpi(resuelto, 'Resueltos', 'var(--green)', 'resuelto');
@@ -5028,12 +5421,17 @@ window.renderTickets = function() {
     return;
   }
 
-  const estadoLabels = { 'no-iniciado':'No iniciado','en-curso':'En curso','en-espera':'En espera','resuelto':'Resuelto' };
+  const estadoLabels = { 'en-curso':'En curso','en-espera':'En espera','resuelto':'Resuelto' };
 
   tbody.innerHTML = lista.map(t => {
     const prioCls = (t.prioridad||'').toLowerCase().replace(' ','-');
-    const estCls  = t.estado||'no-iniciado';
-    return `<tr>
+    // 'no-iniciado' se retiro como estado. Si quedara alguno guardado de antes,
+    // o un ticket sin estado, se muestra como "En espera" en vez de sacar la
+    // etiqueta cruda en pantalla.
+    const estCls  = normalizarEstadoTicket(t.estado);
+    // Fila clickeable completa: abre el ticket, igual que en el panel de obras.
+    // Los botones de accion llevan stopPropagation para no disparar dos veces.
+    return `<tr class="fila-ticket" onclick="editarTicket('${t.id}')">
       <td><span class="ticket-id">#${String(t.numero||'?').padStart(3,'0')}</span></td>
       <td>
         <div class="ticket-tarea">${t.nombre||'—'}</div>
@@ -5048,8 +5446,9 @@ window.renderTickets = function() {
       <td><div class="ticket-obs" title="${(t.obs||'').replace(/"/g,'')}">${t.obs||'—'}</div></td>
       <td>
         <div class="ticket-acciones">
-          <button onclick="editarTicket('${t.id}')" title="Editar">✏️</button>
-          <button onclick="eliminarTicket('${t.id}')" title="Eliminar" style="color:var(--red)">🗑</button>
+          <!-- El lapiz se saco: la fila entera ya abre el ticket para editarlo.
+               Queda solo Eliminar, que es la unica accion que la fila no hace. -->
+          <button onclick="event.stopPropagation();eliminarTicket('${t.id}')" title="Eliminar" style="color:var(--red)">🗑</button>
         </div>
       </td>
     </tr>`;
@@ -5065,7 +5464,9 @@ window.abrirModalTicket = function(fromAgenda) {
   // Fecha solicitada = hoy
   document.getElementById('tk-fecha-sol').value = new Date().toISOString().split('T')[0];
   document.getElementById('tk-prioridad').value = 'Media';
-  document.getElementById('tk-estado').value    = 'no-iniciado';
+  // Antes el ticket nuevo arrancaba en "No iniciado". Ese estado se retiro,
+  // asi que el nuevo por defecto es "En espera": pedido, todavia sin arrancar.
+  document.getElementById('tk-estado').value    = 'en-espera';
   document.getElementById('tk-tipo').value      = 'Correctivo';
   // Si viene de agenda, pre-completar nombre
   if (fromAgenda) {
@@ -5090,7 +5491,7 @@ window.editarTicket = function(id) {
   document.getElementById('tk-fecha-fin').value = t.fechaFin  || '';
   document.getElementById('tk-obs').value       = t.obs       || '';
   document.getElementById('tk-prioridad').value = t.prioridad || 'Media';
-  document.getElementById('tk-estado').value    = t.estado    || 'no-iniciado';
+  document.getElementById('tk-estado').value    = normalizarEstadoTicket(t.estado);
   document.getElementById('tk-tipo').value      = t.tipo      || 'Correctivo';
   document.getElementById('modal-ticket').classList.add('open');
 };
@@ -5124,7 +5525,14 @@ window.guardarTicket = async function() {
 };
 
 window.eliminarTicket = async function(id) {
-  if (!confirm('¿Eliminar este ticket?')) return;
+  // El tacho quedo como unico boton de la fila, asi que la confirmacion nombra
+  // el ticket: si le erraste al click, lo ves antes de aceptar.
+  const t   = ticketsData.find(x => x.id === id);
+  const num = t && t.numero ? '#' + String(t.numero).padStart(3,'0') : '';
+  const msg = t
+    ? `¿Eliminar el ticket ${num} — ${t.nombre || 'sin nombre'}?`
+    : '¿Eliminar este ticket?';
+  if (!confirm(msg)) return;
   try {
     await deleteDoc(doc(db,'tickets',id));
     await cargarTickets();
