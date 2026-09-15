@@ -243,8 +243,15 @@
   .gbar.abierta{border-top-right-radius:0;border-bottom-right-radius:0;}
   .gcola{position:absolute;top:9px;height:19px;border-radius:0 5px 5px 0;
     background:repeating-linear-gradient(135deg,rgba(160,112,32,0.55) 0 4px,rgba(160,112,32,0.16) 4px 8px);}
+  /* tramo de espera: adjudicado pero la obra todavia no arranco */
+  .gbar.esp{border-radius:0;box-shadow:none;opacity:1;
+    background:repeating-linear-gradient(135deg,rgba(124,58,237,0.60) 0 5px,rgba(124,58,237,0.15) 5px 10px);}
+  .gcola.p{background:repeating-linear-gradient(135deg,rgba(124,58,237,0.55) 0 4px,rgba(124,58,237,0.15) 4px 8px);}
   .getiq{position:absolute;top:11px;font-size:0.64rem;color:var(--ink2);font-family:DM Mono,monospace;
     white-space:nowrap;z-index:4;background:rgba(253,251,247,0.88);padding:1px 4px;border-radius:4px;}
+  /* cuando no entra a la derecha se apoya sobre el final de la barra: necesita
+     fondo opaco y un borde fino para despegarse del color de abajo */
+  .getiq.vuelta{background:rgba(253,251,247,0.96);box-shadow:0 0 0 1px rgba(216,210,200,0.95);}
   .ghoy{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--accent);z-index:3;}
   .ghoy-cab{position:absolute;top:20px;transform:translateX(-50%);background:var(--accent);color:#fff;
     font-size:0.58rem;font-weight:600;padding:1px 6px;border-radius:20px;white-space:nowrap;}
@@ -267,6 +274,14 @@
   .gsin .it{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;padding:0.18rem 0;cursor:pointer;}
   .gsin .it:hover{color:var(--accent);}
   .gsin .prov{color:var(--ink3);font-size:0.68rem;}
+  .gleyenda{display:flex;flex-wrap:wrap;gap:0.9rem;align-items:center;padding:0.6rem 0.85rem;
+    grid-column:1 / -1;border-top:1px solid var(--border);font-size:0.7rem;color:var(--ink2);}
+  .gleyenda .lg{display:flex;align-items:center;gap:0.35rem;}
+  .gleyenda .m{width:24px;height:11px;border-radius:3px;display:inline-block;}
+  .gleyenda .m.c{background:var(--amber);} .gleyenda .m.t{background:#17875A;}
+  .gleyenda .m.p{background:#7C3AED;}
+  .gleyenda .m.esp{background:repeating-linear-gradient(135deg,rgba(124,58,237,0.60) 0 5px,rgba(124,58,237,0.15) 5px 10px);}
+  .gleyenda .m.abierta{background:repeating-linear-gradient(135deg,rgba(160,112,32,0.55) 0 4px,rgba(160,112,32,0.16) 4px 8px);}
   #gantt-tip{position:fixed;z-index:900;background:var(--ink);color:#F5F2EC;font-size:0.71rem;line-height:1.5;
     padding:0.5rem 0.7rem;border-radius:8px;pointer-events:none;opacity:0;transition:opacity .12s;
     box-shadow:0 6px 20px rgba(28,26,22,0.28);max-width:290px;}
@@ -1992,7 +2007,7 @@ const gComprasPedidas = new Set();   // para no repedir la misma obra
 
 const gMES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const gMES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-const gHoyISO = () => new Date().toISOString().split('T')[0];
+const gHoyISO = () => isoLocal();
 
 function gDatosObra(o) {
   const i = o.info || {};
@@ -2016,22 +2031,20 @@ function gAnios(lista) {
   return [...s].sort();
 }
 
-// Trae el proceso de compras de las pendientes que todavia no lo tienen, y
-// vuelve a dibujar una sola vez cuando termina.
+// Trae el proceso de compras de TODAS las obras que todavia no lo tienen (no solo
+// las pendientes: una obra ya iniciada tambien tiene su licitacion, y la mostramos
+// en la descripcion de la fila). Se pide una sola vez por obra y por sesion.
 async function cargarComprasGantt(lista) {
   const faltan = lista.filter(o => {
-    const i = o.info || {};
-    if (i.inicio || i.estadoObra === 'terminado') return false;      // no es pendiente
     if (o.compras && o.compras.proceso) return false;                 // ya esta
     return !gComprasPedidas.has(o.id);
   });
   if (!faltan.length) return;
   faltan.forEach(o => gComprasPedidas.add(o.id));
-  let alguna = false;
-  for (const o of faltan) {
-    try { await cargarCompras(o.id); if (obras[o.id]?.compras?.proceso) alguna = true; } catch(e){}
-  }
-  if (alguna && vistaActual === 'gantt') renderDashboard();
+  const res = await Promise.all(faltan.map(async o => {
+    try { await cargarCompras(o.id); return !!obras[o.id]?.compras?.proceso; } catch(e){ return false; }
+  }));
+  if (res.some(Boolean) && vistaActual === 'gantt') renderDashboard();
 }
 
 window.renderGantt = function(lista) {
@@ -2053,8 +2066,20 @@ window.renderGantt = function(lista) {
   const hoyReal = dia(hoyISO);
   const hoyD = clamp(hoyReal);                       // si el anio ya paso, tope a fin de anio
   const anioCorriente = +hoyISO.slice(0,4) === A;
-  const dur = (a,b) => Math.max(1, Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000));
-  const semN = n => Math.max(1, Math.round(n/7));
+  // Hasta donde puede estirarse una barra que todavia sigue corriendo dentro de este anio:
+  // hoy si es el anio en curso, 31/12 si el anio ya paso, y nada si el anio es futuro.
+  const topeAbierto = hoyReal >= DIAS ? (A + '-12-31') : (hoyReal < 0 ? null : hoyISO);
+  const dur = (a,b) => calcularDias(a,b) || 1;
+  // Las semanas solo se muestran a partir de los 7 dias: por debajo no significan
+  // nada y hacian que una obra de 1 dia dijera "1 sem".
+  const semN = n => Math.round(n/7);
+  const txtSem = n => n + (n===1 ? ' semana' : ' semanas');
+  const semCorta = n => n >= 7 ? ' · ' + semN(n) + ' sem' : '';
+  const semLarga = n => n >= 7 ? ' (' + txtSem(semN(n)) + ')' : '';
+  // Posicion tentativa: siempre despues de la barra. El ajuste fino lo hace
+  // acomodarEtiquetas() una vez dibujado, midiendo el ancho REAL del texto —
+  // estimarlo por cantidad de caracteres se pasaba ~7% y volteaba etiquetas que entraban.
+  const etiqAttrs = (fin, gap) => `style="left:${fin+gap}%" data-fin="${fin}" data-gap="${gap}"`;
   const esc = t => String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
   // ---- que obras entran en este anio ----
@@ -2062,7 +2087,9 @@ window.renderGantt = function(lista) {
   const enAnio = d => {
     const r = [];
     if (d.ini) r.push([d.ini, d.fin || (anioCorriente ? hoyISO : d.ini)]);
-    if (!d.ini && d.comp) r.push([d.comp.desde, d.comp.hasta || (anioCorriente ? hoyISO : d.comp.desde)]);
+    // una obra pendiente sigue corriendo hasta hoy aunque la licitacion ya haya cerrado:
+    // entre la adjudicacion y el inicio de obra hay un tramo de espera que tambien avanza.
+    if (!d.ini && d.comp) r.push([d.comp.desde, hoyISO > d.comp.desde ? hoyISO : d.comp.desde]);
     return r.some(([a,b]) => +a.slice(0,4) <= A && +b.slice(0,4) >= A);
   };
   const ubicables = datos.filter(d => (d.ini || d.comp) && enAnio(d));
@@ -2124,20 +2151,64 @@ window.renderGantt = function(lista) {
         const dd = dur(d.ini, hasta);
         barras += `<div class="gbar ${d.grupo==='term'?'t':'c'}${ab?' abierta':''}" style="left:${L}%;width:${W}%"></div>`;
         if (ab) barras += `<div class="gcola" style="left:${L+W}%;width:2%"></div>`;
-        barras += `<div class="getiq" style="left:${Math.min(88, L+W+(ab?2.4:0.7))}%">${dd} días · ${semN(dd)} sem${ab?' (sigue)':''}</div>`;
+        const etiqE = `${txtDias(dd)}${semCorta(dd)}${ab?' (sigue)':''}`;
+        barras += `<div class="getiq" ${etiqAttrs(L+W, ab?2.4:0.7)}>${etiqE}</div>`;
+        // Desglose de las tres etapas en la descripcion (la barra sigue mostrando
+        // solo la obra, para no llenar el Gantt de colores).
+        let etapas = '';
+        if (d.comp) {
+          const c = d.comp;
+          const ddLic = c.hasta ? dur(c.desde, c.hasta) : null;
+          const ddEsp = c.hasta ? calcularDiasEntre(c.hasta, d.ini) : null;
+          etapas = `<span class="k">Licitación:</span> ${formatFecha(c.desde)}`
+                 + (c.hasta ? ` → ${formatFecha(c.hasta)} · ${txtDias(ddLic)}` : ' → sin adjudicación cargada')
+                 + '<br>'
+                 + (ddEsp !== null ? `<span class="k">Espera hasta el inicio:</span> ${txtDias(ddEsp)}<br>` : '');
+        }
         tip = `<b>${esc(d.nombre)}</b>${d.prov?`<span class="k">Proveedor:</span> ${esc(d.prov)}<br>`:''}
-               <span class="k">Inicio:</span> ${formatFecha(d.ini)}<br>
-               <span class="k">Fin:</span> ${d.fin?formatFecha(d.fin):'sin fecha de fin cargada'}<br>
-               <span class="k">Transcurrido:</span> ${dd} días (${semN(dd)} semanas)`;
+               ${etapas}<span class="k">Inicio de obra:</span> ${formatFecha(d.ini)}<br>
+               <span class="k">Fin de obra:</span> ${d.fin?formatFecha(d.fin):'sin fecha de fin cargada'}<br>
+               <span class="k">${ab?'Obra transcurrida':'Duración de obra'}:</span> ${txtDias(dd)}${semLarga(dd)}`;
       } else {
-        const hasta = d.comp.hasta || (anioCorriente ? hoyISO : d.comp.desde);
-        const L = pct(clamp(dia(d.comp.desde)));
-        const W = Math.max(0.4, pct(clamp(dia(hasta))) - L);
-        const dd = dur(d.comp.desde, hasta);
-        barras += `<div class="gbar p" style="left:${L}%;width:${W}%"></div>`;
-        barras += `<div class="getiq" style="left:${Math.min(88, L+W+0.7)}%">licitación · ${dd} días</div>`;
+        // Obra pendiente: la barra NO se frena en la adjudicacion. Despues del cierre de
+        // la licitacion sigue un tramo rayado de espera que avanza hasta hoy (o hasta el
+        // 31/12 si estamos mirando un anio ya pasado y la obra todavia no arranco).
+        const desde  = d.comp.desde;
+        const licFin = d.comp.hasta || topeAbierto || desde;
+
+        // El tramo de licitacion solo se dibuja si cae dentro del anio que se mira;
+        // si quedo entero en un anio anterior, la fila arranca directo con la espera.
+        const licVisible = dia(licFin) > 0 && dia(desde) < DIAS;
+        const L = pct(clamp(dia(desde)));
+        const W = licVisible ? Math.max(0.4, pct(clamp(dia(licFin))) - L) : 0;
+        const ddLic = dur(desde, licFin);
+
+        // Tramo de espera: adjudicado, pero la obra todavia no arranco.
+        let W2 = 0, ddEsp = 0, espL = L + W, ddEspTotal = 0;
+        if (d.comp.hasta && topeAbierto && dia(topeAbierto) > dia(d.comp.hasta)) {
+          espL  = licVisible ? L + W : pct(clamp(dia(d.comp.hasta)));
+          W2    = Math.max(0.4, pct(clamp(dia(topeAbierto))) - espL);
+          ddEsp = calcularDiasEntre(d.comp.hasta, topeAbierto) || 0;          // dentro del anio
+          ddEspTotal = calcularDiasEntre(d.comp.hasta, hoyISO) || ddEsp;      // real, hasta hoy
+        }
+        const sigue = !d.comp.hasta || W2 > 0;   // todavia esta corriendo
+        const fin   = espL + W2;
+
+        if (licVisible) barras += `<div class="gbar p${sigue?' abierta':''}" style="left:${L}%;width:${W}%"></div>`;
+        if (W2)         barras += `<div class="gbar esp" style="left:${espL}%;width:${W2}%"></div>`;
+        if (sigue)      barras += `<div class="gcola p" style="left:${fin}%;width:2%"></div>`;
+
+        // Misma regla de semanas que las barras de obra: aparecen desde los 7 dias.
+        const dosTramos = licVisible && W2;
+        const etiq = (licVisible ? (dosTramos ? `lic. ${ddLic} d${semCorta(ddLic)}` : `licitación · ${txtDias(ddLic)}${semCorta(ddLic)}`) : '')
+                   + (W2 ? (dosTramos?' · ':'') + (dosTramos ? `espera ${ddEsp} d${semCorta(ddEsp)}` : `espera · ${txtDias(ddEsp)}${semCorta(ddEsp)}`) : '')
+                   + (sigue ? ' (sigue)' : '');
+        barras += `<div class="getiq" ${etiqAttrs(fin, sigue?2.4:0.7)}>${etiq}</div>`;
+
         tip = `<b>${esc(d.nombre)}</b><span class="k">Estado:</span> pendiente, sin inicio de obra<br>
-               <span class="k">Compras:</span> ${formatFecha(d.comp.desde)}${d.comp.hasta?' → '+formatFecha(d.comp.hasta):' → en curso'}<br>
+               <span class="k">Compras:</span> ${formatFecha(desde)}${d.comp.hasta?' → '+formatFecha(d.comp.hasta):' → licitación en curso'}<br>
+               <span class="k">Licitación:</span> ${txtDias(ddLic)}${semLarga(ddLic)}${d.comp.hasta?'':' (sigue abierta)'}<br>
+               ${W2?`<span class="k">Esperando inicio de obra:</span> ${txtDias(ddEspTotal)}${semLarga(ddEspTotal)} desde la adjudicación${ddEspTotal!==ddEsp?` (${txtDias(ddEsp)} en ${A})`:''}<br>`:''}
                <span class="k">No suma carga:</span> todavía no se ejecuta`;
       }
       filas += `<div class="gfila gobra" onclick="ingresarDesdePanel('${d.id}')">
@@ -2178,6 +2249,15 @@ window.renderGantt = function(lista) {
     ${sinFecha.map(d=>`<div class="it" onclick="ingresarDesdePanel('${d.id}')">
       <i class="punto" style="background:#7C3AED"></i>${esc(d.nombre)}${d.prov?` <span class="prov">· ${esc(d.prov)}</span>`:''}</div>`).join('')}</div>` : '';
 
+
+  const leyenda = `<div class="gleyenda">
+    <span class="lg"><i class="m p"></i>licitación</span>
+    <span class="lg"><i class="m esp"></i>espera: adjudicado, sin inicio de obra</span>
+    <span class="lg"><i class="m c"></i>obra en curso</span>
+    <span class="lg"><i class="m t"></i>obra terminada</span>
+    <span class="lg"><i class="m abierta"></i>sigue corriendo (sin fecha de fin)</span>
+  </div>`;
+
   const botonesAnio = anios.map(y =>
     `<button class="${y===A?'on':''}" onclick="setGanttAnio(${y})">${y}</button>`).join('');
 
@@ -2200,14 +2280,51 @@ window.renderGantt = function(lista) {
         <div class="gpista">${mesesH}${semH}${lineaHoy}
           ${anioCorriente?`<div class="ghoy-cab" style="left:${pct(hoyD)}%">hoy ${formatFecha(hoyISO)}</div>`:''}</div></div>
       ${filas || '<div class="gfila"><div class="gtit"><b>No hay obras con fechas en '+A+'</b><small>Probá con otro año o revisá los filtros.</small></div></div>'}
-      ${banda}${sinH}
+      ${leyenda}${banda}${sinH}
     </div></div></div>`;
 
+  acomodarEtiquetas();
+  observarAnchoGantt();
   gantTooltips();
   cargarComprasGantt(lista);   // async: si aparecen compras, redibuja una vez
 };
 
 window.setGanttAnio = function(y) { gantAnio = y; renderDashboard(); };
+
+// Mide cada etiqueta ya dibujada y decide donde va. Si entra a la derecha de la
+// barra, queda ahi. Si no entra, se pega al FINAL de la barra hacia la izquierda
+// (cerca de la linea de hoy, que es donde se mira) en vez de irse al arranque,
+// que en una licitacion de medio año queda a meses de distancia.
+function acomodarEtiquetas() {
+  document.querySelectorAll('#dash-gantt .getiq[data-fin]').forEach(el => {
+    const carril = el.parentElement;
+    if (!carril) return;
+    const W = carril.getBoundingClientRect().width;
+    if (!W) return;                                   // todavia no esta visible
+    const ancho = el.getBoundingClientRect().width / W * 100;
+    const fin = parseFloat(el.dataset.fin), gap = parseFloat(el.dataset.gap);
+    if (fin + gap + ancho <= 99.5) {
+      el.classList.remove('vuelta');
+      el.style.left = (fin + gap) + '%';
+      el.style.transform = '';
+    } else {
+      el.classList.add('vuelta');
+      el.style.left = Math.max(ancho, fin) + '%';     // nunca se sale por la izquierda
+      el.style.transform = 'translateX(-100%)';
+    }
+  });
+}
+
+// El carril cambia de ancho al colapsar el menu o al redimensionar la ventana,
+// asi que las etiquetas se recalculan solas.
+let gantRO = null;
+function observarAnchoGantt() {
+  const cont = document.getElementById('dash-gantt');
+  if (!cont || gantRO || typeof ResizeObserver === 'undefined') return;
+  let t = null;
+  gantRO = new ResizeObserver(() => { clearTimeout(t); t = setTimeout(acomodarEtiquetas, 100); });
+  gantRO.observe(cont);
+}
 
 function gantTooltips() {
   let tip = document.getElementById('gantt-tip');
@@ -2404,7 +2521,7 @@ function buildCard(o) {
       ${info.tel?`<span>📞 ${info.tel}</span>`:''}
       ${licitacion && compInicioLabel ? `<span>${compInicioLabel}</span>` : ''}
       ${!licitacion?`<span>📅 ${info.inicio?formatFecha(info.inicio):'<span class="badge-pendiente">Sin fecha de inicio</span>'}${terminada&&info.fin?' → '+formatFecha(info.fin):''}</span>`:''}
-      ${!licitacion&&(terminada?dias:diasEC)!==null?`<span>⏱ <strong>${terminada?dias:diasEC} días</strong></span>`:''}
+      ${!licitacion&&(terminada?dias:diasEC)!==null?`<span>⏱ <strong>${txtDias(terminada?dias:diasEC)}</strong></span>`:''}
     </div>
     <div style="margin-top:auto">
       <button class="btn-ingresar ${btnClass}" ${btnStyle} onclick="event.stopPropagation();ingresarDesdePanel('${o.id}')">
@@ -2469,8 +2586,8 @@ function buildFilaLista(o) {
   const dias      = calcularDias(info.inicio, terminada ? info.fin : null);
   const diasEC    = calcularDias(info.inicio, null);
   const duracion  = pendiente ? '—'
-    : terminada ? (dias  !== null ? dias  +' días' : '—')
-                : (diasEC !== null ? diasEC+' días' : '—');
+    : terminada ? (dias  !== null ? txtDias(dias)  : '—')
+                : (diasEC !== null ? txtDias(diasEC) : '—');
   const badgeCls  = terminada ? 'badge-terminada' : pendiente ? 'badge-licitacion-card' : 'badge-en-curso';
   const badgeTxt  = terminada ? 'Terminada'       : pendiente ? 'Pendiente'            : 'En curso';
   // Sin boton "Ver"/"Entrar": la fila entera ya abre la obra y hacia lo mismo
@@ -2938,7 +3055,7 @@ function renderCompras() {
     el.innerHTML = `<div class="compras-panel-card">
       <div style="font-size:1rem;font-weight:600;color:var(--ink);margin-bottom:1.25rem">Contratación directa</div>
       <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem">
-        ${diasEjecucion!==null?`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${diasEjecucion} días${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`:''}
+        ${diasEjecucion!==null?`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${txtDias(diasEjecucion)}${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`:''}
       </div>
       <div class="compras-timeline">
         <div class="compras-step">
@@ -2954,7 +3071,7 @@ function renderCompras() {
           <div style="display:flex;flex-direction:column;align-items:center">
             <div class="compras-connector"></div>
           </div>
-          ${diasEjecucion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${diasEjecucion} días de ejecución</div>`:''}
+          ${diasEjecucion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${txtDias(diasEjecucion)} de ejecución</div>`:''}
         </div>
         <div class="compras-step">
           <div class="compras-step-dot fin">2</div>
@@ -2964,7 +3081,7 @@ function renderCompras() {
           </div>
         </div>
         <div style="margin-top:1rem;padding:0.75rem 1rem;background:var(--surface2);border-radius:8px;font-size:0.85rem;font-weight:600;color:var(--ink)">
-          Total del proyecto: ${diasEjecucion} días
+          Total del proyecto: ${txtDias(diasEjecucion)}
         </div>` : ''}
       </div>
     </div>`;
@@ -2981,14 +3098,14 @@ function renderCompras() {
   }
 
   const diasLicitacion  = calcularDias(comp.inicio, comp.fin);
-  const diasBache       = comp.fin && info.inicio ? calcularDias(comp.fin, info.inicio) : null;
+  const diasBache       = comp.fin && info.inicio ? calcularDiasEntre(comp.fin, info.inicio) : null;
   const diasEjecucion   = info.inicio ? calcularDias(info.inicio, info.estadoObra==='terminado' && info.fin ? info.fin : null) : null;
 
   // Badges resumen de los 3 tiempos
   const badges = [];
-  if (diasLicitacion !== null) badges.push(`<div class="compras-duracion-badge">📋 Licitación: <strong>${diasLicitacion} días</strong></div>`);
-  if (diasBache !== null)      badges.push(`<div class="compras-duracion-badge" style="background:var(--amber-light);color:var(--amber)">⏳ Espera hasta inicio: <strong>${diasBache} días</strong></div>`);
-  if (diasEjecucion !== null)  badges.push(`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${diasEjecucion} días${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`);
+  if (diasLicitacion !== null) badges.push(`<div class="compras-duracion-badge">📋 Licitación: <strong>${txtDias(diasLicitacion)}</strong></div>`);
+  if (diasBache !== null)      badges.push(`<div class="compras-duracion-badge" style="background:var(--amber-light);color:var(--amber)">⏳ Espera hasta inicio: <strong>${txtDias(diasBache)}</strong></div>`);
+  if (diasEjecucion !== null)  badges.push(`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${txtDias(diasEjecucion)}${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`);
 
   el.innerHTML = `<div class="compras-panel-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem">
@@ -3019,7 +3136,7 @@ function renderCompras() {
         <div style="display:flex;flex-direction:column;align-items:center">
           <div class="compras-connector"></div>
         </div>
-        ${diasLicitacion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${diasLicitacion} días de licitación</div>`:''}
+        ${diasLicitacion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${txtDias(diasLicitacion)} de licitación</div>`:''}
       </div>
 
       <!-- Paso 2: Adjudicación -->
@@ -3044,7 +3161,7 @@ function renderCompras() {
       <div style="display:flex;align-items:stretch;gap:0">
         <div style="display:flex;flex-direction:column;align-items:center">
           <div class="compras-connector-bache" style="height:36px">
-            ${diasBache!==null && diasBache>0?`<span class="compras-bache-label">⏳ ${diasBache} días de espera</span>`:''}
+            ${diasBache!==null && diasBache>0?`<span class="compras-bache-label">⏳ ${txtDias(diasBache)} de espera</span>`:''}
           </div>
         </div>
       </div>
@@ -3072,7 +3189,7 @@ function renderCompras() {
         <div style="display:flex;flex-direction:column;align-items:center">
           <div class="compras-connector"></div>
         </div>
-        ${diasEjecucion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${diasEjecucion} días de ejecución</div>`:''}
+        ${diasEjecucion!==null?`<div style="margin-left:12px;margin-top:4px;font-size:0.72rem;color:var(--ink3);align-self:center">${txtDias(diasEjecucion)} de ejecución</div>`:''}
       </div>
 
       <!-- Paso 4: Fin de obra -->
@@ -3090,9 +3207,9 @@ function renderCompras() {
     ${info.estadoObra==='terminado' && info.fin && comp.inicio ? (() => {
       const total = (diasLicitacion||0) + (diasBache||0) + (diasEjecucion||0);
       const filas = [
-        { n:'1', label:'Inicio gestión de compras', fecha: formatFecha(comp.inicio), dur: diasLicitacion!==null ? `Duración licitación: <strong style="color:var(--accent)">${diasLicitacion} días</strong>` : null },
-        { n:'2', label:'Adjudicación', fecha: comp.fin ? formatFecha(comp.fin) : '—', dur: diasBache!==null ? `Tiempo de espera hasta inicio: <strong style="color:var(--amber)">${diasBache} días</strong>` : null },
-        { n:'3', label:'Inicio de obra', fecha: formatFecha(info.inicio), dur: diasEjecucion!==null ? `Duración ejecución: <strong style="color:var(--accent)">${diasEjecucion} días</strong>` : null },
+        { n:'1', label:'Inicio gestión de compras', fecha: formatFecha(comp.inicio), dur: diasLicitacion!==null ? `Duración licitación: <strong style="color:var(--accent)">${txtDias(diasLicitacion)}</strong>` : null },
+        { n:'2', label:'Adjudicación', fecha: comp.fin ? formatFecha(comp.fin) : '—', dur: diasBache!==null ? `Tiempo de espera hasta inicio: <strong style="color:var(--amber)">${txtDias(diasBache)}</strong>` : null },
+        { n:'3', label:'Inicio de obra', fecha: formatFecha(info.inicio), dur: diasEjecucion!==null ? `Duración ejecución: <strong style="color:var(--accent)">${txtDias(diasEjecucion)}</strong>` : null },
         { n:'4', label:'Obra finalizada', fecha: formatFecha(info.fin), dur: null },
       ];
       return `<div style="margin-top:1.25rem;border-top:1px solid var(--border);padding-top:1.25rem">
@@ -3108,7 +3225,7 @@ function renderCompras() {
         </div>
         <div style="margin-top:0.85rem;padding:0.65rem 1rem;background:var(--surface2);border-radius:7px;font-size:0.85rem;font-weight:600;color:var(--ink);display:flex;justify-content:space-between">
           <span>Total del proyecto (licitación + espera + ejecución)</span>
-          <span style="color:var(--accent)">${total} días</span>
+          <span style="color:var(--accent)">${txtDias(total)}</span>
         </div>
       </div>`;
     })() : ''}
@@ -3185,7 +3302,7 @@ window.loginSubmit = async function() {
 
 // ========== FINALIZAR OBRA ==========
 window.abrirFinalizarObra = function() {
-  const hoy = new Date().toISOString().split('T')[0];
+  const hoy = isoLocal();
   document.getElementById('fin-obra-fecha').value = hoy;
   document.getElementById('modal-finalizar-obra').style.display = 'flex';
 };
@@ -3225,7 +3342,7 @@ window.logoutApp = async function() {
 
 // ========== INIT ==========
 window.addEventListener('DOMContentLoaded', () => {
-  const hoy = new Date().toISOString().split('T')[0];
+  const hoy = isoLocal();
   ['lib-fecha','prob-fecha','gasto-fecha'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = hoy;
@@ -3415,7 +3532,7 @@ window.toggleFechaFinObra = function() {
   if (estado==='terminado') {
     row.classList.add('visible');
     if (!document.getElementById('fo-fin').value)
-      document.getElementById('fo-fin').value = new Date().toISOString().split('T')[0];
+      document.getElementById('fo-fin').value = isoLocal();
   } else {
     row.classList.remove('visible');
     document.getElementById('fo-fin').value = '';
@@ -3865,9 +3982,44 @@ function obraOk() {
 }
 
 // ========== INFO CARD ==========
+// Devuelve el dia de calendario LOCAL como YYYY-MM-DD.
+// OJO: toISOString() pasa a UTC, asi que en Argentina (UTC-3) desde las 21:00
+// devolvia el dia siguiente, y para una fecha armada a medianoche local devolvia
+// siempre el dia anterior. De ahi salian el 'hoy' corrido y el calendario adelantado.
+function isoLocal(d) {
+  const x = d ? new Date(d) : new Date();
+  if (isNaN(x)) return '';
+  return x.getFullYear() + '-' + String(x.getMonth()+1).padStart(2,'0')
+                         + '-' + String(x.getDate()).padStart(2,'0');
+}
+
+// Normaliza cualquier fecha a medianoche LOCAL (evita el corrimiento UTC de "YYYY-MM-DD").
+function _fechaLocal(v) {
+  if (!v) return null;
+  if (v instanceof Date) return isNaN(v) ? null : new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  const m = String(v).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+  const d = new Date(String(v));
+  return isNaN(d) ? null : new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+// DURACIÓN INCLUSIVA: cuenta el día de inicio y el día de fin.
+// Una obra que abre y cierra el mismo día = 1 día (no 0).
 function calcularDias(inicio, fin) {
-  if (!inicio) return null;
-  const diff = Math.round((new Date(fin||new Date()) - new Date(inicio)) / 86400000);
+  const a = _fechaLocal(inicio);            if (!a) return null;
+  const b = _fechaLocal(fin || new Date()); if (!b) return null;
+  const diff = Math.round((b - a) / 86400000);
+  return diff >= 0 ? diff + 1 : null;
+}
+
+// Etiqueta de días con singular/plural: 1 día / 2 días.
+function txtDias(n) { return n + (Math.abs(Number(n))===1 ? ' día' : ' días'); }
+
+// BRECHA (días transcurridos ENTRE dos hitos): mismo día = 0 días de espera.
+function calcularDiasEntre(desde, hasta) {
+  const a = _fechaLocal(desde);                if (!a) return null;
+  const b = _fechaLocal(hasta || new Date()); if (!b) return null;
+  const diff = Math.round((b - a) / 86400000);
   return diff >= 0 ? diff : null;
 }
 
@@ -3890,7 +4042,7 @@ function renderObraInfoCard() {
     ${info.email?'<span><strong>Email:</strong> <a href="mailto:'+info.email+'" style="color:var(--accent)">'+info.email+'</a></span>':''}
     ${info.tel?'<span><strong>Tel:</strong> '+info.tel+'</span>':''}
     ${info.inicio?'<span><strong>Inicio:</strong> '+formatFecha(info.inicio)+'</span>':''}
-    ${(terminada?dias:diasEnCurso)!==null?'<span><strong>Duración:</strong> '+(terminada?dias:diasEnCurso)+' días</span>':''}
+    ${(terminada?dias:diasEnCurso)!==null?'<span><strong>Duración:</strong> '+txtDias(terminada?dias:diasEnCurso)+'</span>':''}
     <span>${badge}</span>
   </div>`;
 }
@@ -4164,13 +4316,13 @@ function renderReporte() {
       <div style="font-size:.84rem;color:var(--ink2);display:flex;flex-direction:column;gap:.4rem">
         ${infoObra.inicio?'<span>📅 Inicio de obra: <strong style="color:var(--ink)">'+formatFecha(infoObra.inicio)+'</strong></span>':''}
         ${comp.monto?'<span>💰 Monto contratado: <strong style="color:var(--amber)">$'+fmt(comp.monto)+'</strong></span>':''}
-        ${diasEjec!==null?'<span>⏱ Duración ejecución: <strong style="color:var(--accent)">'+diasEjec+' días'+(terminada?'':' (en curso)')+'</strong></span>':''}
+        ${diasEjec!==null?'<span>⏱ Duración ejecución: <strong style="color:var(--accent)">'+txtDias(diasEjec)+(terminada?'':' (en curso)')+'</strong></span>':''}
         ${terminada && infoObra.fin?'<span>✅ Obra finalizada: <strong style="color:var(--ink)">'+formatFecha(infoObra.fin)+'</strong></span>':''}
         ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
       </div>`;
     } else {
       const diasComp     = calcularDias(comp.inicio, comp.fin);
-      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDias(comp.fin, infoObra.inicio) : null;
+      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDiasEntre(comp.fin, infoObra.inicio) : null;
       const diasEjecLic  = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
       const totalLic     = (diasComp||0) + (diasHastaObra||0) + (diasEjecLic||0);
       html += `<div class="sep"></div>
@@ -4185,17 +4337,17 @@ function renderReporte() {
           <span style="color:var(--ink2)">1. Inicio gestión de compras</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.inicio?formatFecha(comp.inicio):'—'}</span>
         </div>
-        ${diasComp!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración licitación: <strong>${diasComp} días</strong></div>`:''}
+        ${diasComp!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración licitación: <strong>${txtDias(diasComp)}</strong></div>`:''}
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
           <span style="color:var(--ink2)">2. Adjudicación</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.fin?formatFecha(comp.fin):'Pendiente'}</span>
         </div>
-        ${diasHastaObra!==null?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${diasHastaObra} días</strong></div>`:''}
+        ${diasHastaObra!==null?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${txtDias(diasHastaObra)}</strong></div>`:''}
         ${infoObra.inicio?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
           <span style="color:var(--ink2)">3. Inicio de obra</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${formatFecha(infoObra.inicio)}</span>
         </div>
-        ${diasEjecLic!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración ejecución: <strong>${diasEjecLic} días${terminada?'':' (en curso)'}</strong></div>`:''}` : ''}
+        ${diasEjecLic!==null?`<div style="font-size:.74rem;color:var(--accent);padding:.2rem 0 .4rem 1rem">Duración ejecución: <strong>${txtDias(diasEjecLic)}${terminada?'':' (en curso)'}</strong></div>`:''}` : ''}
         ${terminada&&infoObra.fin?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;font-size:.84rem">
           <span style="color:var(--green);font-weight:500">4. Obra finalizada</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--green)">${formatFecha(infoObra.fin)}</span>
@@ -4203,7 +4355,7 @@ function renderReporte() {
       </div>
       ${terminada&&totalLic>0?`<div style="margin-top:.85rem;padding:.65rem 1rem;background:var(--surface2);border-radius:8px;display:flex;justify-content:space-between;font-size:.85rem;font-weight:600;color:var(--ink)">
         <span>Total del proyecto (licitación + espera + ejecución)</span>
-        <span style="color:var(--accent)">${totalLic} días</span>
+        <span style="color:var(--accent)">${txtDias(totalLic)}</span>
       </div>`:''}`;
     }
     el.innerHTML = html;
@@ -4260,8 +4412,8 @@ window.generarPDF = function() {
     txt(linea,M,9,'normal',[107,100,86]);nl();
   }
   // Duración en encabezado
-  if(terminada&&dias!==null){txt('Duración total de la obra: '+dias+' días',M,9,'bold',[46,107,74]);nl();}
-  else if(diasEnCurso!==null){txt('Días transcurridos: '+diasEnCurso+' días (en curso)',M,9,'normal',[107,100,86]);nl();}
+  if(terminada&&dias!==null){txt('Duración total de la obra: '+txtDias(dias),M,9,'bold',[46,107,74]);nl();}
+  else if(diasEnCurso!==null){txt('Días transcurridos: '+txtDias(diasEnCurso)+' (en curso)',M,9,'normal',[107,100,86]);nl();}
   if(filtroAnio||filtroMes){
     const mes=['','Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
     txt('Período: '+(filtroAnio||'')+(filtroMes?' — '+mes[+filtroMes]:''),M,9,'bold',[196,87,42]);nl();
@@ -4280,7 +4432,7 @@ window.generarPDF = function() {
   if(terminada&&dias!==null){
     doc.setFillColor(212,237,223);doc.rect(M,y,W-M*2,14,'F');
     doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(46,107,74);
-    doc.text('Duración total de la obra: '+dias+' días ('+formatFecha(o.info.inicio)+' → '+formatFecha(o.info.fin)+')',M+4,y+9);
+    doc.text('Duración total de la obra: '+txtDias(dias)+' ('+formatFecha(o.info.inicio)+' → '+formatFecha(o.info.fin)+')',M+4,y+9);
     y+=18;nl(0);
   }
 
@@ -4374,7 +4526,7 @@ window.generarPDF = function() {
     nl(1);
     const tiemposDir=[
       ['1. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
-      ['   Duración ejecución:', diasEjec!==null ? diasEjec+' días'+(terminada?'':' (en curso)') : '—', [196,87,42]],
+      ['   Duración ejecución:', diasEjec!==null ? txtDias(diasEjec)+(terminada?'':' (en curso)') : '—', [196,87,42]],
     ];
     if(terminada&&o.info.fin){
       tiemposDir.push(['2. Obra finalizada:', formatFecha(o.info.fin), [46,107,74]]);
@@ -4391,7 +4543,7 @@ window.generarPDF = function() {
     if(diasEjec!==null){
       doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
       doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);
-      doc.text('Total del proyecto: '+diasEjec+' días',M+4,y+8);
+      doc.text('Total del proyecto: '+txtDias(diasEjec),M+4,y+8);
       y+=16;
     }
     nl(1);
@@ -4401,7 +4553,7 @@ window.generarPDF = function() {
     txt('PROCESO DE COMPRAS / LICITACIÓN',M,11,'bold');nl(2);
 
     const diasLic  = calcularDias(compPDF.inicio, compPDF.fin);
-    const diasBach = compPDF.fin && o.info.inicio ? calcularDias(compPDF.fin, o.info.inicio) : null;
+    const diasBach = compPDF.fin && o.info.inicio ? calcularDiasEntre(compPDF.fin, o.info.inicio) : null;
     const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
 
     if(compPDF.proveedor){txt('Proveedor adjudicado: '+compPDF.proveedor,M,9,'normal',[107,100,86]);nl();}
@@ -4415,11 +4567,11 @@ window.generarPDF = function() {
 
     const tiempos=[
       ['1. Inicio gestión de compras', compPDF.inicio ? formatFecha(compPDF.inicio) : '—', [28,26,22]],
-      ['   Duración licitación:', diasLic!==null ? diasLic+' días' : '—', [196,87,42]],
+      ['   Duración licitación:', diasLic!==null ? txtDias(diasLic) : '—', [196,87,42]],
       ['2. Adjudicación:', compPDF.fin ? formatFecha(compPDF.fin) : 'Pendiente', [28,26,22]],
-      ['   Tiempo de espera hasta inicio:', diasBach!==null ? diasBach+' días' : '—', [196,87,42]],
+      ['   Tiempo de espera hasta inicio:', diasBach!==null ? txtDias(diasBach) : '—', [196,87,42]],
       ['3. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
-      ['   Duración ejecución:', diasEjec!==null ? diasEjec+' días'+(terminada?'':' (en curso)') : '—', [196,87,42]],
+      ['   Duración ejecución:', diasEjec!==null ? txtDias(diasEjec)+(terminada?'':' (en curso)') : '—', [196,87,42]],
     ];
     if(terminada&&o.info.fin){
       tiempos.push(['4. Obra finalizada:', formatFecha(o.info.fin), [46,107,74]]);
@@ -4438,7 +4590,7 @@ window.generarPDF = function() {
     if(totalDiasProyecto>0){
       doc.setFillColor(237,233,224);doc.rect(M,y,W-M*2,12,'F');
       doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(28,26,22);
-      doc.text('Total del proyecto (licitación + espera + ejecución): '+totalDiasProyecto+' días',M+4,y+8);
+      doc.text('Total del proyecto (licitación + espera + ejecución): '+txtDias(totalDiasProyecto),M+4,y+8);
       y+=16;
     }
     nl(1);
@@ -4478,7 +4630,7 @@ window.cancelarEditLibro = function() {
   editandoId.libro = null;
   document.getElementById('lib-desc').value  = '';
   document.getElementById('lib-obs').value   = '';
-  document.getElementById('lib-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('lib-fecha').value = isoLocal();
   document.getElementById('btn-agregar-libro').style.display    = 'inline-block';
   document.getElementById('btn-actualizar-libro').style.display = 'none';
   document.getElementById('btn-cancelar-libro').style.display   = 'none';
@@ -4516,7 +4668,7 @@ window.cancelarEditProblema = function() {
   editandoId.problemas = null;
   document.getElementById('prob-desc').value   = '';
   document.getElementById('prob-accion').value = '';
-  document.getElementById('prob-fecha').value  = new Date().toISOString().split('T')[0];
+  document.getElementById('prob-fecha').value  = isoLocal();
   document.getElementById('btn-agregar-prob').style.display    = 'inline-block';
   document.getElementById('btn-actualizar-prob').style.display = 'none';
   document.getElementById('btn-cancelar-prob').style.display   = 'none';
@@ -4563,7 +4715,7 @@ window.editarGasto = function(id) {
 window.cancelarEditGasto = function() {
   editandoId.gastos = null;
   ['gasto-prov','gasto-nro','gasto-monto','gasto-centro','gasto-notas'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('gasto-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('gasto-fecha').value = isoLocal();
   document.getElementById('btn-agregar-gasto').style.display    = 'inline-block';
   document.getElementById('btn-actualizar-gasto').style.display = 'none';
   document.getElementById('btn-cancelar-gasto').style.display   = 'none';
@@ -4619,7 +4771,9 @@ window.navegarA = function(mod) {
   if (tt) tt.textContent = TITULOS[mod] || mod;
   if (mod === 'dashboard') renderNuevoDashboard();
   if (mod === 'agenda') renderAgenda();
-  if (mod === 'tickets') { cargarTickets(); }
+  // El listener ya esta vivo desde el login, asi que entrar a la seccion no
+  // relee nada: solo hay que dibujar lo que ya tenemos en memoria.
+  if (mod === 'tickets') { escucharTickets(); renderTickets(); }
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sb-overlay').classList.remove('visible');
@@ -4674,7 +4828,7 @@ function renderNotifPanel(tareas) {
     list.innerHTML = '<div style="padding:1.25rem;text-align:center;color:var(--ink3);font-size:0.84rem">Sin alertas pendientes ✓</div>';
     return;
   }
-  const hoyStr = hoy.toISOString().split('T')[0];
+  const hoyStr = isoLocal(hoy);
   list.innerHTML = alertas.map(t => {
     const d = new Date(t.fechaProx + 'T00:00:00');
     const diff = Math.ceil((d - hoy)/86400000);
@@ -4796,7 +4950,7 @@ window.completarTarea = async function(id) {
       const data = {...t}; delete data.id;
       data.fechaUlt = t.fechaProx;
       data.completadoEn = new Date().toISOString();
-      data.fechaProx = nueva.toISOString().split('T')[0];
+      data.fechaProx = isoLocal(nueva);
       await setDoc(doc(db,'mantenimientos',id), data);
       await cargarTareas();
       alert('✓ Completada. Próxima: ' + formatFecha(data.fechaProx));
@@ -4811,8 +4965,8 @@ function getEstadoTarea(fechaProx) {
   const diff = Math.ceil((d - hoy)/86400000);
   if (diff < 0)   return { estado:'vencido', label:'Vencido',          cls:'vencido', dot:'var(--red)',   diff };
   if (diff === 0) return { estado:'hoy',     label:'Vence hoy',        cls:'vencido', dot:'var(--red)',   diff };
-  if (diff <= 7)  return { estado:'proximo', label:'En '+diff+' días', cls:'proximo', dot:'var(--amber)', diff };
-  if (diff <= 30) return { estado:'proximo', label:'En '+diff+' días', cls:'proximo', dot:'var(--amber)', diff };
+  if (diff <= 7)  return { estado:'proximo', label:'En '+txtDias(diff), cls:'proximo', dot:'var(--amber)', diff };
+  if (diff <= 30) return { estado:'proximo', label:'En '+txtDias(diff), cls:'proximo', dot:'var(--amber)', diff };
   return { estado:'al-dia', label:'Al día', cls:'al-dia', dot:'var(--green)', diff };
 }
 
@@ -4881,7 +5035,7 @@ function renderCalendario() {
   for(let i=0;i<primer.getDay();i++) h+='<div class="cal-day otro-mes"></div>';
   for(let d=1;d<=ultimo.getDate();d++){
     const fecha=new Date(calFecha.getFullYear(),calFecha.getMonth(),d);
-    const fs=fecha.toISOString().split('T')[0];
+    const fs=isoLocal(fecha);
     const esHoy=fecha.getTime()===hoy.getTime();
     const ev=tareasAgenda.filter(t=>t.fechaProx===fs);
     h+=`<div class="cal-day${esHoy?' hoy':''}"><div class="cal-day-num">${d}</div>
@@ -4978,7 +5132,11 @@ function actualizarAvatar(user) {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     actualizarAvatar(user);
+    escucharTickets();          // el badge del menu ya no depende de entrar a Tickets
     await cargarTareas();
+  } else if (unsubTickets) {
+    unsubTickets(); unsubTickets = null;
+    ticketsData = []; renderTicketsBadge();
   }
 });
 
@@ -5319,23 +5477,32 @@ window.renderDashboardTicketsMes = function() {
 // TICKETS
 // ============================================================
 let ticketsData = [];
+let unsubTickets = null;   // listener tiempo real tickets
 let ticketEditandoId = null;
 let ticketContador = 0;
 
-async function cargarTickets() {
-  try {
-    const q = query(collection(db, 'tickets'), orderBy('numero','asc'));
-    const snap = await getDocs(q);
-    ticketsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Calcular próximo ID
-    if (ticketsData.length > 0) {
-      const maxId = Math.max(...ticketsData.map(t => t.numero || 0));
-      ticketContador = maxId;
-    }
-    if (moduloActual === 'tickets') renderTickets();
-    renderTicketsBadge();
-  } catch(e) { console.error('cargarTickets:', e); }
+// Los tickets se escuchan en tiempo real, igual que las obras: arranca al iniciar
+// sesion (por eso el badge del menu aparece de entrada, sin pasar por la seccion) y
+// se redibuja solo cuando alguien carga o cierra un ticket desde otra pantalla.
+function aplicarSnapTickets(snap) {
+  ticketsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  ticketContador = ticketsData.length
+    ? Math.max(0, ...ticketsData.map(t => t.numero || 0))
+    : 0;
+  if (moduloActual === 'tickets') renderTickets();
+  renderTicketsBadge();
 }
+
+function escucharTickets() {
+  if (unsubTickets) return;                       // ya hay uno activo
+  const q = query(collection(db, 'tickets'), orderBy('numero','asc'));
+  unsubTickets = onSnapshot(q, aplicarSnapTickets,
+    e => console.error('escucharTickets:', e));
+}
+
+// Se mantiene por compatibilidad con los llamados que ya existian: si el listener
+// esta vivo no hace falta releer nada, y si no lo esta, lo levanta.
+async function cargarTickets() { escucharTickets(); }
 
 // Los estados validos de un ticket son tres: en-curso, en-espera y resuelto.
 // "no-iniciado" existia antes y se retiro; cualquier ticket viejo que lo tenga
@@ -5462,7 +5629,7 @@ window.abrirModalTicket = function(fromAgenda) {
     const el = document.getElementById(id); if(el) el.value='';
   });
   // Fecha solicitada = hoy
-  document.getElementById('tk-fecha-sol').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tk-fecha-sol').value = isoLocal();
   document.getElementById('tk-prioridad').value = 'Media';
   // Antes el ticket nuevo arrancaba en "No iniciado". Ese estado se retiro,
   // asi que el nuevo por defecto es "En espera": pedido, todavia sin arrancar.
