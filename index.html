@@ -208,10 +208,6 @@
   .gt .d{font-size:0.65rem;color:var(--ink2);margin-top:0.15rem;}
   .gt.pico{border-color:#1A5F8A;box-shadow:0 0 0 2px rgba(26,95,138,0.12);}
   .gt.pico .v{color:#1A5F8A;}
-  .gantt-anios{display:flex;gap:0.35rem;align-items:center;}
-  .gantt-anios button{padding:0.3rem 0.7rem;border-radius:7px;border:1px solid var(--border);
-    background:var(--surface2);color:var(--ink);font-size:0.78rem;cursor:pointer;font-family:DM Sans,sans-serif;}
-  .gantt-anios button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);}
 
   .gantt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
   .gantt-scroll{overflow-x:auto;}
@@ -241,6 +237,15 @@
   .gbar{position:absolute;top:9px;height:19px;border-radius:5px;box-shadow:0 1px 2px rgba(28,26,22,0.12);}
   .gbar.t{background:#17875A;} .gbar.c{background:var(--amber);} .gbar.p{background:#7C3AED;opacity:0.92;}
   .gbar.abierta{border-top-right-radius:0;border-bottom-right-radius:0;}
+  /* la obra continua un tramo previo: sin esquina redonda del lado izquierdo */
+  .gbar.cont{border-top-left-radius:0;border-bottom-left-radius:0;}
+  /* Tramos previos a la obra (licitacion y espera) de una obra YA INICIADA: van en
+     gris para que se vea de donde viene el trabajo sin robarle el color a la obra.
+     Las obras pendientes NO usan estas clases: ahi la licitacion es el dato principal
+     y se queda en violeta. */
+  .gbar.previa{box-shadow:none;}
+  .gbar.previa.lic{background:#C9C3B9;border-radius:5px 0 0 5px;}
+  .gbar.previa.esp{background:repeating-linear-gradient(135deg,rgba(150,142,132,0.55) 0 5px,rgba(150,142,132,0.14) 5px 10px);border-radius:0;}
   .gcola{position:absolute;top:9px;height:19px;border-radius:0 5px 5px 0;
     background:repeating-linear-gradient(135deg,rgba(160,112,32,0.55) 0 4px,rgba(160,112,32,0.16) 4px 8px);}
   /* tramo de espera: adjudicado pero la obra todavia no arranco */
@@ -274,6 +279,8 @@
   .gsin .it{display:flex;align-items:center;gap:0.5rem;font-size:0.76rem;padding:0.18rem 0;cursor:pointer;}
   .gsin .it:hover{color:var(--accent);}
   .gsin .prov{color:var(--ink3);font-size:0.68rem;}
+  .gsin .it{justify-content:space-between;gap:1rem;}
+  .gsin .motivo{color:#8A6D1F;font-size:0.68rem;text-align:right;flex:none;}
   .gleyenda{display:flex;flex-wrap:wrap;gap:0.9rem;align-items:center;padding:0.6rem 0.85rem;
     grid-column:1 / -1;border-top:1px solid var(--border);font-size:0.7rem;color:var(--ink2);}
   .gleyenda .lg{display:flex;align-items:center;gap:0.35rem;}
@@ -281,12 +288,15 @@
   .gleyenda .m.c{background:var(--amber);} .gleyenda .m.t{background:#17875A;}
   .gleyenda .m.p{background:#7C3AED;}
   .gleyenda .m.esp{background:repeating-linear-gradient(135deg,rgba(124,58,237,0.60) 0 5px,rgba(124,58,237,0.15) 5px 10px);}
+  .gleyenda .m.gl{background:#C9C3B9;}
+  .gleyenda .m.ge{background:repeating-linear-gradient(135deg,rgba(150,142,132,0.55) 0 5px,rgba(150,142,132,0.14) 5px 10px);}
   .gleyenda .m.abierta{background:repeating-linear-gradient(135deg,rgba(160,112,32,0.55) 0 4px,rgba(160,112,32,0.16) 4px 8px);}
   #gantt-tip{position:fixed;z-index:900;background:var(--ink);color:#F5F2EC;font-size:0.71rem;line-height:1.5;
     padding:0.5rem 0.7rem;border-radius:8px;pointer-events:none;opacity:0;transition:opacity .12s;
     box-shadow:0 6px 20px rgba(28,26,22,0.28);max-width:290px;}
   #gantt-tip b{color:#fff;display:block;margin-bottom:3px;}
   #gantt-tip .k{color:#A09890;}
+  #gantt-tip .k2{color:#A09890;font-size:0.66rem;display:block;margin-top:1px;}
   #gantt-tip ul{margin:3px 0 0 0;padding-left:14px;}
   @media (max-width:720px){ .gfila{grid-template-columns:140px 1fr;} }
   #dash-section-term{margin-bottom:1rem;}
@@ -982,6 +992,7 @@
       <button id="btn-vista-cards" onclick="setVista('cards')" class="btn-vista active" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--ink);color:var(--bg);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">🃏 Tarjetas</button>
       <button id="btn-vista-lista" onclick="setVista('lista')" class="btn-vista" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">☰ Lista</button>
       <button id="btn-vista-gantt" onclick="setVista('gantt')" class="btn-vista" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--ink);font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif">📅 Gantt</button>
+      <button id="btn-pdf-panel" onclick="exportarPanelPDF()" title="Descargar en PDF lo que estás viendo, con los filtros aplicados" style="padding:0.4rem 0.85rem;border-radius:7px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:0.8rem;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:500;margin-left:0.5rem">↓ PDF</button>
     </div>
   </div>
   <!-- Vista Gantt: una sola linea de tiempo con todas las obras filtradas,
@@ -1815,6 +1826,423 @@ function setSyncStatus(status, msg) {
 // ========== DASHBOARD ==========
 let vistaActual = 'cards'; // 'cards' | 'lista'
 
+
+// ============================================================
+// EXPORTAR A PDF LO QUE SE ESTA VIENDO EN EL PANEL DE OBRAS
+// Un solo boton: saca la vista activa (Gantt, Lista o Tarjetas) con los
+// filtros puestos. A4 apaisado, dibujado como vectores (no captura de pantalla).
+// ============================================================
+
+// renderDashboard deja aca lo ultimo que dibujo, para que el PDF sea
+// exactamente lo que el usuario tiene delante.
+let panelVisible = null;
+
+const PDF_W = 297, PDF_H = 210, PDF_M = 12;   // A4 apaisado, en mm
+const C_INK=[28,26,22], C_INK2=[107,100,86], C_INK3=[160,152,144],
+      C_ACC=[196,87,42], C_AMB=[160,112,32], C_TERM=[23,135,90],
+      C_LIC=[124,58,237], C_GRIS=[201,195,185], C_BORDE=[216,210,200],
+      C_SUAVE=[251,250,247], C_CAB=[237,233,224];
+
+const pdfTxt = (doc,t,x,y,size,style,color,align) => {
+  doc.setFontSize(size); doc.setFont('helvetica', style||'normal');
+  doc.setTextColor(...(color||C_INK));
+  doc.text(String(t), x, y, align ? {align} : undefined);
+};
+// Recorta un texto al ancho disponible, con puntos suspensivos.
+const pdfCorta = (doc,t,size,style,ancho) => {
+  doc.setFontSize(size); doc.setFont('helvetica', style||'normal');
+  let s = String(t||'');
+  if (doc.getTextWidth(s) <= ancho) return s;
+  while (s.length > 1 && doc.getTextWidth(s + '…') > ancho) s = s.slice(0,-1);
+  return s + '…';
+};
+// Relleno rayado a 45°, recortado al rectangulo (jsPDF no tiene clipping simple).
+function pdfRayado(doc, x, y, w, h, rgb, fondo) {
+  if (w <= 0) return;
+  doc.setFillColor(...(fondo||[245,243,240])); doc.rect(x,y,w,h,'F');
+  doc.setDrawColor(...rgb); doc.setLineWidth(0.3);
+  for (let o = -h; o < w; o += 1.3) {
+    let x1 = x+o, y1 = y+h, x2 = x+o+h, y2 = y;
+    if (x1 < x)     { y1 = y+h-(x-x1);      x1 = x; }
+    if (x2 > x+w)   { y2 = y+(x2-(x+w));    x2 = x+w; }
+    if (x1 < x2)    doc.line(x1,y1,x2,y2);
+  }
+}
+
+function pdfCabecera(doc, titulo, ctx) {
+  pdfTxt(doc,'Intendencia', PDF_M, 17, 13, 'normal', C_INK);
+  const w = doc.getTextWidth('Intendencia ');
+  pdfTxt(doc,'UdeSA', PDF_M+w, 17, 13, 'normal', C_ACC);
+  pdfTxt(doc,'CAMPUS VICTORIA · DIRECCIÓN DE OPERACIONES', PDF_M, 21.5, 6, 'normal', C_INK3);
+  pdfTxt(doc, titulo, PDF_W-PDF_M, 17, 13, 'bold', C_INK, 'right');
+  pdfTxt(doc, ctx.meta, PDF_W-PDF_M, 22, 7.5, 'normal', C_INK2, 'right');
+  doc.setDrawColor(...C_INK); doc.setLineWidth(0.6);
+  doc.line(PDF_M, 24.5, PDF_W-PDF_M, 24.5);
+}
+
+function pdfPie(doc, pag, total) {
+  doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
+  doc.line(PDF_M, PDF_H-11, PDF_W-PDF_M, PDF_H-11);
+  pdfTxt(doc,'Memoria de Obra · Intendencia UdeSA', PDF_M, PDF_H-7, 7, 'normal', C_INK3);
+  pdfTxt(doc, total>1 ? `Hoja ${pag} de ${total}` : 'Hoja única',
+         PDF_W-PDF_M, PDF_H-7, 7, 'normal', C_INK3, 'right');
+}
+
+// Tira de indicadores de una sola linea
+function pdfTira(doc, y, ctx) {
+  doc.setFillColor(...C_SUAVE); doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
+  doc.rect(PDF_M, y, PDF_W-PDF_M*2, 9, 'FD');
+  let x = PDF_M + 4;
+  ctx.kpis.forEach((k,i) => {
+    if (k.sep) { doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
+                 doc.line(x, y+2, x, y+7); x += 5; return; }   // separador: no lleva texto
+    pdfTxt(doc, k.v, x, y+6.2, 10.5, 'bold', k.c||C_INK);
+    x += doc.getTextWidth(String(k.v)) + 1.5;
+    pdfTxt(doc, k.l, x, y+6.2, 7, 'normal', C_INK3);
+    x += doc.getTextWidth(k.l) + 6;
+  });
+}
+
+function pdfAvisos(doc, y, avisos) {
+  if (!avisos.length) return y;
+  const alto = 6 + avisos.length*4;
+  doc.setFillColor(255,251,240); doc.setDrawColor(235,217,168); doc.setLineWidth(0.2);
+  doc.rect(PDF_M, y, PDF_W-PDF_M*2, alto, 'FD');
+  pdfTxt(doc,'NO SE PUEDEN UBICAR', PDF_M+3, y+4, 6.5, 'bold', [138,109,31]);
+  avisos.forEach((a,i) => {
+    pdfTxt(doc, pdfCorta(doc,a.nombre,7.5,'normal',110), PDF_M+3, y+8.5+i*4, 7.5, 'normal', [107,90,36]);
+    pdfTxt(doc, a.motivo, PDF_W-PDF_M-3, y+8.5+i*4, 7, 'normal', [138,109,31], 'right');
+  });
+  return y + alto + 3;
+}
+
+// ---------- contexto comun: lista visible, filtros, avisos ----------
+function pdfContexto() {
+  const anio   = document.getElementById('dash-filtro-anio')?.value || '';
+  const mes    = document.getElementById('dash-filtro-mes')?.value || '';
+  const estado = document.getElementById('dash-filtro-estado')?.value || '';
+  const buscar = (document.getElementById('dash-buscar')?.value||'').trim();
+  const A = +anio || new Date().getFullYear();
+  const p = panelVisible;
+  const filtros = [];
+  if (anio) filtros.push('año ' + anio); else filtros.push('año ' + A);
+  if (mes)  filtros.push('mes ' + mes);
+  if (estado) filtros.push({licitacion:'pendientes', 'en-curso':'en curso', terminado:'terminadas'}[estado] || estado);
+  if (buscar) filtros.push('busca “'+buscar+'”');
+  return {
+    A, lista: p.lista, pendientes: p.pendientes, enCurso: p.enCurso, terminadas: p.terminadas,
+    meta: 'Emitido ' + formatFecha(isoLocal()) + ' · ' + p.lista.length + ' obras · ' + filtros.join(' · '),
+    kpis: [
+      {v:p.lista.length, l:'obras'}, {sep:true},
+      {v:p.pendientes.length, l:'pendiente', c:C_LIC},
+      {v:p.enCurso.length,    l:'en curso',  c:C_AMB},
+      {v:p.terminadas.length, l:'terminadas',c:C_TERM},
+      // la carga simultanea solo tiene sentido en la hoja del Gantt
+      ...((vistaActual === 'gantt' && p.carga) ? [
+        {sep:true},
+        {v:p.carga.max,              l:p.carga.picoDesc, c:C_ACC},
+        {v:p.carga.prom.toFixed(1),  l:'promedio a la vez'},
+        {v:p.carga.conO+'/'+p.carga.semanas, l:'semanas con obra'},
+        {v:p.carga.ejec,             l:'ya arrancaron'}
+      ] : [])
+    ],
+    grupos: [
+      {t:'En curso',   c:C_AMB,  obras:p.enCurso},
+      {t:'Pendiente',  c:C_LIC,  obras:p.pendientes},
+      {t:'Terminadas', c:C_TERM, obras:p.terminadas}
+    ],
+    // mismas advertencias que muestra el Gantt en pantalla
+    avisos: p.lista.reduce((acc,o) => {
+      const d = gDatosObra(o);
+      if (!d.ini && !d.comp)
+        acc.push({nombre:d.nombre, motivo:'sin fecha de inicio de obra ni de gestión de compras'});
+      else if (!tocaAnio(o, A)) {
+        const y = [...new Set([d.ini,d.fin,d.comp&&d.comp.desde,d.comp&&d.comp.hasta]
+                    .filter(Boolean).map(f=>String(f).slice(0,4)))].sort();
+        acc.push({nombre:d.nombre, motivo:'sus fechas son de '+(y.join(' y ')||'otro año')});
+      }
+      return acc;
+    }, [])
+  };
+}
+
+window.exportarPanelPDF = function() {
+  if (!panelVisible || !panelVisible.lista.length) {
+    alert('No hay obras para exportar con los filtros actuales.'); return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({orientation:'l', unit:'mm', format:'a4'});
+  const ctx = pdfContexto();
+  const nombre = 'obras-' + (vistaActual==='gantt'?'gantt':vistaActual==='lista'?'listado':'tarjetas')
+               + '-' + ctx.A + '-' + isoLocal() + '.pdf';
+  if      (vistaActual === 'gantt') pdfVistaGantt(doc, ctx);
+  else if (vistaActual === 'lista') pdfVistaLista(doc, ctx);
+  else                              pdfVistaTarjetas(doc, ctx);
+  doc.save(nombre);
+};
+
+// Etapas de una obra, con las mismas reglas que usa el Gantt en pantalla.
+function pdfEtapas(d) {
+  const c = d.comp, pend = !d.ini, hoy = isoLocal();
+  const arranca = c ? c.desde : d.ini;
+  const hasta   = pend ? hoy : (d.fin || hoy);
+  const adj     = c ? (c.hasta || (pend ? hoy : d.ini)) : null;
+  const finEsp  = pend ? hoy : d.ini;
+  // REGLA DE CALENDARIO: licitacion + espera + obra tienen que dar dTot exacto.
+  const dEsp    = (c && c.hasta) ? (pend ? calcularDiasEntre(c.hasta, hoy)
+                                         : calcularDiasEspera(c.hasta, d.ini)) : null;
+  const licFin  = (c && c.hasta && !pend && !dEsp && d.ini) ? d.ini : adj;
+  return {
+    pend, arranca, hasta, ab: pend ? true : !d.fin,
+    lic:  c ? [c.desde, licFin] : null,
+    esp:  dEsp ? [c.hasta, finEsp] : null,
+    obra: pend ? null : [d.ini, hasta],
+    dLic:  c ? diasLicitacionCal(c.desde, adj, pend ? null : d.ini) : null,
+    dEsp,
+    dObra: pend ? null : calcularDias(d.ini, hasta),
+    dTot:  arranca ? calcularDias(arranca, hasta) : null
+  };
+}
+
+// ══════════════ VISTA GANTT — hoja con la columna de dias al costado ══════════════
+function pdfVistaGantt(doc, ctx) {
+  const A = ctx.A, d0 = new Date(A,0,1);
+  const DIAS = Math.round((new Date(A+1,0,1)-d0)/86400000);
+  const dia  = s => Math.round((new Date(String(s)+'T00:00:00')-d0)/86400000);
+  const cl   = d => Math.max(0, Math.min(DIAS, d));
+  const NOM = 44, NUM = 40;
+  const X0  = PDF_M + NOM, P = PDF_W-PDF_M*2 - NOM - NUM, XN = X0 + P;
+  const px  = f => X0 + cl(dia(f))/DIAS*P;
+  const MES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+  const hoy = isoLocal(), hoyEnAnio = +hoy.slice(0,4) === A;
+  const FILA = 7;
+
+  // cuantas paginas: filas de obra + titulos de grupo
+  const bloques = ctx.grupos.filter(g => g.obras.length);
+  const totalFilas = bloques.reduce((n,g)=>n+g.obras.length+1, 0);
+  const yTope = PDF_H - 11 - 8;                       // deja lugar a leyenda
+  let pag = 1, y = 0;
+
+  const cabGrilla = () => {
+    doc.setFillColor(...C_CAB); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 8, 'F');
+    pdfTxt(doc,'OBRA', PDF_M+2, y+5.6, 6, 'bold', C_INK3);
+    for (let m=0;m<12;m++) {
+      const x = X0 + Math.round((new Date(A,m,1)-d0)/86400000)/DIAS*P;
+      pdfTxt(doc, MES[m], x+1, y+5.6, 6, 'bold', C_INK2);
+      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.15); doc.line(x, y, x, y+8);
+    }
+    ['LIC.','ESP.','OBRA','TOTAL'].forEach((t,i)=>
+      pdfTxt(doc, t, XN+(i+1)*(NUM/4)-1.5, y+5.6, 5.5, 'bold', C_INK3, 'right'));
+    doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
+    doc.line(PDF_M, y+8, PDF_W-PDF_M, y+8);
+    y += 8;
+  };
+  const nuevaHoja = (primera) => {
+    if (!primera) { doc.addPage(); pag++; }
+    pdfCabecera(doc, 'Gantt anual de obras — '+A, ctx);
+    y = 28;
+    if (primera) { pdfTira(doc, y, ctx); y += 12; } else { y += 2; }
+    cabGrilla();
+  };
+  nuevaHoja(true);
+
+  bloques.forEach(g => {
+    if (y + FILA*2 > yTope) nuevaHoja(false);
+    doc.setFillColor(253,252,250); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 5.5, 'F');
+    doc.setFillColor(...g.c); doc.circle(PDF_M+3, y+2.9, 0.9, 'F');
+    pdfTxt(doc, g.t.toUpperCase(), PDF_M+5.5, y+4, 6, 'bold', g.c);
+    y += 5.5;
+
+    g.obras.forEach(o => {
+      if (y + FILA > yTope) { nuevaHoja(false); }
+      const d = gDatosObra(o), e = pdfEtapas(d);
+      // franjas de meses, tenues
+      for (let m=0;m<12;m+=2) {
+        const a = X0 + Math.round((new Date(A,m,1)-d0)/86400000)/DIAS*P;
+        const b = X0 + Math.round((new Date(A,m+1,1)-d0)/86400000)/DIAS*P;
+        doc.setFillColor(...C_SUAVE); doc.rect(a, y, b-a, FILA, 'F');
+      }
+      const dentro = (a,b) => a && b && dia(b) > 0 && dia(a) < DIAS;
+      const by = y + 2, bh = 3.2;
+      // licitacion (gris) — violeta si la obra todavia es pendiente
+      if (e.lic && dentro(e.lic[0], e.lic[1])) {
+        const x1 = px(e.lic[0]), x2 = px(e.lic[1]);
+        doc.setFillColor(...(e.pend ? C_LIC : C_GRIS));
+        doc.rect(x1, by, Math.max(0.6, x2-x1), bh, 'F');
+      }
+      // espera (rayado)
+      if (e.esp && dentro(e.esp[0], e.esp[1])) {
+        const x1 = px(e.esp[0]), x2 = px(e.esp[1]);
+        if (x2 > x1) pdfRayado(doc, x1, by, x2-x1, bh, e.pend ? C_LIC : [150,142,132]);
+      }
+      // la obra
+      if (e.obra && dentro(e.obra[0], e.obra[1])) {
+        const x1 = px(e.obra[0]), x2 = px(e.obra[1]);
+        doc.setFillColor(...(d.estado === 'terminado' ? C_TERM : C_AMB));
+        doc.rect(x1, by, Math.max(0.6, x2-x1), bh, 'F');
+      }
+      if (hoyEnAnio) { doc.setDrawColor(...C_ACC); doc.setLineWidth(0.3);
+        doc.setLineDashPattern([0.8,0.8],0); doc.line(px(hoy), y, px(hoy), y+FILA);
+        doc.setLineDashPattern([],0); }
+
+      const enEsteAnio = (e.arranca && dia(e.hasta) > 0 && dia(e.arranca) < DIAS);
+      pdfTxt(doc, pdfCorta(doc, d.nombre, 7.5, 'normal', NOM-4), PDF_M+2, y+3.4, 7.5,
+             'normal', enEsteAnio ? C_INK : C_INK3);
+      if (d.prov) pdfTxt(doc, pdfCorta(doc, d.prov, 6, 'normal', NOM-4), PDF_M+2, y+6.2, 6, 'normal', C_INK3);
+      const gv = v => v===null||v===undefined ? '—' : String(v);
+      [[e.dLic,0],[e.dEsp,1],[e.dObra,2]].forEach(([v,i]) =>
+        pdfTxt(doc, gv(v), XN+(i+1)*(NUM/4)-1.5, y+4.6, 7, 'normal', C_INK3, 'right'));
+      pdfTxt(doc, e.dTot===null ? '—' : e.dTot+(e.ab?'+':''), XN+NUM-1.5, y+4.6, 7.5, 'bold',
+             e.dTot===null ? C_INK3 : C_INK, 'right');
+      doc.setDrawColor(241,238,232); doc.setLineWidth(0.15);
+      doc.line(PDF_M, y+FILA, PDF_W-PDF_M, y+FILA);
+      doc.line(XN, y, XN, y+FILA);
+      y += FILA;
+    });
+  });
+
+  // leyenda + avisos en la ultima hoja
+  y += 3;
+  const ley = [
+    [C_AMB,'sólido','obra en curso'], [C_TERM,'sólido','obra terminada'],
+    [C_GRIS,'sólido','licitación previa'], [[150,142,132],'rayado','espera hasta el inicio'],
+    [C_LIC,'sólido','licitación pendiente']
+  ];
+  let lx = PDF_M;
+  ley.forEach(([c,tipo,t]) => {
+    if (tipo==='rayado') pdfRayado(doc, lx, y, 6, 2.6, c); else { doc.setFillColor(...c); doc.rect(lx,y,6,2.6,'F'); }
+    pdfTxt(doc, t, lx+7.5, y+2.4, 6.5, 'normal', C_INK2);
+    lx += 7.5 + doc.getTextWidth(t) + 6;
+  });
+  pdfTxt(doc,'números = días · total del proceso · “+” sigue abierta',
+         PDF_W-PDF_M, y+2.4, 6.5, 'normal', C_INK3, 'right');
+  y += 6;
+  if (ctx.avisos.length) y = pdfAvisos(doc, y, ctx.avisos);
+  for (let i=1;i<=pag;i++){ doc.setPage(i); pdfPie(doc, i, pag); }
+}
+
+// ══════════════ VISTA LISTA — la tabla tal cual la pantalla ══════════════
+function pdfVistaLista(doc, ctx) {
+  const COLS = [
+    {t:'Obra',      w:66}, {t:'Proveedor', w:44}, {t:'Ubicación', w:48},
+    {t:'Inicio',    w:22, n:1}, {t:'Fin', w:22, n:1},
+    {t:'Duración',  w:26, n:1}, {t:'Estado', w:45}
+  ];
+  const X = []; let acc = PDF_M; COLS.forEach(c => { X.push(acc); acc += c.w; });
+  const FILA = 6.2, yTope = PDF_H - 11 - 4;
+  let pag = 1, y = 0;
+
+  const cabTabla = () => {
+    doc.setFillColor(...C_CAB); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 7, 'F');
+    COLS.forEach((c,i)=> pdfTxt(doc, c.t.toUpperCase(),
+      c.n ? X[i]+c.w-2 : X[i]+2, y+4.8, 6, 'bold', C_INK3, c.n?'right':undefined));
+    doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2); doc.line(PDF_M,y+7,PDF_W-PDF_M,y+7);
+    y += 7;
+  };
+  const nuevaHoja = (primera) => {
+    if (!primera) { doc.addPage(); pag++; }
+    pdfCabecera(doc, 'Listado de obras — '+ctx.A, ctx);
+    y = 28;
+    if (primera) { pdfTira(doc, y, ctx); y += 12; } else { y += 2; }
+    cabTabla();
+  };
+  nuevaHoja(true);
+
+  ctx.grupos.filter(g=>g.obras.length).forEach(g => {
+    if (y + FILA*2 > yTope) nuevaHoja(false);
+    doc.setFillColor(253,252,250); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 5.5, 'F');
+    doc.setFillColor(...g.c); doc.circle(PDF_M+3, y+2.9, 0.9, 'F');
+    pdfTxt(doc, g.t.toUpperCase()+'  ('+g.obras.length+')', PDF_M+5.5, y+4, 6, 'bold', g.c);
+    y += 5.5;
+    g.obras.forEach(o => {
+      if (y + FILA > yTope) nuevaHoja(false);
+      const i = o.info, d = gDatosObra(o), e = pdfEtapas(d);
+      const terminada = i.estadoObra === 'terminado';
+      const est = !i.inicio ? 'Pendiente' : (terminada ? 'Terminada' : 'En curso');
+      const dur = e.dObra === null ? '—' : txtDias(e.dObra) + (e.ab ? ' (sigue)' : '');
+      const v = [
+        pdfCorta(doc, i.nombre, 7.5,'normal',COLS[0].w-4),
+        pdfCorta(doc, i.proveedor||'—', 7,'normal',COLS[1].w-4),
+        pdfCorta(doc, i.ubicacion||i.direccion||'—', 7,'normal',COLS[2].w-4),
+        i.inicio ? formatFecha(i.inicio) : '—',
+        (terminada && i.fin) ? formatFecha(i.fin) : '—',
+        dur, est
+      ];
+      COLS.forEach((c,k)=> pdfTxt(doc, v[k], c.n ? X[k]+c.w-2 : X[k]+2, y+4.3,
+        k===0?7.5:7, k===0?'normal':'normal', k===0?C_INK:C_INK2, c.n?'right':undefined));
+      doc.setDrawColor(243,240,234); doc.setLineWidth(0.15);
+      doc.line(PDF_M, y+FILA, PDF_W-PDF_M, y+FILA);
+      y += FILA;
+    });
+  });
+  y += 3;
+  if (ctx.avisos.length) y = pdfAvisos(doc, y, ctx.avisos);
+  for (let i=1;i<=pag;i++){ doc.setPage(i); pdfPie(doc, i, pag); }
+}
+
+// ══════════════ VISTA TARJETAS — grilla de fichas ══════════════
+function pdfVistaTarjetas(doc, ctx) {
+  const COL = 4, GAP = 4;
+  const TW = (PDF_W-PDF_M*2 - GAP*(COL-1)) / COL, TH = 30;
+  const yTope = PDF_H - 11 - 4;
+  let pag = 1, y = 0, col = 0;
+
+  const nuevaHoja = (primera) => {
+    if (!primera) { doc.addPage(); pag++; }
+    pdfCabecera(doc, 'Obras — '+ctx.A, ctx);
+    y = 28;
+    if (primera) { pdfTira(doc, y, ctx); y += 13; } else { y += 2; }
+    col = 0;
+  };
+  nuevaHoja(true);
+
+  ctx.grupos.filter(g=>g.obras.length).forEach(g => {
+    if (col !== 0) { y += TH + GAP; col = 0; }
+    if (y + 6 + TH > yTope) nuevaHoja(false);
+    doc.setFillColor(...g.c); doc.circle(PDF_M+1.6, y+2.2, 1, 'F');
+    pdfTxt(doc, g.t.toUpperCase()+'  ('+g.obras.length+')', PDF_M+4.5, y+3.3, 6.5, 'bold', g.c);
+    y += 6;
+
+    g.obras.forEach(o => {
+      if (col === COL) { col = 0; y += TH + GAP; }
+      if (y + TH > yTope) { nuevaHoja(false); }
+      const x = PDF_M + col*(TW+GAP);
+      const i = o.info, d = gDatosObra(o), e = pdfEtapas(d);
+      const terminada = i.estadoObra === 'terminado';
+      // marco con una franja de color arriba, como la tarjeta en pantalla
+      doc.setFillColor(255,255,255); doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.25);
+      doc.rect(x, y, TW, TH, 'FD');
+      doc.setFillColor(...g.c); doc.rect(x, y, TW, 1.2, 'F');
+
+      let yy = y + 5.5;
+      const nom = doc.splitTextToSize(String(i.nombre||''), TW-6);
+      doc.setFontSize(7.8); doc.setFont('helvetica','bold'); doc.setTextColor(...C_INK);
+      doc.text(nom.slice(0,2), x+3, yy); yy += nom.length>1 ? 7 : 3.6;
+
+      const est = !i.inicio ? (i.estadoObra==='licitado-sin-inicio'?'Licitado, sin inicio':'En licitación')
+                            : (terminada ? 'Terminada' : 'En curso');
+      pdfTxt(doc, est, x+3, yy, 6, 'bold', g.c); yy += 4.2;
+      const lin = [];
+      if (i.proveedor) lin.push(i.proveedor);
+      if (i.ubicacion||i.direccion) lin.push(i.ubicacion||i.direccion);
+      // OJO: la flecha → no existe en las fuentes estandar del PDF; va un guion.
+      if (i.inicio) lin.push(formatFecha(i.inicio) + (terminada && i.fin ? ' – '+formatFecha(i.fin) : ''));
+      lin.slice(0,3).forEach(t => { pdfTxt(doc, pdfCorta(doc,t,6.5,'normal',TW-6), x+3, yy, 6.5, 'normal', C_INK2); yy += 3.6; });
+
+      // pie de la tarjeta: los dias
+      doc.setDrawColor(243,240,234); doc.setLineWidth(0.15);
+      doc.line(x+3, y+TH-7.5, x+TW-3, y+TH-7.5);
+      const tot = e.dTot === null ? '—' : txtDias(e.dTot) + (e.ab?' +':'');   // sin fechas: sin total
+      pdfTxt(doc,'total del proceso', x+3, y+TH-3.5, 5.5, 'normal', C_INK3);
+      pdfTxt(doc, tot, x+TW-3, y+TH-3.5, 7.5, 'bold', C_INK, 'right');
+      col++;
+    });
+  });
+  y += TH + 4;
+  if (ctx.avisos.length && y + 12 < yTope) pdfAvisos(doc, y, ctx.avisos);
+  for (let i=1;i<=pag;i++){ doc.setPage(i); pdfPie(doc, i, pag); }
+}
+
 window.setVista = function(v) {
   vistaActual = v;
   ['cards','lista','gantt'].forEach(x => {
@@ -1877,6 +2305,10 @@ function mostrarDashboard() {
   // Renderizar tarjetas
   actualizarFiltrosAniosDash();
   renderDashboard();
+  // async: cuando lleguen las compras se recalculan los anios del desplegable y se
+  // redibuja una sola vez. Sin esto, una obra que solo esta en licitacion no aportaba
+  // su anio al filtro hasta que abrieras el Gantt.
+  cargarComprasGantt(Object.entries(obras).map(([id,o]) => ({ id, ...o })));
   autocorregirEstadosLicitacion(); // async: no bloquea el render
 }
 
@@ -1942,19 +2374,47 @@ window.abrirNuevaObraDesdePanel = function() {
   setTimeout(() => abrirModalNuevaObra(), 100);
 };
 
+// Rango de fechas que abarca TODO el proceso de una obra: desde que arranco la
+// gestion de compras (o la obra, si no hay compras) hasta que termino — o hasta hoy
+// si todavia sigue. Es lo que decide en que anios aparece la obra.
+function rangoProceso(o) {
+  const i = (o && o.info) || {};
+  const c = (o && o.compras && o.compras.proceso) || null;
+  const desde = (c && c.inicio) || i.inicio || '';
+  if (!desde) return null;
+  const terminada = i.estadoObra === 'terminado';
+  const hasta = (terminada && i.fin) ? i.fin : isoLocal();   // si sigue abierta, corre hasta hoy
+  return { desde, hasta: hasta < desde ? desde : hasta };
+}
+
+// ¿La obra toco ese anio en alguna de sus etapas (licitacion, espera u obra)?
+function tocaAnio(o, anio) {
+  const r = rangoProceso(o);
+  if (!r) return false;
+  const y = +anio;
+  return +r.desde.slice(0,4) <= y && +r.hasta.slice(0,4) >= y;
+}
+
 function actualizarFiltrosAniosDash() {
   const sel = document.getElementById('dash-filtro-anio');
   if (!sel) return;
-  const anios = new Set();
+  // Desde el anio mas viejo que aparezca en CUALQUIER etapa (compras incluidas) hasta
+  // el anio en curso, todos seguidos. Antes solo miraba inicio/fin de obra, con lo cual
+  // una obra en licitacion no aportaba ningun anio y desaparecia al filtrar.
+  const actual = new Date().getFullYear();
+  let min = actual;
   Object.values(obras).forEach(o => {
-    if (o.info.inicio) anios.add(o.info.inicio.split('-')[0]);
-    if (o.info.fin)    anios.add(o.info.fin.split('-')[0]);
+    const c = (o.compras && o.compras.proceso) || {};
+    [o.info.inicio, o.info.fin, c.inicio, c.fin].filter(Boolean).forEach(f => {
+      const y = +String(f).slice(0,4);
+      if (y && y < min) min = y;
+    });
   });
   const val = sel.value;
   sel.innerHTML = '<option value="">Todos los años</option>';
-  [...anios].sort().reverse().forEach(a => {
-    const op = document.createElement('option'); op.value=a; op.textContent=a; sel.appendChild(op);
-  });
+  for (let y = actual; y >= min; y--) {
+    const op = document.createElement('option'); op.value=String(y); op.textContent=String(y); sel.appendChild(op);
+  }
   if (val) sel.value = val;
 }
 
@@ -2014,48 +2474,47 @@ function gDatosObra(o) {
   const comp = (o.compras && o.compras.proceso) || null;
   return {
     id: o.id, nombre: i.nombre || '(sin nombre)', prov: i.proveedor || '',
-    ini: i.inicio || '', fin: i.fin || '',
+    ini: i.inicio || '', fin: i.fin || '', estado: i.estadoObra || '',
     grupo: i.estadoObra === 'terminado' ? 'term' : (i.inicio ? 'curso' : 'pend'),
     comp: comp && comp.inicio ? { desde: comp.inicio, hasta: comp.fin || '' } : null
   };
 }
 
-// Anios con actividad, para el selector
-function gAnios(lista) {
-  const s = new Set();
-  lista.map(gDatosObra).forEach(d => {
-    [d.ini, d.fin, d.comp && d.comp.desde, d.comp && d.comp.hasta]
-      .filter(Boolean).forEach(f => s.add(+String(f).slice(0,4)));
-  });
-  if (!s.size) s.add(new Date().getFullYear());
-  return [...s].sort();
-}
-
 // Trae el proceso de compras de TODAS las obras que todavia no lo tienen (no solo
 // las pendientes: una obra ya iniciada tambien tiene su licitacion, y la mostramos
 // en la descripcion de la fila). Se pide una sola vez por obra y por sesion.
+// Trae el proceso de compras de todas las obras que falten. Se usa al entrar al panel
+// (el desplegable de años necesita las fechas de licitacion para ofrecer los anios
+// correctos) y tambien desde el Gantt.
 async function cargarComprasGantt(lista) {
   const faltan = lista.filter(o => {
-    if (o.compras && o.compras.proceso) return false;                 // ya esta
-    return !gComprasPedidas.has(o.id);
+    const c = o.compras;
+    if (c && (c.proceso || c.__consultado)) return false;   // ya esta, o ya se pregunto y no tiene
+    return !gComprasPedidas.has(o.id);                      // y no hay un pedido en vuelo
   });
   if (!faltan.length) return;
   faltan.forEach(o => gComprasPedidas.add(o.id));
   const res = await Promise.all(faltan.map(async o => {
-    try { await cargarCompras(o.id); return !!obras[o.id]?.compras?.proceso; } catch(e){ return false; }
+    try { await cargarCompras(o.id); } catch(e) { /* reintentable en el proximo render */ }
+    gComprasPedidas.delete(o.id);                           // el pedido ya no esta en vuelo
+    const dest = obras[o.id];
+    if (dest) { dest.compras = dest.compras || {}; dest.compras.__consultado = true; }
+    return !!dest?.compras?.proceso;
   }));
-  if (res.some(Boolean) && vistaActual === 'gantt') renderDashboard();
+  if (res.some(Boolean)) {
+    actualizarFiltrosAniosDash();                 // pueden haber aparecido anios nuevos
+    if (moduloActual === 'obras') renderDashboard();
+  }
 }
 
 window.renderGantt = function(lista) {
   const cont = document.getElementById('dash-gantt');
   if (!cont) return;
 
-  const anios = gAnios(lista);
-  if (gantAnio === null || !anios.includes(gantAnio)) {
-    const actual = new Date().getFullYear();
-    gantAnio = anios.includes(actual) ? actual : anios[anios.length-1];
-  }
+  // El anio lo manda el desplegable "Todos los años" de la barra de filtros: un solo
+  // control para toda la vista. Con "Todos los años" el Gantt se planta en el anio en
+  // curso, que es la escala util por defecto.
+  gantAnio = +(document.getElementById('dash-filtro-anio')?.value) || new Date().getFullYear();
   const A = gantAnio;
   const d0   = new Date(A,0,1);
   const DIAS = Math.round((new Date(A+1,0,1) - d0)/86400000);
@@ -2069,6 +2528,12 @@ window.renderGantt = function(lista) {
   // Hasta donde puede estirarse una barra que todavia sigue corriendo dentro de este anio:
   // hoy si es el anio en curso, 31/12 si el anio ya paso, y nada si el anio es futuro.
   const topeAbierto = hoyReal >= DIAS ? (A + '-12-31') : (hoyReal < 0 ? null : hoyISO);
+  // Una obra SIN fecha de fin sigue corriendo hasta hoy, se mire el anio que se mire.
+  // Antes, al mirar un anio pasado se la daba por terminada el mismo dia que empezo,
+  // asi que una obra abierta desde noviembre se dibujaba como si hubiera durado 1 dia.
+  const finObra = d => d.fin || hoyISO;
+  // ¿el tramo [desde, hasta] toca el anio que se esta mirando?
+  const enRango = (desde, hasta) => dia(hasta) > 0 && dia(desde) < DIAS;
   const dur = (a,b) => calcularDias(a,b) || 1;
   // Las semanas solo se muestran a partir de los 7 dias: por debajo no significan
   // nada y hacian que una obra de 1 dia dijera "1 sem".
@@ -2086,17 +2551,24 @@ window.renderGantt = function(lista) {
   const datos = lista.map(gDatosObra);
   const enAnio = d => {
     const r = [];
-    if (d.ini) r.push([d.ini, d.fin || (anioCorriente ? hoyISO : d.ini)]);
+    if (d.ini) {
+      // el proceso arranca en la gestion de compras, asi que la obra aparece en el
+      // anio de la licitacion aunque la obra en si haya empezado despues
+      r.push([(d.comp && d.comp.desde) || d.ini, finObra(d)]);
+    }
     // una obra pendiente sigue corriendo hasta hoy aunque la licitacion ya haya cerrado:
     // entre la adjudicacion y el inicio de obra hay un tramo de espera que tambien avanza.
     if (!d.ini && d.comp) r.push([d.comp.desde, hoyISO > d.comp.desde ? hoyISO : d.comp.desde]);
     return r.some(([a,b]) => +a.slice(0,4) <= A && +b.slice(0,4) >= A);
   };
   const ubicables = datos.filter(d => (d.ini || d.comp) && enAnio(d));
-  const sinFecha  = datos.filter(d => !d.ini && !d.comp);
+  // Dos motivos distintos por los que una obra no se dibuja en este anio, y hasta ahora
+  // el segundo no se avisaba: la obra simplemente desaparecia de la pantalla.
+  const sinFecha = datos.filter(d => !d.ini && !d.comp);                 // no tiene ninguna fecha
+  const fuera    = datos.filter(d => (d.ini || d.comp) && !enAnio(d));   // tiene, pero de otro anio
 
   // ---- carga simultanea: solo lo que YA se ejecuta (tiene fecha de inicio) ----
-  const ejec = ubicables.filter(d => d.ini);
+  const ejec = ubicables.filter(d => d.ini && enRango(d.ini, finObra(d)));
   const SEM = [];
   for (let s=0; s<52; s++) {
     const a = s*7, b = Math.min(s*7+6, DIAS-1);
@@ -2144,31 +2616,83 @@ window.renderGantt = function(lista) {
     del.forEach(d => {
       let barras='', tip='';
       if (d.ini) {
-        const hasta = d.fin || (anioCorriente ? hoyISO : d.ini);
-        const L = pct(clamp(dia(d.ini)));
-        const W = Math.max(0.4, pct(clamp(dia(hasta))) - L);
-        const ab = !d.fin;
-        const dd = dur(d.ini, hasta);
-        barras += `<div class="gbar ${d.grupo==='term'?'t':'c'}${ab?' abierta':''}" style="left:${L}%;width:${W}%"></div>`;
-        if (ab) barras += `<div class="gcola" style="left:${L+W}%;width:2%"></div>`;
-        const etiqE = `${txtDias(dd)}${semCorta(dd)}${ab?' (sigue)':''}`;
-        barras += `<div class="getiq" ${etiqAttrs(L+W, ab?2.4:0.7)}>${etiqE}</div>`;
-        // Desglose de las tres etapas en la descripcion (la barra sigue mostrando
-        // solo la obra, para no llenar el Gantt de colores).
-        let etapas = '';
-        if (d.comp) {
-          const c = d.comp;
-          const ddLic = c.hasta ? dur(c.desde, c.hasta) : null;
-          const ddEsp = c.hasta ? calcularDiasEntre(c.hasta, d.ini) : null;
-          etapas = `<span class="k">Licitación:</span> ${formatFecha(c.desde)}`
-                 + (c.hasta ? ` → ${formatFecha(c.hasta)} · ${txtDias(ddLic)}` : ' → sin adjudicación cargada')
-                 + '<br>'
-                 + (ddEsp !== null ? `<span class="k">Espera hasta el inicio:</span> ${txtDias(ddEsp)}<br>` : '');
+        // La fila arranca donde arranco el PROCESO, no donde arranco la obra: primero
+        // la licitacion y la espera en gris apagado (contexto), y recien despues la obra
+        // con su color. Asi la etiqueta puede contar el total del proceso y el numero
+        // coincide con lo que se ve dibujado.
+        const c      = d.comp;
+        const arranca = c ? c.desde : d.ini;              // primer dia del proceso
+        const hasta   = finObra(d);
+        const ab      = !d.fin;
+
+        // Cada tramo se dibuja SOLO si cae dentro del anio que se esta mirando. Sin este
+        // filtro, una obra de febrero de 2026 dejaba un resto de barra pegado al borde
+        // derecho de 2025, donde en realidad todavia no habia empezado.
+        const visible = enRango;
+        let finVis = null;                                // % donde termina lo ultimo dibujado
+        let ddLic = null, ddEsp = null;
+
+        // --- tramo 1: licitacion (gris apagado) ---
+        if (c) {
+          const adj = c.hasta || d.ini;                   // sin adjudicacion, corre hasta el inicio
+          // REGLA DE CALENDARIO: los dias no se cuentan dos veces (ver calcularDiasEspera).
+          ddLic = diasLicitacionCal(c.desde, adj, d.ini);
+          ddEsp = c.hasta ? calcularDiasEspera(c.hasta, d.ini) : null;
+          // Si no hubo dias parados, la licitacion se dibuja hasta el arranque de la obra:
+          // la barra queda continua y no aparece un tramo gris de "0 dias".
+          const licFin = (c.hasta && !ddEsp && d.ini) ? d.ini : adj;
+          if (visible(c.desde, licFin)) {
+            const L0 = pct(clamp(dia(c.desde)));
+            const W0 = Math.max(0.4, pct(clamp(dia(licFin))) - L0);
+            barras += `<div class="gbar previa lic" style="left:${L0}%;width:${W0}%"></div>`;
+            finVis = L0 + W0;
+          }
+
+          // --- tramo 2: espera entre la adjudicacion y el inicio de obra ---
+          if (ddEsp) {
+            if (visible(c.hasta, d.ini)) {
+              const E0 = pct(clamp(dia(c.hasta)));
+              const E1 = pct(clamp(dia(d.ini)));
+              if (E1 > E0) { barras += `<div class="gbar previa esp" style="left:${E0}%;width:${E1-E0}%"></div>`; finVis = E1; }
+            }
+          }
         }
+
+        // --- tramo 3: la obra, con su color ---
+        const obraVis = visible(d.ini, hasta);
+        let O = 0, W = 0;
+        if (obraVis) {
+          O = pct(clamp(dia(d.ini)));
+          W = Math.max(0.4, pct(clamp(dia(hasta))) - O);
+          barras += `<div class="gbar ${d.grupo==='term'?'t':'c'}${ab?' abierta':''}${finVis!==null?' cont':''}" style="left:${O}%;width:${W}%"></div>`;
+          finVis = O + W;
+          // La colita solo si el fin real entra en el anio. Si la obra sigue mas alla del
+          // 31/12, la barra ya llega al borde y la cola quedaria fuera del carril.
+          if (ab && dia(hasta) < DIAS) barras += `<div class="gcola" style="left:${finVis}%;width:2%"></div>`;
+        }
+        if (finVis === null) finVis = pct(clamp(dia(d.ini)));
+
+        const dd    = dur(d.ini, hasta);                  // la obra
+        // La etiqueta cuenta el proceso COMPLETO y sigue acumulando de un anio al otro:
+        // una obra que arranco en 2025 y sigue abierta muestra el mismo total la mires
+        // en 2025 o en 2026. La barra es la parte de ese proceso que cae en el anio.
+        const total = dur(arranca, hasta);
+        const cortada = dia(hasta) >= DIAS;               // la barra llega al 31/12 y continua
+        const etiqE = `${txtDias(total)}${semCorta(total)}${ab?' (sigue)':''}`;
+        barras += `<div class="getiq" ${etiqAttrs(finVis, (ab&&obraVis&&!cortada)?2.4:0.7)}>${etiqE}</div>`;
+
+        const etapas = c
+          ? `<span class="k">Licitación:</span> ${formatFecha(c.desde)}`
+            + (c.hasta ? ` → ${formatFecha(c.hasta)} · ${txtDias(ddLic)}` : ' → sin adjudicación cargada')
+            + '<br>'
+            + (ddEsp ? `<span class="k">Espera hasta el inicio:</span> ${txtDias(ddEsp)}<br>` : '')
+          : '';
         tip = `<b>${esc(d.nombre)}</b>${d.prov?`<span class="k">Proveedor:</span> ${esc(d.prov)}<br>`:''}
                ${etapas}<span class="k">Inicio de obra:</span> ${formatFecha(d.ini)}<br>
                <span class="k">Fin de obra:</span> ${d.fin?formatFecha(d.fin):'sin fecha de fin cargada'}<br>
-               <span class="k">${ab?'Obra transcurrida':'Duración de obra'}:</span> ${txtDias(dd)}${semLarga(dd)}`;
+               <span class="k">${ab?'Obra transcurrida':'Duración de obra'}:</span> ${txtDias(dd)}${semLarga(dd)}`
+             + (c ? `<br><span class="k">Total del proceso:</span> ${txtDias(total)}${semLarga(total)}
+                    <span class="k2">desde ${formatFecha(c.desde)}${ab?' hasta hoy':''}</span>` : '');
       } else {
         // Obra pendiente: la barra NO se frena en la adjudicacion. Despues del cierre de
         // la licitacion sigue un tramo rayado de espera que avanza hasta hoy (o hasta el
@@ -2236,6 +2760,11 @@ window.renderGantt = function(lista) {
     cols += `<div class="gcol ${cls}" style="left:${L}%;width:${W}%;height:${Math.max(h,2)}px" data-gtip="${esc(t)}"></div>`;
   });
   const wPico = SEM[iPico] || SEM[0];
+  // el PDF necesita estos numeros y solo se calculan aca
+  if (panelVisible) panelVisible.carga = {
+    max: MAX, prom, conO, semanas: pas.length, ejec: ejec.length,
+    picoDesc: MAX ? `pico simultáneo · sem ${wPico.s+1}` : 'pico simultáneo'
+  };
   const picoLbl = MAX>0 ? `<div class="gpico-lbl" style="left:${pct(wPico.a+3.5)}%;top:${base-H-15}px">pico ${MAX}</div>` : '';
 
   const banda = ejec.length ? `
@@ -2245,21 +2774,41 @@ window.renderGantt = function(lista) {
     <div class="gfila"><div class="gejeY">${eje}</div>
       <div class="gcarga">${bandas}${rej}${cols}${picoLbl}${lineaHoy}</div></div>` : '';
 
-  const sinH = sinFecha.length ? `<div class="gsin"><h4>Sin fechas — no se pueden ubicar en el calendario</h4>
-    ${sinFecha.map(d=>`<div class="it" onclick="ingresarDesdePanel('${d.id}')">
-      <i class="punto" style="background:#7C3AED"></i>${esc(d.nombre)}${d.prov?` <span class="prov">· ${esc(d.prov)}</span>`:''}</div>`).join('')}</div>` : '';
+  const ESTADO_TXT = {
+    'pendiente':           'pendiente, sin iniciar',
+    'licitado-sin-inicio': 'licitado, sin inicio de obra',
+    'en-curso':            'en curso',
+    'terminado':           'terminada'
+  };
+  const aniosDe = d => {
+    const f = [d.ini, d.fin, d.comp && d.comp.desde, d.comp && d.comp.hasta].filter(Boolean);
+    const y = [...new Set(f.map(x => String(x).slice(0,4)))].sort();
+    return y.length > 1 ? y[0] + ' a ' + y[y.length-1] : (y[0] || '');
+  };
+  const itemSin = (d, motivo) => `<div class="it" onclick="ingresarDesdePanel('${d.id}')">
+      <i class="punto" style="background:#7C3AED"></i><span>${esc(d.nombre)}${d.prov?` <span class="prov">· ${esc(d.prov)}</span>`:''}</span>
+      <span class="motivo">${motivo}</span></div>`;
+
+  const noUbicables = [
+    ...sinFecha.map(d => itemSin(d,
+        'sin fecha de inicio de obra ni de gestión de compras'
+        + (ESTADO_TXT[d.estado] ? ` · estado guardado: ${ESTADO_TXT[d.estado]}` : ''))),
+    ...fuera.map(d => itemSin(d, `sus fechas son de ${aniosDe(d)} — cambiá el año para verla`))
+  ];
+  const sinH = noUbicables.length
+    ? `<div class="gsin"><h4>No se pueden ubicar en ${A}</h4>${noUbicables.join('')}</div>`
+    : '';
 
 
   const leyenda = `<div class="gleyenda">
-    <span class="lg"><i class="m p"></i>licitación</span>
-    <span class="lg"><i class="m esp"></i>espera: adjudicado, sin inicio de obra</span>
     <span class="lg"><i class="m c"></i>obra en curso</span>
     <span class="lg"><i class="m t"></i>obra terminada</span>
+    <span class="lg"><i class="m gl"></i>licitación previa a la obra</span>
+    <span class="lg"><i class="m ge"></i>espera hasta el inicio de obra</span>
+    <span class="lg"><i class="m p"></i>licitación de una obra pendiente</span>
+    <span class="lg"><i class="m esp"></i>espera de una obra pendiente</span>
     <span class="lg"><i class="m abierta"></i>sigue corriendo (sin fecha de fin)</span>
   </div>`;
-
-  const botonesAnio = anios.map(y =>
-    `<button class="${y===A?'on':''}" onclick="setGanttAnio(${y})">${y}</button>`).join('');
 
   cont.innerHTML = `
     <div class="gantt-top">
@@ -2273,7 +2822,6 @@ window.renderGantt = function(lista) {
         <div class="gt"><div class="v">${ejec.length}</div><div class="l">Obras ejecutadas</div>
           <div class="d">las que ya arrancaron</div></div>
       </div>
-      <div class="gantt-anios">${botonesAnio}</div>
     </div>
     <div class="gantt-card"><div class="gantt-scroll"><div class="gantt-lienzo">
       <div class="gfila gcab"><div class="rot">Obra</div>
@@ -2289,7 +2837,8 @@ window.renderGantt = function(lista) {
   cargarComprasGantt(lista);   // async: si aparecen compras, redibuja una vez
 };
 
-window.setGanttAnio = function(y) { gantAnio = y; renderDashboard(); };
+// El selector de anio del Gantt se quito: lo reemplaza el desplegable de la barra
+// de filtros (dash-filtro-anio), para no tener dos controles de anio en la misma vista.
 
 // Mide cada etiqueta ya dibujada y decide donde va. Si entra a la derecha de la
 // barra, queda ahi. Si no entra, se pega al FINAL de la barra hacia la izquierda
@@ -2354,7 +2903,7 @@ window.renderDashboard = function() {
     (o.info.ubicacion||'').toLowerCase().includes(buscar) ||
     (o.info.proveedor||'').toLowerCase().includes(buscar)
   );
-  if (anio)   lista = lista.filter(o => (o.info.inicio||'').startsWith(anio));
+  if (anio)   lista = lista.filter(o => tocaAnio(o, anio));
   if (mes)    lista = lista.filter(o => {
     const m = (o.info.inicio||'').split('-')[1];
     return m === mes;
@@ -2405,6 +2954,9 @@ window.renderDashboard = function() {
     <div class="dash-stat kpi${kpiSel==='en-curso'?' kpi-activo':''}" onclick="setFiltroEstado('en-curso')" title="Filtrar en curso"><div class="dash-stat-label">En curso</div><div class="dash-stat-value amber">${totalCurso}</div></div>
     <div class="dash-stat kpi${kpiSel==='terminado'?' kpi-activo':''}" onclick="setFiltroEstado('terminado')" title="Filtrar terminadas"><div class="dash-stat-label">Terminadas</div><div class="dash-stat-value green">${totalTerm}</div></div>
   `;
+
+  // lo que quedo dibujado, para que el boton de PDF exporte exactamente esto
+  panelVisible = { lista, pendientes, enCurso, terminadas };
 
   document.getElementById('dash-count-licitacion').textContent = pendientes.length;
   document.getElementById('dash-count-curso').textContent      = enCurso.length;
@@ -3097,14 +3649,15 @@ function renderCompras() {
     return;
   }
 
-  const diasLicitacion  = calcularDias(comp.inicio, comp.fin);
-  const diasBache       = comp.fin && info.inicio ? calcularDiasEntre(comp.fin, info.inicio) : null;
+  const diasLicitacion  = comp.fin ? diasLicitacionCal(comp.inicio, comp.fin, info.inicio)
+                                   : calcularDias(comp.inicio, comp.fin);
+  const diasBache       = comp.fin && info.inicio ? calcularDiasEspera(comp.fin, info.inicio) : null;
   const diasEjecucion   = info.inicio ? calcularDias(info.inicio, info.estadoObra==='terminado' && info.fin ? info.fin : null) : null;
 
   // Badges resumen de los 3 tiempos
   const badges = [];
   if (diasLicitacion !== null) badges.push(`<div class="compras-duracion-badge">📋 Licitación: <strong>${txtDias(diasLicitacion)}</strong></div>`);
-  if (diasBache !== null)      badges.push(`<div class="compras-duracion-badge" style="background:var(--amber-light);color:var(--amber)">⏳ Espera hasta inicio: <strong>${txtDias(diasBache)}</strong></div>`);
+  if (diasBache)               badges.push(`<div class="compras-duracion-badge" style="background:var(--amber-light);color:var(--amber)">⏳ Espera hasta inicio: <strong>${txtDias(diasBache)}</strong></div>`);
   if (diasEjecucion !== null)  badges.push(`<div class="compras-duracion-badge" style="background:var(--accent-light);color:var(--accent)">🔨 Ejecución: <strong>${txtDias(diasEjecucion)}${info.estadoObra!=='terminado'?' (en curso)':''}</strong></div>`);
 
   el.innerHTML = `<div class="compras-panel-card">
@@ -3208,7 +3761,7 @@ function renderCompras() {
       const total = (diasLicitacion||0) + (diasBache||0) + (diasEjecucion||0);
       const filas = [
         { n:'1', label:'Inicio gestión de compras', fecha: formatFecha(comp.inicio), dur: diasLicitacion!==null ? `Duración licitación: <strong style="color:var(--accent)">${txtDias(diasLicitacion)}</strong>` : null },
-        { n:'2', label:'Adjudicación', fecha: comp.fin ? formatFecha(comp.fin) : '—', dur: diasBache!==null ? `Tiempo de espera hasta inicio: <strong style="color:var(--amber)">${txtDias(diasBache)}</strong>` : null },
+        { n:'2', label:'Adjudicación', fecha: comp.fin ? formatFecha(comp.fin) : '—', dur: diasBache ? `Tiempo de espera hasta inicio: <strong style="color:var(--amber)">${txtDias(diasBache)}</strong>` : (diasBache===0 ? 'La obra arrancó sin días de espera' : null) },
         { n:'3', label:'Inicio de obra', fecha: formatFecha(info.inicio), dur: diasEjecucion!==null ? `Duración ejecución: <strong style="color:var(--accent)">${txtDias(diasEjecucion)}</strong>` : null },
         { n:'4', label:'Obra finalizada', fecha: formatFecha(info.fin), dur: null },
       ];
@@ -3415,9 +3968,14 @@ async function cargarObras() {
   return new Promise((resolve, reject) => {
     const obrasRef = collection(db, 'obras');
     unsubObras = onSnapshot(obrasRef, async (snap) => {
+      // OJO: cada actualizacion reconstruye la lista entera. Las compras ya cargadas se
+      // CONSERVAN: si se tiraban, el panel perdia los tramos de licitacion de todas las
+      // obras cada vez que alguien guardaba una, y no se volvian a pedir nunca.
+      const previo = obras;
       obras = {};
       snap.forEach(d => {
-        obras[d.id] = { info: d.data(), libro:[], problemas:[], gastos:[], compras:{} };
+        obras[d.id] = { info: d.data(), libro:[], problemas:[], gastos:[],
+                        compras: (previo[d.id] && previo[d.id].compras) || {} };
       });
       renderObraSelect();
       // restaurar obra activa
@@ -4023,6 +4581,38 @@ function calcularDiasEntre(desde, hasta) {
   return diff >= 0 ? diff : null;
 }
 
+// ══════════════ REGLA DE CALENDARIO ══════════════
+// Cada dia del proceso pertenece a UNA sola etapa, para que
+//        licitacion + espera + obra = dias de calendario del proceso completo.
+// Antes el dia de arranque de la obra lo contaba la espera Y lo contaba la obra,
+// y por eso las columnas del PDF daban siempre uno mas que el total.
+
+// ESPERA: solo los dias PARADOS entre la adjudicacion y el arranque de la obra.
+//   adjudica 10 y arranca 11 -> 0 (no hubo ningun dia detenido)
+//   adjudica 10 y arranca 13 -> 2 (11 y 12)
+// Si la obra todavia no arranco, la espera sigue corriendo hasta la fecha tope.
+function calcularDiasEspera(adjudicacion, inicioObra, tope) {
+  const a = _fechaLocal(adjudicacion); if (!a) return null;
+  if (!inicioObra) return calcularDiasEntre(adjudicacion, tope || null);
+  const b = _fechaLocal(inicioObra);   if (!b) return null;
+  const diff = Math.round((b - a) / 86400000);
+  return diff >= 0 ? Math.max(0, diff - 1) : null;
+}
+
+// LICITACION: si la obra arranco el MISMO dia de la adjudicacion, ese dia lo
+// cuenta la obra y la licitacion lo cede (si no, quedaria contado dos veces).
+function finLicitacion(adjudicacion, inicioObra) {
+  const a = _fechaLocal(adjudicacion); if (!a) return null;
+  const o = _fechaLocal(inicioObra);
+  return (o && o <= a) ? new Date(o.getTime() - 86400000) : a;
+}
+function diasLicitacionCal(desde, adjudicacion, inicioObra) {
+  const fin = finLicitacion(adjudicacion, inicioObra);
+  if (!fin) return null;
+  const dd = calcularDias(desde, fin);
+  return dd === null ? 0 : dd;      // la obra arranco antes de cerrar la compra
+}
+
 function renderObraInfoCard() {
   const el = document.getElementById('obra-info-libro');
   if (!el) return;
@@ -4321,8 +4911,9 @@ function renderReporte() {
         ${comp.notas?'<span style="margin-top:.25rem;padding:.5rem .75rem;background:var(--surface2);border-radius:5px">📝 '+comp.notas+'</span>':''}
       </div>`;
     } else {
-      const diasComp     = calcularDias(comp.inicio, comp.fin);
-      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDiasEntre(comp.fin, infoObra.inicio) : null;
+      const diasComp     = comp.fin ? diasLicitacionCal(comp.inicio, comp.fin, infoObra.inicio)
+                                    : calcularDias(comp.inicio, comp.fin);
+      const diasHastaObra = comp.fin && infoObra.inicio ? calcularDiasEspera(comp.fin, infoObra.inicio) : null;
       const diasEjecLic  = infoObra.inicio ? calcularDias(infoObra.inicio, terminada && infoObra.fin ? infoObra.fin : null) : null;
       const totalLic     = (diasComp||0) + (diasHastaObra||0) + (diasEjecLic||0);
       html += `<div class="sep"></div>
@@ -4342,7 +4933,7 @@ function renderReporte() {
           <span style="color:var(--ink2)">2. Adjudicación</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${comp.fin?formatFecha(comp.fin):'Pendiente'}</span>
         </div>
-        ${diasHastaObra!==null?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${txtDias(diasHastaObra)}</strong></div>`:''}
+        ${diasHastaObra?`<div style="font-size:.74rem;color:var(--amber);padding:.2rem 0 .4rem 1rem">Tiempo de espera hasta inicio: <strong>${txtDias(diasHastaObra)}</strong></div>`:''}
         ${infoObra.inicio?`<div style="display:flex;justify-content:space-between;align-items:baseline;padding:.45rem 0;border-bottom:1px solid var(--border);font-size:.84rem">
           <span style="color:var(--ink2)">3. Inicio de obra</span>
           <span style="font-family:DM Mono,monospace;font-size:.78rem;color:var(--ink)">${formatFecha(infoObra.inicio)}</span>
@@ -4552,8 +5143,9 @@ window.generarPDF = function() {
     line();
     txt('PROCESO DE COMPRAS / LICITACIÓN',M,11,'bold');nl(2);
 
-    const diasLic  = calcularDias(compPDF.inicio, compPDF.fin);
-    const diasBach = compPDF.fin && o.info.inicio ? calcularDiasEntre(compPDF.fin, o.info.inicio) : null;
+    const diasLic  = compPDF.fin ? diasLicitacionCal(compPDF.inicio, compPDF.fin, o.info.inicio)
+                                 : calcularDias(compPDF.inicio, compPDF.fin);
+    const diasBach = compPDF.fin && o.info.inicio ? calcularDiasEspera(compPDF.fin, o.info.inicio) : null;
     const diasEjec = terminada && dias!==null ? dias : diasEnCurso;
 
     if(compPDF.proveedor){txt('Proveedor adjudicado: '+compPDF.proveedor,M,9,'normal',[107,100,86]);nl();}
@@ -4569,7 +5161,7 @@ window.generarPDF = function() {
       ['1. Inicio gestión de compras', compPDF.inicio ? formatFecha(compPDF.inicio) : '—', [28,26,22]],
       ['   Duración licitación:', diasLic!==null ? txtDias(diasLic) : '—', [196,87,42]],
       ['2. Adjudicación:', compPDF.fin ? formatFecha(compPDF.fin) : 'Pendiente', [28,26,22]],
-      ['   Tiempo de espera hasta inicio:', diasBach!==null ? txtDias(diasBach) : '—', [196,87,42]],
+      ['   Tiempo de espera hasta inicio:', diasBach ? txtDias(diasBach) : (diasBach===0?'sin espera':'—'), [196,87,42]],
       ['3. Inicio de obra:', o.info.inicio ? formatFecha(o.info.inicio) : '—', [28,26,22]],
       ['   Duración ejecución:', diasEjec!==null ? txtDias(diasEjec)+(terminada?'':' (en curso)') : '—', [196,87,42]],
     ];
