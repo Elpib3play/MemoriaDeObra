@@ -811,6 +811,20 @@
   .modal-ticket.open{display:flex;}
   .modal-ticket-box{background:var(--surface);border-radius:16px;padding:1.75rem;width:90%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(28,26,22,0.2);}
   .ticket-filtros{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+  /* Barra de paginado al pie de la tabla de tickets */
+  .tk-pag{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+    padding:0.7rem 1rem;border-top:1px solid var(--border);background:var(--surface);}
+  .tk-pag-rango{font-size:0.8rem;color:var(--ink2);}
+  .tk-pag-rango strong{color:var(--ink);font-weight:600;}
+  .tk-pag-der{display:flex;align-items:center;gap:0.5rem;}
+  .tk-pag-lbl{font-size:0.78rem;color:var(--ink3);}
+  .tk-pag-nav{display:flex;gap:4px;align-items:center;}
+  .tk-pag-nav button{background:var(--surface);border:1px solid var(--border);border-radius:6px;
+    padding:0.28rem 0.6rem;font-size:0.85rem;color:var(--ink2);cursor:pointer;min-width:32px;
+    font-family:inherit;line-height:1.4;}
+  .tk-pag-nav button:hover:not(:disabled){background:var(--surface2);color:var(--ink);}
+  .tk-pag-nav button:disabled{opacity:0.35;cursor:default;}
+  .tk-pag-hoja{font-size:0.79rem;color:var(--ink2);font-family:DM Mono,monospace;padding:0 0.35rem;}
   .ticket-stats{display:flex;gap:0.6rem;margin-bottom:1.25rem;flex-wrap:wrap;}
   .ticket-stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;display:flex;flex-direction:column;gap:0.15rem;min-width:80px;}
   .ticket-stat-val{font-size:1.4rem;font-weight:600;font-family:DM Mono,monospace;color:var(--ink);line-height:1;}
@@ -1331,7 +1345,35 @@
         <option value="Media">Media</option>
         <option value="Baja">Baja</option>
       </select>
+      <!-- Anio y mes filtran por FECHA DE SOLICITUD (columna "Fecha"), el mismo
+           criterio de apertura que usa el Dashboard, para que los dos coincidan. -->
+      <select id="tk-filtro-anio" onchange="renderTickets()" title="Filtra por fecha de solicitud" style="font-size:0.83rem;min-width:110px">
+        <option value="">Todos los años</option>
+      </select>
+      <select id="tk-filtro-mes" onchange="renderTickets()" title="Filtra por fecha de solicitud" style="font-size:0.83rem;min-width:120px">
+        <option value="">Todos los meses</option>
+        <option value="1">Enero</option>
+        <option value="2">Febrero</option>
+        <option value="3">Marzo</option>
+        <option value="4">Abril</option>
+        <option value="5">Mayo</option>
+        <option value="6">Junio</option>
+        <option value="7">Julio</option>
+        <option value="8">Agosto</option>
+        <option value="9">Septiembre</option>
+        <option value="10">Octubre</option>
+        <option value="11">Noviembre</option>
+        <option value="12">Diciembre</option>
+      </select>
+      <!-- Contra que fecha comparan el anio y el mes de arriba -->
+      <select id="tk-filtro-base" onchange="renderTickets()" title="Qué se cuenta dentro del año y el mes elegidos" style="font-size:0.83rem;min-width:150px">
+        <option value="sol">Pedidos del mes</option>
+        <option value="fin">Cerrados en el mes</option>
+        <option value="vig">Vigentes en el mes</option>
+      </select>
     </div>
+    <!-- Cuantos tickets quedaron afuera del filtro por no tener fecha cargada -->
+    <div id="tk-aviso-sinfecha" style="display:none;font-size:0.78rem;color:var(--amber);background:var(--amber-light);border-radius:6px;padding:0.45rem 0.75rem;margin:-0.4rem 0 0.9rem"></div>
 
     <!-- Tabla -->
     <div style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
@@ -1354,6 +1396,8 @@
           <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink3)">Cargando...</td></tr>
         </tbody>
       </table>
+      <!-- Paginado: rango a la izquierda, cuantos por hoja y flechas a la derecha -->
+      <div class="tk-pag" id="tk-paginado"></div>
     </div>
 
     </div><!-- fin tk-vista-listado -->
@@ -5818,10 +5862,41 @@ function ticketsDelMes(anio, mes, lista) {
     return !ci || ci >= k;   // seguia abierto al empezar el mes, o cerro en el mes
   });
 }
+// ¿El ticket estaba vivo en el mes 'k' (YYYY-MM)? Abierto en o antes de ese
+// mes, y todavia sin cerrar al empezarlo (o cerrado justo dentro de el).
+// Es la misma regla que usa ticketsDelMes para la torta del Dashboard, para que
+// "Vigentes en el mes" del listado devuelva exactamente el mismo numero.
+function ticketVivoEnMes(t, k) {
+  const ap = mesKey(t.fechaSol); if (!ap || ap > k) return false;
+  const ci = mesKey(t.fechaFin);
+  return !ci || ci >= k;
+}
 function ticketsCerradosEnMes(anio, mes, lista) {
   const k = mesKeyDe(anio, mes);
   return (lista || []).filter(t => mesKey(t.fechaFin) === k);
 }
+// Desplegable de anios del listado: desde el anio mas viejo con tickets hasta
+// el actual, sin saltear ninguno y con el anio en curso siempre presente
+// (mismo criterio que el filtro de anios del panel de obras).
+function poblarAniosTickets() {
+  const sel = document.getElementById('tk-filtro-anio');
+  if (!sel) return;
+  const actual = new Date().getFullYear();
+  const anios = (ticketsData||[]).map(t => mesKey(t.fechaSol)).filter(Boolean)
+                                 .map(k => +k.slice(0,4));
+  const desde = anios.length ? Math.min(Math.min(...anios), actual) : actual;
+  const hasta = anios.length ? Math.max(Math.max(...anios), actual) : actual;
+  const lista = [];
+  for (let a = hasta; a >= desde; a--) lista.push(a);
+  const firma = lista.join(',');
+  if (sel.dataset.firma === firma) return;      // no rearmar si no cambio nada
+  const elegido = sel.value;
+  sel.dataset.firma = firma;
+  sel.innerHTML = '<option value="">Todos los años</option>'
+    + lista.map(a => `<option value="${a}">${a}</option>`).join('');
+  if (lista.some(a => String(a) === elegido)) sel.value = elegido;
+}
+
 // Año de trabajo del dashboard: el del ticket mas reciente, o el actual.
 function anioDashboardTickets() {
   const keys = (ticketsData||[]).map(t => mesKey(t.fechaSol) || mesKey(t.fechaFin)).filter(Boolean);
@@ -6069,6 +6144,10 @@ window.renderDashboardTicketsMes = function() {
 // TICKETS
 // ============================================================
 let ticketsData = [];
+// Paginado del listado: en que hoja estamos y cuantos entran. tkPorHoja en 0
+// significa "Todos". tkFirmaFiltros detecta que cambiaron los filtros para
+// volver a la hoja 1: sin eso, filtrar estando en la hoja 3 deja la tabla vacia.
+let tkPagina = 1, tkPorHoja = 50, tkFirmaFiltros = null;
 let unsubTickets = null;   // listener tiempo real tickets
 let ticketEditandoId = null;
 let ticketContador = 0;
@@ -6087,7 +6166,7 @@ function aplicarSnapTickets(snap) {
 
 function escucharTickets() {
   if (unsubTickets) return;                       // ya hay uno activo
-  const q = query(collection(db, 'tickets'), orderBy('numero','asc'));
+  const q = query(collection(db, 'tickets'), orderBy('numero','desc'));   // el mas nuevo primero
   unsubTickets = onSnapshot(q, aplicarSnapTickets,
     e => console.error('escucharTickets:', e));
 }
@@ -6123,11 +6202,57 @@ window.setFiltroTicket = function(estado) {
   renderTickets();
 };
 
+// Flechas de la barra de paginado.
+window.tkIrHoja = function(n) { tkPagina = Math.max(1, n); renderTickets(); };
+// Desplegable de cuantos por hoja: al cambiarlo se vuelve a la hoja 1.
+window.tkPorHojaCambio = function(v) { tkPorHoja = +v || 0; tkPagina = 1; renderTickets(); };
+
 window.renderTickets = function() {
   const buscar  = (document.getElementById('tk-buscar')?.value||'').toLowerCase();
   const estado  = document.getElementById('tk-filtro-estado')?.value||'';
   const tipo    = document.getElementById('tk-filtro-tipo')?.value||'';
   const prio    = document.getElementById('tk-filtro-prioridad')?.value||'';
+  // Anio y mes miran la fecha de SOLICITUD. Se recalcula el desplegable de
+  // anios en cada render, por si entro un ticket de un anio que no estaba.
+  poblarAniosTickets();
+  const anio = document.getElementById('tk-filtro-anio')?.value||'';
+  const mes  = document.getElementById('tk-filtro-mes')?.value||'';
+  const base = document.getElementById('tk-filtro-base')?.value||'sol';
+  const hayFecha = !!(anio || mes);
+
+  // Meses que abarca lo elegido, como claves YYYY-MM. Con anio y mes es uno
+  // solo; con el anio suelto son los doce; con el mes suelto, ese mes de cada
+  // anio con datos. "Vigentes" pregunta por CUALQUIERA de ellos.
+  const mm = mes ? String(mes).padStart(2,'0') : null;
+  let periodo = [];
+  if (hayFecha) {
+    if (anio && mm)      periodo = [anio + '-' + mm];
+    else if (anio)       periodo = Array.from({length:12}, (_,i)=> anio + '-' + String(i+1).padStart(2,'0'));
+    else {
+      const ys = new Set();
+      (ticketsData||[]).forEach(t => {
+        const a = mesKey(t.fechaSol), c = mesKey(t.fechaFin);
+        if (a) ys.add(+a.slice(0,4));
+        if (c) ys.add(+c.slice(0,4));
+      });
+      ys.add(new Date().getFullYear());
+      periodo = [...ys].sort().map(y => y + '-' + mm);
+    }
+  }
+  const dentro = (f) => {
+    const k = mesKey(f); if (!k) return false;
+    if (anio && k.slice(0,4) !== anio) return false;
+    if (mm   && k.slice(5,7) !== mm)   return false;
+    return true;
+  };
+
+  // Un ticket que no se puede ubicar en el tiempo queda fuera al filtrar por
+  // periodo y se avisa cuantos son, en vez de esconderlos sin decir nada.
+  // Que cuenta como "no ubicable" depende del criterio elegido:
+  //   pedidos / vigentes -> sin fecha de solicitud
+  //   cerrados           -> figura resuelto pero no tiene fecha de cierre
+  //                         (uno que sigue abierto no es un dato faltante)
+  let sinFecha = 0;
 
   let lista = ticketsData.filter(t => {
     if (buscar && !t.nombre?.toLowerCase().includes(buscar) && 
@@ -6139,8 +6264,38 @@ window.renderTickets = function() {
     else if (estado && estT !== estado) return false;
     if (tipo   && t.tipo   !== tipo)   return false;
     if (prio   && t.prioridad !== prio) return false;
+    if (hayFecha) {
+      if (base === 'fin') {
+        if (!mesKey(t.fechaFin)) {
+          if (normalizarEstadoTicket(t.estado) === 'resuelto') sinFecha++;
+          return false;
+        }
+        if (!dentro(t.fechaFin)) return false;
+      } else if (base === 'vig') {
+        if (!mesKey(t.fechaSol)) { sinFecha++; return false; }
+        if (!periodo.some(k => ticketVivoEnMes(t, k))) return false;
+      } else {
+        if (!mesKey(t.fechaSol)) { sinFecha++; return false; }
+        if (!dentro(t.fechaSol)) return false;
+      }
+    }
     return true;
   });
+
+  // Aviso de los que quedaron afuera por no tener fecha cargada
+  const avEl = document.getElementById('tk-aviso-sinfecha');
+  if (avEl) {
+    if (hayFecha && sinFecha) {
+      const uno = sinFecha === 1;
+      const motivo = base === 'fin'
+        ? (uno ? ' ticket figura resuelto pero no tiene fecha de cierre cargada, así que no se puede ubicar en el mes.'
+               : ' tickets figuran resueltos pero no tienen fecha de cierre cargada, así que no se pueden ubicar en el mes.')
+        : (uno ? ' ticket quedó afuera del filtro por no tener fecha de solicitud cargada.'
+               : ' tickets quedaron afuera del filtro por no tener fecha de solicitud cargada.');
+      avEl.style.display = 'block';
+      avEl.textContent = '⚠ ' + sinFecha + motivo;
+    } else avEl.style.display = 'none';
+  }
 
   // Stats
   const statsEl = document.getElementById('ticket-stats');
@@ -6152,7 +6307,7 @@ window.renderTickets = function() {
     // KPIs clickeables: filtran la tabla y se marcan. Los numeros son SIEMPRE
     // los totales reales — no cambian al filtrar. Solo el recuadro Total agrega
     // cuantos quedan visibles, igual que en el panel de obras.
-    const hayFiltro = !!(buscar || estado || tipo || prio);
+    const hayFiltro = !!(buscar || estado || tipo || prio || anio || mes);
     const kpi = (val, lbl, color, filtro, sub) => `
       <div class="ticket-stat kpi${estado===filtro?' kpi-activo':''}"
            onclick="setFiltroTicket('${filtro}')"
@@ -6165,10 +6320,46 @@ window.renderTickets = function() {
     // En curso + En espera + Resueltos siempre da el Total.
     // El desplegable conserva ademas "Abiertos (sin resolver)" como atajo.
     statsEl.innerHTML =
-      kpi(total,    'Total',     '',             '',          hayFiltro?lista.length+' visibles':'') +
+      kpi(total,    'Total',     '',             '',          hayFiltro?lista.length+(lista.length===1?' visible':' visibles'):'') +
       kpi(curso,    'En curso',  'var(--blue)',  'en-curso') +
       kpi(espera,   'En espera', 'var(--amber)', 'en-espera') +
       kpi(resuelto, 'Resueltos', 'var(--green)', 'resuelto');
+  }
+
+  // ORDEN: el numero mas alto primero. Como el numero se asigna correlativo, el
+  // ultimo ticket cargado es el de numero mas alto y queda siempre arriba de todo.
+  lista.sort((a,b) => (b.numero||0) - (a.numero||0));
+
+  // PAGINADO. Si cambio algun filtro, se vuelve a la hoja 1.
+  const firma = [buscar, estado, tipo, prio, anio, mes, base].join('|');
+  if (tkFirmaFiltros !== null && tkFirmaFiltros !== firma) tkPagina = 1;
+  tkFirmaFiltros = firma;
+
+  const porHoja = tkPorHoja > 0 ? tkPorHoja : lista.length;
+  const hojas   = Math.max(1, Math.ceil(lista.length / Math.max(1, porHoja)));
+  if (tkPagina > hojas) tkPagina = hojas;          // se borraron filas y quedo colgada
+  const desde   = (tkPagina - 1) * porHoja;
+  const pagina  = tkPorHoja > 0 ? lista.slice(desde, desde + porHoja) : lista;
+
+  const pagEl = document.getElementById('tk-paginado');
+  if (pagEl && !lista.length) pagEl.style.display = 'none';   // la tabla ya dice que no hay nada
+  else if (pagEl) {
+    pagEl.style.display = '';
+    const d = desde + 1;
+    const h = Math.min(desde + porHoja, lista.length);
+    const opciones = [[50,'50'],[100,'100'],[200,'200'],[0,'Todos']]
+      .map(([v,t]) => `<option value="${v}"${tkPorHoja===v?' selected':''}>${t}</option>`).join('');
+    pagEl.innerHTML = `
+      <div class="tk-pag-rango">Mostrando <strong>${(h>d||hojas>1)?d+'–'+h:d}</strong> de <strong>${lista.length}</strong> ${lista.length===1?'ticket':'tickets'}</div>
+      <div class="tk-pag-der">
+        <span class="tk-pag-lbl">Por hoja</span>
+        <select onchange="tkPorHojaCambio(this.value)" style="font-size:0.8rem;min-width:78px">${opciones}</select>
+        ${hojas > 1 ? `<div class="tk-pag-nav">
+          <button onclick="tkIrHoja(${tkPagina-1})"${tkPagina<=1?' disabled':''} title="Hoja anterior (más nuevos)">‹</button>
+          <span class="tk-pag-hoja">${tkPagina} / ${hojas}</span>
+          <button onclick="tkIrHoja(${tkPagina+1})"${tkPagina>=hojas?' disabled':''} title="Hoja siguiente (más viejos)">›</button>
+        </div>` : ''}
+      </div>`;
   }
 
   // Tabla
@@ -6182,7 +6373,7 @@ window.renderTickets = function() {
 
   const estadoLabels = { 'en-curso':'En curso','en-espera':'En espera','resuelto':'Resuelto' };
 
-  tbody.innerHTML = lista.map(t => {
+  tbody.innerHTML = pagina.map(t => {
     const prioCls = (t.prioridad||'').toLowerCase().replace(' ','-');
     // 'no-iniciado' se retiro como estado. Si quedara alguno guardado de antes,
     // o un ticket sin estado, se muestra como "En espera" en vez de sacar la
@@ -6277,6 +6468,7 @@ window.guardarTicket = async function() {
       data.numero   = ticketContador;
       data.creadoEn = new Date().toISOString();
       await addDoc(collection(db,'tickets'), data);
+      tkPagina = 1;   // el nuevo queda arriba de todo: hay que estar en la hoja 1 para verlo
     }
     cerrarModalTicket();
     await cargarTickets();
