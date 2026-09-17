@@ -518,6 +518,13 @@
   .sb-item-icon{width:18px;text-align:center;flex-shrink:0;font-size:0.95rem;}
   .sb-badge{margin-left:auto;background:var(--accent);color:#fff;font-size:0.62rem;padding:1px 6px;border-radius:10px;font-weight:600;}
   .sb-badge.amber{background:var(--amber);}
+  .sb-badge.blue{background:var(--blue);}
+  .badge-estado.gestion{background:#DBEAFE;color:#1E40AF;}
+  .badge-estado.recibida{background:#D1FAE5;color:#065F46;}
+  .badge-estado.anulada{background:var(--surface2);color:var(--ink3);}
+  .cmp-demora{font-family:DM Mono,monospace;font-size:0.78rem;white-space:nowrap;}
+  .cmp-demora.abierta{color:var(--amber);}
+  .cmp-importe{font-family:DM Mono,monospace;font-size:0.8rem;white-space:nowrap;text-align:right;}
   .sb-divider{height:1px;background:rgba(255,255,255,0.06);margin:0.35rem 1rem;}
   .sb-bottom{padding:0.75rem 1.25rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:0.6rem;}
   .sb-avatar{width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:600;color:#fff;flex-shrink:0;}
@@ -754,7 +761,7 @@
   }
   #mod-dashboard .modulo-inner, #mod-agenda .modulo-inner,
   #mod-proveedores .modulo-inner, #mod-planos .modulo-inner,
-  #mod-tickets .modulo-inner, #mod-busqueda .modulo-inner,
+  #mod-tickets .modulo-inner, #mod-compras .modulo-inner, #mod-busqueda .modulo-inner,
   #mod-configuracion .modulo-inner {
     padding: 1.5rem 2rem !important;
     width: 100% !important;
@@ -907,6 +914,7 @@
     <div class="sb-item" onclick="navegarA('proveedores')" id="nav-proveedores"><span class="sb-item-icon">🏢</span>Proveedores</div>
     <div class="sb-item" onclick="navegarA('planos')" id="nav-planos"><span class="sb-item-icon">📐</span>Planos y Docs</div>
     <div class="sb-item" onclick="navegarA('tickets')" id="nav-tickets"><span class="sb-item-icon">🎫</span>Tickets<span class="sb-badge" id="badge-tickets" style="display:none">0</span></div>
+    <div class="sb-item" onclick="navegarA('compras')" id="nav-compras"><span class="sb-item-icon">🛒</span>Seguimiento de compras<span class="sb-badge blue" id="badge-compras" style="display:none">0</span></div>
     <div class="sb-divider"></div>
     <div class="sb-item" onclick="navegarA('busqueda')" id="nav-busqueda"><span class="sb-item-icon">🔍</span>Búsqueda Global</div>
     <div class="sb-item" onclick="navegarA('configuracion')" id="nav-configuracion"><span class="sb-item-icon">⚙️</span>Configuración</div>
@@ -1527,6 +1535,116 @@
     </div>
   </div>
 </div>
+<!-- ══════════════════════════════════════════════════════════════
+     SEGUIMIENTO DE COMPRAS
+     Misma mecanica que la ticketera: listado con filtros, paginado
+     de a 50 y alta/edicion en un modal. Es la compra corriente del
+     dia a dia; la licitacion de una obra vive en la pestaña Compras
+     de cada obra y no se toca desde aca.
+     ══════════════════════════════════════════════════════════════ -->
+<div class="modulo" id="mod-compras">
+  <div class="modulo-inner">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.75rem">
+      <div style="font-family:DM Serif Display,serif;font-size:1.35rem;color:var(--ink)">Seguimiento de compras</div>
+      <button class="btn-primary" style="margin-top:0" onclick="abrirModalCompra()">+ Nueva compra</button>
+    </div>
+
+    <div class="ticket-stats" id="compra-stats"></div>
+
+    <div class="ticket-filtros">
+      <input type="text" id="cm-buscar" placeholder="Buscar producto, proveedor, centro de costo, factura..." style="flex:1;min-width:180px;font-size:0.83rem" oninput="renderSegCompras()">
+      <select id="cm-filtro-estado" onchange="renderSegCompras()" style="font-size:0.83rem;min-width:130px">
+        <option value="">Todos los estados</option>
+        <option value="gestion">En gestión</option>
+        <option value="recibida">Recibida</option>
+        <option value="anulada">Anulada</option>
+      </select>
+      <select id="cm-filtro-anio" onchange="renderSegCompras()" title="Filtra por fecha solicitada" style="font-size:0.83rem;min-width:110px">
+        <option value="">Todos los años</option>
+      </select>
+      <select id="cm-filtro-mes" onchange="renderSegCompras()" title="Filtra por fecha solicitada" style="font-size:0.83rem;min-width:120px">
+        <option value="">Todos los meses</option>
+        <option value="1">Enero</option><option value="2">Febrero</option>
+        <option value="3">Marzo</option><option value="4">Abril</option>
+        <option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option>
+        <option value="9">Septiembre</option><option value="10">Octubre</option>
+        <option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+      <select id="cm-filtro-base" onchange="renderSegCompras()" title="Qué se cuenta dentro del año y el mes elegidos" style="font-size:0.83rem;min-width:160px">
+        <option value="sol">Solicitadas en el mes</option>
+        <option value="fin">Recibidas en el mes</option>
+        <option value="vig">Pendientes en el mes</option>
+      </select>
+    </div>
+    <div id="cm-aviso-sinfecha" style="display:none;font-size:0.78rem;color:var(--amber);background:var(--amber-light);border-radius:6px;padding:0.45rem 0.75rem;margin:-0.4rem 0 0.9rem"></div>
+
+    <div style="overflow-x:auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;">
+      <table class="ticket-tabla">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Producto</th>
+            <th>Proveedor</th>
+            <th>Centro de costo</th>
+            <th style="text-align:right">Importe</th>
+            <th>Solicitada</th>
+            <th>Recibida</th>
+            <th>Demora</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="compra-tbody">
+          <tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--ink3)">Cargando...</td></tr>
+        </tbody>
+      </table>
+      <div class="tk-pag" id="cm-paginado"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Alta / edicion de una compra -->
+<div class="modal-ticket" id="modal-compra">
+  <div class="modal-ticket-box">
+    <div style="font-family:DM Serif Display,serif;font-size:1.1rem;margin-bottom:1.25rem" id="modal-compra-titulo">Nueva compra</div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field" style="grid-column:1/-1"><label>Descripción del producto *</label><input type="text" id="cm-descripcion" placeholder="Qué se compra"></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Fecha solicitada</label><input type="date" id="cm-fecha-sol"></div>
+      <div class="field"><label>Fecha recibida</label><input type="date" id="cm-fecha-rec"></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Importe ($)</label><input type="text" id="cm-importe" placeholder="0,00" inputmode="numeric" oninput="formatMonto(this)"></div>
+      <div class="field"><label>Centro de costo</label><input type="text" id="cm-centro" placeholder="Ej: Mantenimiento"></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Proveedor</label><input type="text" id="cm-proveedor" placeholder="Empresa"></div>
+      <div class="field"><label>N° de factura</label><input type="text" id="cm-factura" placeholder="Ej: A-0001-00012345"></div>
+    </div>
+    <div class="form-grid" style="margin-bottom:0.85rem">
+      <div class="field"><label>Estado</label>
+        <select id="cm-estado">
+          <option value="gestion">En gestión</option>
+          <option value="recibida">Recibida</option>
+          <option value="anulada">Anulada</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:1/-1"><label>Observaciones</label>
+        <textarea id="cm-obs" placeholder="Notas, seguimiento, reclamos..." style="min-height:70px"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+      <button class="btn-primary" style="margin-top:0" onclick="guardarCompra()">Guardar</button>
+      <button class="btn-secondary" style="margin-top:0;margin-left:0" onclick="cerrarModalCompra()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modulo" id="mod-busqueda"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">🔍</div><div class="modulo-placeholder-title">Búsqueda Global</div><div class="modulo-placeholder-sub">En desarrollo — buscá en todos los módulos del sistema.</div></div></div>
 <div class="modulo" id="mod-configuracion"><div class="modulo-placeholder"><div class="modulo-placeholder-icon">⚙️</div><div class="modulo-placeholder-title">Configuración</div><div class="modulo-placeholder-sub">En desarrollo — alertas, notificaciones y preferencias del sistema.</div></div></div>
 
@@ -5386,7 +5504,7 @@ function trunc(s,n){return s&&s.length>n?s.slice(0,n-1)+'…':(s||'');}
 let moduloActual = 'obras';
 const TITULOS = {dashboard:'Dashboard',obras:'Memorias de Obra',agenda:'Agenda Anual',
   proveedores:'Proveedores',planos:'Planos y Documentación',tickets:'Tickets',
-  busqueda:'Búsqueda Global',configuracion:'Configuración'};
+  busqueda:'Búsqueda Global',configuracion:'Configuración',compras:'Seguimiento de compras'};
 
 window.navegarA = function(mod) {
   moduloActual = mod;
@@ -5410,6 +5528,7 @@ window.navegarA = function(mod) {
   // El listener ya esta vivo desde el login, asi que entrar a la seccion no
   // relee nada: solo hay que dibujar lo que ya tenemos en memoria.
   if (mod === 'tickets') { escucharTickets(); renderTickets(); }
+  if (mod === 'compras') { escucharCompras(); renderSegCompras(); }   // ojo: renderCompras() es la pestaña Compras de una obra, es otra cosa
   if (window.innerWidth <= 768) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sb-overlay').classList.remove('visible');
@@ -5769,10 +5888,11 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     actualizarAvatar(user);
     escucharTickets();          // el badge del menu ya no depende de entrar a Tickets
+    escucharCompras();          // idem la bolita de Seguimiento de compras
     await cargarTareas();
-  } else if (unsubTickets) {
-    unsubTickets(); unsubTickets = null;
-    ticketsData = []; renderTicketsBadge();
+  } else {
+    if (unsubTickets) { unsubTickets(); unsubTickets = null; ticketsData = []; renderTicketsBadge(); }
+    if (unsubCompras) { unsubCompras(); unsubCompras = null; comprasData = []; renderComprasBadge(); }
   }
 });
 
@@ -6526,6 +6646,345 @@ window.importarTicketsHistoricos = async function() {
   alert('✓ Importación completa: ' + ok + ' tickets cargados' + (err > 0 ? ', ' + err + ' errores' : ''));
   await cargarTickets();
   renderTickets();
+};
+
+
+// ══════════════════════════════════════════════════════════════
+// SEGUIMIENTO DE COMPRAS
+// Compras corrientes del dia a dia. Nace "en gestion" y se cierra
+// cuando llega, con la fecha recibida. La demora se cuenta con la
+// MISMA regla que las obras: duracion inclusiva, o sea que pedida y
+// recibida el mismo dia = 1 dia (calcularDias).
+// ══════════════════════════════════════════════════════════════
+let comprasData = [];
+let unsubCompras = null;
+let compraEditandoId = null;
+let compraContador = 0;
+let cmPagina = 1, cmPorHoja = 50, cmFirmaFiltros = null;
+
+const CM_ESTADOS = { gestion:'En gestión', recibida:'Recibida', anulada:'Anulada' };
+// Una compra sin estado guardado, o con uno viejo, se trata como en gestion.
+function normalizarEstadoCompra(e) {
+  return (e === 'gestion' || e === 'recibida' || e === 'anulada') ? e : 'gestion';
+}
+// Dias que tardo en llegar. Si todavia no llego, los que lleva esperando.
+function demoraCompra(c) {
+  if (!c.fechaSol) return null;
+  if (normalizarEstadoCompra(c.estado) === 'anulada' && !c.fechaRec) return null;
+  return calcularDias(c.fechaSol, c.fechaRec || null);
+}
+
+function aplicarSnapCompras(snap) {
+  comprasData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  compraContador = comprasData.length
+    ? Math.max(0, ...comprasData.map(c => c.numero || 0))
+    : 0;
+  if (moduloActual === 'compras') renderSegCompras();
+  renderComprasBadge();
+}
+
+function escucharCompras() {
+  if (unsubCompras) return;
+  const q = query(collection(db, 'seguimientoCompras'), orderBy('numero','desc'));
+  unsubCompras = onSnapshot(q, aplicarSnapCompras,
+    e => console.error('escucharCompras:', e));
+}
+
+// La bolita del menu cuenta lo que todavia no llego. Las anuladas no suman.
+function renderComprasBadge() {
+  const n = comprasData.filter(c => normalizarEstadoCompra(c.estado) === 'gestion').length;
+  const badge = document.getElementById('badge-compras');
+  if (badge) {
+    badge.textContent = n;
+    badge.style.display = n > 0 ? 'inline-block' : 'none';
+  }
+}
+
+// Desplegable de anios: del mas viejo con datos al actual, sin saltear ninguno.
+function poblarAniosCompras() {
+  const sel = document.getElementById('cm-filtro-anio');
+  if (!sel) return;
+  const actual = new Date().getFullYear();
+  const anios = comprasData.map(c => mesKey(c.fechaSol)).filter(Boolean).map(k => +k.slice(0,4));
+  const desde = anios.length ? Math.min(Math.min(...anios), actual) : actual;
+  const hasta = anios.length ? Math.max(Math.max(...anios), actual) : actual;
+  const lista = [];
+  for (let a = hasta; a >= desde; a--) lista.push(a);
+  const firma = lista.join(',');
+  if (sel.dataset.firma === firma) return;
+  const elegido = sel.value;
+  sel.dataset.firma = firma;
+  sel.innerHTML = '<option value="">Todos los años</option>'
+    + lista.map(a => `<option value="${a}">${a}</option>`).join('');
+  if (lista.some(a => String(a) === elegido)) sel.value = elegido;
+}
+
+window.cmIrHoja = function(n) { cmPagina = Math.max(1, n); renderSegCompras(); };
+window.cmPorHojaCambio = function(v) { cmPorHoja = +v || 0; cmPagina = 1; renderSegCompras(); };
+window.setFiltroCompra = function(estado) {
+  const sel = document.getElementById('cm-filtro-estado');
+  if (!sel) return;
+  sel.value = (sel.value === estado && estado !== '') ? '' : estado;
+  renderSegCompras();
+};
+
+window.renderSegCompras = function() {
+  const buscar = (document.getElementById('cm-buscar')?.value||'').toLowerCase();
+  const estado = document.getElementById('cm-filtro-estado')?.value||'';
+  poblarAniosCompras();
+  const anio = document.getElementById('cm-filtro-anio')?.value||'';
+  const mes  = document.getElementById('cm-filtro-mes')?.value||'';
+  const base = document.getElementById('cm-filtro-base')?.value||'sol';
+  const hayFecha = !!(anio || mes);
+
+  // Mismo criterio que la ticketera: el periodo se arma como claves YYYY-MM.
+  const mm = mes ? String(mes).padStart(2,'0') : null;
+  let periodo = [];
+  if (hayFecha) {
+    if (anio && mm)  periodo = [anio + '-' + mm];
+    else if (anio)   periodo = Array.from({length:12}, (_,i)=> anio + '-' + String(i+1).padStart(2,'0'));
+    else {
+      const ys = new Set();
+      comprasData.forEach(c => {
+        const a = mesKey(c.fechaSol), r = mesKey(c.fechaRec);
+        if (a) ys.add(+a.slice(0,4));
+        if (r) ys.add(+r.slice(0,4));
+      });
+      ys.add(new Date().getFullYear());
+      periodo = [...ys].sort().map(y => y + '-' + mm);
+    }
+  }
+  const dentro = (f) => {
+    const k = mesKey(f); if (!k) return false;
+    if (anio && k.slice(0,4) !== anio) return false;
+    if (mm   && k.slice(5,7) !== mm)   return false;
+    return true;
+  };
+  // "Pendiente en el mes": ya estaba pedida y todavia no habia llegado.
+  const vivaEn = (c, k) => {
+    const a = mesKey(c.fechaSol); if (!a || a > k) return false;
+    const r = mesKey(c.fechaRec);
+    return !r || r >= k;
+  };
+
+  let sinFecha = 0;
+  let lista = comprasData.filter(c => {
+    if (buscar) {
+      const txt = [c.descripcion, c.proveedor, c.centroCosto, c.factura, c.obs]
+                  .map(x => (x||'').toLowerCase()).join(' ');
+      if (!txt.includes(buscar)) return false;
+    }
+    if (estado && normalizarEstadoCompra(c.estado) !== estado) return false;
+    if (hayFecha) {
+      if (base === 'fin') {
+        if (!mesKey(c.fechaRec)) {
+          if (normalizarEstadoCompra(c.estado) === 'recibida') sinFecha++;
+          return false;
+        }
+        if (!dentro(c.fechaRec)) return false;
+      } else if (base === 'vig') {
+        // Una compra anulada no estaba "pendiente": se dio de baja.
+        if (normalizarEstadoCompra(c.estado) === 'anulada') return false;
+        if (!mesKey(c.fechaSol)) { sinFecha++; return false; }
+        if (!periodo.some(k => vivaEn(c, k))) return false;
+      } else {
+        if (!mesKey(c.fechaSol)) { sinFecha++; return false; }
+        if (!dentro(c.fechaSol)) return false;
+      }
+    }
+    return true;
+  });
+
+  const avEl = document.getElementById('cm-aviso-sinfecha');
+  if (avEl) {
+    if (hayFecha && sinFecha) {
+      const uno = sinFecha === 1;
+      const motivo = base === 'fin'
+        ? (uno ? ' compra figura recibida pero no tiene fecha de recepción cargada, así que no se puede ubicar en el mes.'
+               : ' compras figuran recibidas pero no tienen fecha de recepción cargada, así que no se pueden ubicar en el mes.')
+        : (uno ? ' compra quedó afuera del filtro por no tener fecha solicitada cargada.'
+               : ' compras quedaron afuera del filtro por no tener fecha solicitada cargada.');
+      avEl.style.display = 'block';
+      avEl.textContent = '⚠ ' + sinFecha + motivo;
+    } else avEl.style.display = 'none';
+  }
+
+  // Recuadros: los numeros son SIEMPRE los totales reales, como en tickets.
+  const statsEl = document.getElementById('compra-stats');
+  if (statsEl) {
+    const total    = comprasData.length;
+    const gestion  = comprasData.filter(c => normalizarEstadoCompra(c.estado)==='gestion').length;
+    const recibida = comprasData.filter(c => normalizarEstadoCompra(c.estado)==='recibida').length;
+    // Demora promedio: solo sobre las que ya llegaron y tienen las dos fechas.
+    const cerradas = comprasData.filter(c => normalizarEstadoCompra(c.estado)==='recibida'
+                                          && c.fechaSol && c.fechaRec);
+    const dias = cerradas.map(c => calcularDias(c.fechaSol, c.fechaRec)).filter(d => d !== null);
+    const prom = dias.length ? Math.round(dias.reduce((a,b)=>a+b,0) / dias.length) : null;
+    const hayFiltro = !!(buscar || estado || anio || mes);
+    const kpi = (val, lbl, color, filtro, sub, titulo) => `
+      <div class="ticket-stat${filtro!==null?' kpi':''}${filtro!==null&&estado===filtro?' kpi-activo':''}"
+           ${filtro!==null?`onclick="setFiltroCompra('${filtro}')"`:''} title="${titulo||''}">
+        <div class="ticket-stat-val"${color?` style="color:${color}"`:''}>${val}</div>
+        <div class="ticket-stat-lbl">${lbl}</div>
+        ${sub?`<div class="ticket-stat-sub">${sub}</div>`:''}
+      </div>`;
+    statsEl.innerHTML =
+      kpi(total,    'Total',      '',             '',   hayFiltro?lista.length+(lista.length===1?' visible':' visibles'):'', 'Ver todas') +
+      kpi(gestion,  'En gestión', 'var(--blue)',  'gestion',  '', 'Filtrar: en gestión') +
+      kpi(recibida, 'Recibidas',  'var(--green)', 'recibida', '', 'Filtrar: recibidas') +
+      kpi(prom===null?'—':prom, 'Demora promedio', 'var(--amber)', null,
+          prom===null?'sin datos':'días', 'Promedio sobre las compras recibidas con las dos fechas cargadas');
+  }
+
+  // Orden: el numero mas alto primero, igual que la ticketera.
+  lista.sort((a,b) => (b.numero||0) - (a.numero||0));
+
+  const firma = [buscar, estado, anio, mes, base].join('|');
+  if (cmFirmaFiltros !== null && cmFirmaFiltros !== firma) cmPagina = 1;
+  cmFirmaFiltros = firma;
+
+  const porHoja = cmPorHoja > 0 ? cmPorHoja : lista.length;
+  const hojas   = Math.max(1, Math.ceil(lista.length / Math.max(1, porHoja)));
+  if (cmPagina > hojas) cmPagina = hojas;
+  const desde   = (cmPagina - 1) * porHoja;
+  const pagina  = cmPorHoja > 0 ? lista.slice(desde, desde + porHoja) : lista;
+
+  const pagEl = document.getElementById('cm-paginado');
+  if (pagEl && !lista.length) pagEl.style.display = 'none';
+  else if (pagEl) {
+    pagEl.style.display = '';
+    const d = desde + 1;
+    const h = Math.min(desde + porHoja, lista.length);
+    const opciones = [[50,'50'],[100,'100'],[200,'200'],[0,'Todos']]
+      .map(([v,t]) => `<option value="${v}"${cmPorHoja===v?' selected':''}>${t}</option>`).join('');
+    pagEl.innerHTML = `
+      <div class="tk-pag-rango">Mostrando <strong>${(h>d||hojas>1)?d+'–'+h:d}</strong> de <strong>${lista.length}</strong> ${lista.length===1?'compra':'compras'}</div>
+      <div class="tk-pag-der">
+        <span class="tk-pag-lbl">Por hoja</span>
+        <select onchange="cmPorHojaCambio(this.value)" style="font-size:0.8rem;min-width:78px">${opciones}</select>
+        ${hojas > 1 ? `<div class="tk-pag-nav">
+          <button onclick="cmIrHoja(${cmPagina-1})"${cmPagina<=1?' disabled':''} title="Hoja anterior (más nuevas)">‹</button>
+          <span class="tk-pag-hoja">${cmPagina} / ${hojas}</span>
+          <button onclick="cmIrHoja(${cmPagina+1})"${cmPagina>=hojas?' disabled':''} title="Hoja siguiente (más viejas)">›</button>
+        </div>` : ''}
+      </div>`;
+  }
+
+  const tbody = document.getElementById('compra-tbody');
+  if (!tbody) return;
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--ink3)">No hay compras que coincidan</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = pagina.map(c => {
+    const est = normalizarEstadoCompra(c.estado);
+    const dd  = demoraCompra(c);
+    const abierta = est === 'gestion';
+    const demora = dd === null ? '—'
+      : `<span class="cmp-demora${abierta?' abierta':''}">${txtDias(dd)}${abierta?' (va)':''}</span>`;
+    return `<tr class="fila-ticket" onclick="editarCompra('${c.id}')">
+      <td><span class="ticket-id">#${String(c.numero||'?').padStart(3,'0')}</span></td>
+      <td>
+        <div class="ticket-tarea">${c.descripcion||'—'}</div>
+        ${c.factura?`<div class="ticket-tarea-sub">Factura ${c.factura}</div>`:''}
+      </td>
+      <td style="font-size:0.8rem;white-space:nowrap">${c.proveedor||'—'}</td>
+      <td style="font-size:0.8rem;white-space:nowrap">${c.centroCosto||'—'}</td>
+      <td class="cmp-importe">${c.importe ? '$'+fmt(c.importe) : '—'}</td>
+      <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${c.fechaSol?formatFecha(c.fechaSol):'—'}</td>
+      <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${c.fechaRec?formatFecha(c.fechaRec):'—'}</td>
+      <td>${demora}</td>
+      <td><span class="badge-estado ${est}">${CM_ESTADOS[est]}</span></td>
+      <td><div class="ticket-obs" title="${(c.obs||'').replace(/"/g,'')}">${c.obs||'—'}</div></td>
+      <td>
+        <div class="ticket-acciones">
+          <button onclick="event.stopPropagation();eliminarCompra('${c.id}')" title="Eliminar" style="color:var(--red)">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+};
+
+// ---------- alta / edicion ----------
+window.abrirModalCompra = function() {
+  compraEditandoId = null;
+  document.getElementById('modal-compra-titulo').textContent = 'Nueva compra';
+  ['cm-descripcion','cm-fecha-rec','cm-importe','cm-centro','cm-proveedor','cm-factura','cm-obs']
+    .forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+  // Nace en gestion y con la fecha de hoy: es el momento en que se pide.
+  document.getElementById('cm-fecha-sol').value = isoLocal();
+  document.getElementById('cm-estado').value = 'gestion';
+  document.getElementById('modal-compra').style.display = 'flex';
+};
+
+window.editarCompra = function(id) {
+  const c = comprasData.find(x => x.id === id);
+  if (!c) return;
+  compraEditandoId = id;
+  document.getElementById('modal-compra-titulo').textContent =
+    'Editar compra #' + String(c.numero||'?').padStart(3,'0');
+  document.getElementById('cm-descripcion').value = c.descripcion || '';
+  document.getElementById('cm-fecha-sol').value   = c.fechaSol    || '';
+  document.getElementById('cm-fecha-rec').value   = c.fechaRec    || '';
+  document.getElementById('cm-centro').value      = c.centroCosto || '';
+  document.getElementById('cm-proveedor').value   = c.proveedor   || '';
+  document.getElementById('cm-factura').value     = c.factura     || '';
+  document.getElementById('cm-obs').value         = c.obs         || '';
+  document.getElementById('cm-estado').value      = normalizarEstadoCompra(c.estado);
+  const imp = document.getElementById('cm-importe');
+  if (c.importe) {
+    const num = Math.round(c.importe * 100);
+    imp.value = Math.floor(num/100).toLocaleString('es-AR') + ',' + String(num%100).padStart(2,'0');
+  } else imp.value = '';
+  document.getElementById('modal-compra').style.display = 'flex';
+};
+
+window.cerrarModalCompra = function() {
+  document.getElementById('modal-compra').style.display = 'none';
+  compraEditandoId = null;
+};
+
+window.guardarCompra = async function() {
+  const descripcion = document.getElementById('cm-descripcion').value.trim();
+  if (!descripcion) { alert('Poné la descripción del producto.'); return; }
+  const rawImp = document.getElementById('cm-importe').value;
+  const data = {
+    descripcion,
+    fechaSol:    document.getElementById('cm-fecha-sol').value,
+    fechaRec:    document.getElementById('cm-fecha-rec').value,
+    importe:     parseFloat(rawImp.replace(/\./g,'').replace(',','.')) || 0,
+    centroCosto: document.getElementById('cm-centro').value.trim(),
+    proveedor:   document.getElementById('cm-proveedor').value.trim(),
+    factura:     document.getElementById('cm-factura').value.trim(),
+    obs:         document.getElementById('cm-obs').value.trim(),
+    estado:      document.getElementById('cm-estado').value,
+  };
+  // Si se marca recibida y no se cargo la fecha, se pone la de hoy: sin esa
+  // fecha la demora no se puede calcular y la compra no entra en ningun mes.
+  if (data.estado === 'recibida' && !data.fechaRec) data.fechaRec = isoLocal();
+  try {
+    if (compraEditandoId) {
+      const previa = comprasData.find(c => c.id === compraEditandoId);
+      await setDoc(doc(db,'seguimientoCompras',compraEditandoId),
+                   { ...data, numero: previa?.numero, creadoEn: previa?.creadoEn });
+    } else {
+      compraContador++;
+      data.numero   = compraContador;
+      data.creadoEn = new Date().toISOString();
+      await addDoc(collection(db,'seguimientoCompras'), data);
+      cmPagina = 1;   // la nueva queda arriba de todo
+    }
+    cerrarModalCompra();
+  } catch(e) { alert('Error al guardar: ' + e.message); }
+};
+
+window.eliminarCompra = async function(id) {
+  const c = comprasData.find(x => x.id === id);
+  const num = c && c.numero ? '#' + String(c.numero).padStart(3,'0') : '';
+  if (!confirm('¿Eliminar la compra ' + num + (c?.descripcion ? ' — ' + c.descripcion : '') + '?')) return;
+  try { await deleteDoc(doc(db,'seguimientoCompras',id)); }
+  catch(e) { alert('Error al eliminar: ' + e.message); }
 };
 
 </script>
