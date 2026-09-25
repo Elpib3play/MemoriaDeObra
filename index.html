@@ -5817,11 +5817,7 @@ window.generarPDF = function() {
        terminada?C.verde:(est.pendiente?C.ink2:C.ambar), 7.5);
   y+=5.5;
   let bajada;
-  // v64: "del 11/09/2026 al 11/09/2026" quedaba torpe cuando la obra dura un dia.
-  if(terminada&&o.info.inicio&&o.info.fin)
-    bajada = (o.info.fin===o.info.inicio)
-      ? 'Obra finalizada el '+formatFecha(o.info.fin)+' · '+txtDias(dias||1)
-      : 'Obra finalizada · del '+formatFecha(o.info.inicio)+' al '+formatFecha(o.info.fin);
+  if(terminada&&o.info.inicio&&o.info.fin) bajada='Obra finalizada · del '+formatFecha(o.info.inicio)+' al '+formatFecha(o.info.fin);
   else if(o.info.inicio)                   bajada='Obra en curso · comenzada el '+formatFecha(o.info.inicio);
   else if(conLicit)                        bajada='Compra en gestión · todavía sin fecha de inicio de obra';
   else                                     bajada='Todavía sin fecha de inicio';
@@ -5873,37 +5869,18 @@ window.generarPDF = function() {
   }
 
   // ─── LÍNEA DE TIEMPO ───
-  // v64: la barra sigue siendo PROPORCIONAL de verdad, pero:
-  //   - ningun tramo baja de 3 mm y entre tramo y tramo hay una ranura blanca,
-  //     asi una ejecucion de 1 dia sobre 37 se ve (antes medía 4,7 mm y salía
-  //     pegada al borde, sin etiqueta y sin separarse de la espera);
-  //   - los milimetros que se le regalan al tramo mas chico se le DESCUENTAN al
-  //     mas largo, asi la barra no miente;
-  //   - debajo va una leyenda con los dias exactos, que no depende de que el
-  //     texto entre adentro del tramo;
-  //   - las fechas vuelven a estar ancladas al punto real de cada hito (en la
-  //     v63 iban repartidas en columnas iguales y quedaban corridas hasta 76 mm)
-  //     y, si dos se pisan, la segunda baja un renglon en vez de moverse;
-  //   - si la obra arranca y termina el mismo dia, los dos hitos son uno solo.
   const segs=[];
-  if(diasLic)  segs.push({key:'lic', lab:'Licitación',d:diasLic,col:C.azul,txt:C.papel});
-  if(diasEsp)  segs.push({key:'esp', lab:'Espera',    d:diasEsp,col:C.ambar,txt:C.papel});
-  if(diasEjec) segs.push({key:'ejec',lab:'Ejecución', d:diasEjec,
+  if(diasLic)  segs.push({lab:'Licitación',d:diasLic,col:C.azul,txt:C.papel});
+  if(diasEsp)  segs.push({lab:'Espera',    d:diasEsp,col:C.ambar,txt:C.papel});
+  if(diasEjec) segs.push({lab:'Ejecución', d:diasEjec,
                           col:terminada?C.acc:C.accClaro, txt:terminada?C.papel:C.acc, curso:!terminada});
   if(segs.length){
     rotulo(conLicit?'LÍNEA DE TIEMPO DEL PROYECTO':'LÍNEA DE TIEMPO DE LA OBRA');
     const totalDias=segs.reduce((a,s)=>a+s.d,0);
-    espacio(50);
-
-    const RANURA=0.8, MINW=3;
-    const util=CW-RANURA*(segs.length-1);
-    const ws=segs.map(s=>Math.max(MINW,util*s.d/totalDias));
-    const sobra=ws.reduce((a,b)=>a+b,0)-util;
-    if(sobra>0){ let iM=0; ws.forEach((w,k)=>{ if(w>ws[iM]) iM=k; }); ws[iM]=Math.max(MINW,ws[iM]-sobra); }
-
-    const alto=9; let x=M; const bordes=[M];
-    segs.forEach((s,i)=>{
-      const w=ws[i];
+    espacio(30);
+    const alto=9;let x=M;
+    segs.forEach(s=>{
+      const w=CW*s.d/totalDias;
       doc.setFillColor(...s.col);doc.rect(x,y,w,alto,'F');
       if(s.curso){                        // en curso: borde punteado, no macizo
         doc.setDrawColor(...C.acc);doc.setLineWidth(.4);
@@ -5912,71 +5889,29 @@ window.generarPDF = function() {
         doc.setLineDashPattern([],0);
       }
       const etq=s.lab+' · '+txtDias(s.d)+(s.curso?' (en curso)':'');
-      const corto=s.d+' d';
-      // v65: tres escalones. Si no entra "Ejecución · 1 día", entra "1 d"; si
-      // tampoco, va el numero solo. Que diga cuantos dias son lo aclara la
-      // leyenda de abajo, asi que con el numero alcanza y el tramo deja de
-      // estar mudo. Solo queda en blanco si ni el numero entra.
-      const solo=String(s.d);
-      if(anchoDe(etq,7.5,'bold')<w-3)            T(etq,  x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
-      else if(anchoDe(corto,7,'bold')<w-1.5)     T(corto,x+w/2,y+alto/2+1.3,7,  'bold',s.txt,{align:'center'});
-      else if(anchoDe(solo,6.5,'bold')<w-1)      T(solo, x+w/2,y+alto/2+1.2,6.5,'bold',s.txt,{align:'center'});
-      bordes.push(x+w);
-      x+=w+RANURA;
+      if(anchoDe(etq,7.5,'bold')<w-3) T(etq,x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
+      else if(w>=7 && anchoDe(s.d,7.5,'bold')<w-2) T(String(s.d),x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
+      x+=w;
     });
-
-    // ── hitos, cada fecha anclada al punto de la barra que le corresponde ──
-    const iEjec=segs.findIndex(s=>s.key==='ejec');
+    // hitos debajo de cada borde
     const hitos=[];
-    if(conLicit) hitos.push({f:comp.inicio,lab:'Inicio gestión de compras',at:0});
-    if(conLicit&&comp.fin) hitos.push({f:comp.fin,lab:'Adjudicación',at:1});
-    if(o.info.inicio){
-      const mismoDia = terminada && o.info.fin && o.info.fin===o.info.inicio;
-      if(mismoDia){
-        hitos.push({f:o.info.inicio,lab:'Inicio y fin de obra',at:segs.length});
-      }else{
-        if(iEjec>=0) hitos.push({f:o.info.inicio,lab:'Inicio de obra',at:iEjec});
-        if(terminada&&o.info.fin) hitos.push({f:o.info.fin,lab:'Obra finalizada',at:segs.length});
-        else hitos.push({f:null,lab:'Hoy, en curso',at:segs.length});
-      }
-    }else if(conLicit){
-      hitos.push({f:null,lab:'Hoy, sin iniciar',at:segs.length});
-    }
-
+    if(conLicit) hitos.push([comp.inicio,'Inicio gestión de compras']);
+    if(conLicit&&comp.fin) hitos.push([comp.fin,'Adjudicación']);
+    if(o.info.inicio) hitos.push([o.info.inicio, esDirecta?'Inicio de obra':'Inicio de obra']);
+    if(terminada&&o.info.fin) hitos.push([o.info.fin,'Obra finalizada']);
+    else if(o.info.inicio) hitos.push([null,'Hoy, en curso']);
+    // v63: los hitos van repartidos parejo, NO pegados al borde de su tramo.
+    // Con una espera de 2 dias sobre 32 el tramo queda de 10 mm y las dos
+    // fechas se pisaban una arriba de la otra.
     y+=alto+4;
-    const yH=y, ocupado=[[],[]]; let dosFilas=false;
-    hitos.forEach(h=>{
-      const fx=h.f?formatFecha(h.f):hoyTxt;
-      const al = h.at===0?'left':(h.at===segs.length?'right':'center');
-      const anc=Math.max(anchoDe(fx,7.5,'bold'),anchoDe(h.lab,7,'normal'));
-      let px=bordes[h.at];
-      if(al==='center') px=Math.min(Math.max(px,M+anc/2),W-M-anc/2);   // que no se salga de la hoja
-      const izq = al==='left'?px:(al==='right'?px-anc:px-anc/2);
-      let fila=0;
-      while(fila<2 && ocupado[fila].some(r=>!(izq>r[1]+6 || izq+anc<r[0]-6))) fila++;
-      if(fila>1) fila=1;
-      ocupado[fila].push([izq,izq+anc]);
-      if(fila) dosFilas=true;
-      const yy=yH+fila*9;
-      T(fx,px,yy,7.5,'bold',C.ink,{align:al});
-      T(h.lab,px,yy+3.4,7,'normal',C.ink2,{align:al});
+    const nh=hitos.length, anchoCol=CW/nh;
+    hitos.forEach((h,i)=>{
+      const al = i===0?'left':(i===nh-1?'right':'center');
+      const px = i===0?M:(i===nh-1?W-M:M+anchoCol*i+anchoCol/2);
+      T(h[0]?formatFecha(h[0]):hoyTxt,px,y,7.5,'bold',C.ink,{align:al});
+      T(h[1],px,y+3.4,7,'normal',C.ink2,{align:al});
     });
-    y=yH+(dosFilas?9:0)+9;
-
-    // ── leyenda: los dias exactos siempre escritos, entren o no en la barra ──
-    let lx=M;
-    segs.forEach(s=>{
-      doc.setFillColor(...s.col);doc.roundedRect(lx,y-2.5,3,3,.7,.7,'F');
-      if(s.curso){doc.setDrawColor(...C.acc);doc.setLineWidth(.3);
-                  doc.setLineDashPattern([.6,.6],0);doc.roundedRect(lx,y-2.5,3,3,.7,.7,'S');
-                  doc.setLineDashPattern([],0);}
-      const t1=s.lab+' ', t2=txtDias(s.d)+(s.curso?' (en curso)':'');
-      T(t1,lx+4.5,y,7.5,'normal',C.ink2);
-      T(t2,lx+4.5+anchoDe(t1,7.5,'normal'),y,7.5,'bold',C.ink);
-      lx+=4.5+anchoDe(t1,7.5,'normal')+anchoDe(t2,7.5,'bold')+7;
-    });
-    y+=6;
-
+    y+=8;
     doc.setFillColor(...C.surf2);doc.roundedRect(M,y,CW,8.5,1.5,1.5,'F');
     T(conLicit?'Total del proyecto, de la gestión de compras al cierre':'Total de la obra',
       M+4,y+5.8,8.5,'normal',C.ink2);
