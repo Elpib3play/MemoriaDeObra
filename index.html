@@ -1018,8 +1018,227 @@
   .app-layout { display: none !important; }
   body.sesion-activa .app-layout { display: flex !important; }
 
+  /* ══════════════ v66 · DASHBOARD DE TICKETS ══════════════
+     Vale solo para la pestaña Dashboard de Tickets. Todo con prefijo tkd-
+     para no pisar nada de lo que ya existe.                                  */
+  .tkd-barra{display:flex;gap:.45rem;flex-wrap:wrap;align-items:center;margin-bottom:.8rem}
+  .tkd-hint{font-size:.68rem;color:var(--ink3);font-style:italic}
+  .tkd-btn{font-family:inherit;font-size:.76rem;padding:.4rem .75rem;border-radius:8px;border:1px solid var(--border);
+           background:var(--surface);color:var(--ink2);cursor:pointer;margin-top:0}
+  .tkd-btn:hover{background:var(--surface2)}
+  .tkd-btn.pri{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+  .tkd-btn.pri:hover{opacity:.9;background:var(--accent)}
+
+  .tkd-sel{display:none;align-items:center;gap:.5rem;flex-wrap:wrap;background:var(--accent-light);
+           border:1px solid #E8C9BC;border-radius:10px;padding:.5rem .75rem;margin-bottom:.8rem;
+           font-size:.78rem;color:var(--ink2)}
+  .tkd-sel.on{display:flex}
+  .tkd-sel .t{font-weight:600;color:var(--accent);letter-spacing:.04em;font-size:.68rem;text-transform:uppercase}
+  .tkd-sel .acc{margin-left:auto;display:flex;gap:.4rem}
+  .tkd-chip{display:inline-flex;align-items:center;gap:.35rem;background:var(--surface);border:1px solid var(--border);
+            border-radius:20px;padding:.2rem .3rem .2rem .6rem;font-size:.74rem;color:var(--ink)}
+  .tkd-chip i{width:8px;height:8px;border-radius:2px;display:block}
+  .tkd-chip button{border:0;background:var(--surface2);color:var(--ink2);width:17px;height:17px;border-radius:50%;
+                   cursor:pointer;font-size:.68rem;line-height:1;display:flex;align-items:center;justify-content:center;
+                   padding:0;margin-top:0}
+  .tkd-chip button:hover{background:var(--red-light);color:var(--red)}
+
+  .tkd-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:.8rem}
+  .tkd-stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.7rem .85rem;
+            cursor:pointer;transition:border-color .13s,box-shadow .13s,transform .13s;min-width:0}
+  .tkd-stat:hover{border-color:var(--accent);box-shadow:0 3px 12px rgba(196,87,42,.13);transform:translateY(-1px)}
+  .tkd-stat.ro{cursor:default}
+  .tkd-stat.ro:hover{border-color:var(--border);box-shadow:none;transform:none}
+  .tkd-stat.act{border-color:var(--accent);background:var(--accent-light)}
+  .tkd-sv{font-family:DM Mono,monospace;font-size:1.55rem;font-weight:600;line-height:1.05;letter-spacing:-.02em}
+  .tkd-sl{font-size:.63rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);
+          margin-top:.25rem;line-height:1.25;min-height:2.1em}
+  .tkd-ss{font-size:.64rem;color:var(--ink3);margin-top:.15rem}
+
+  .tkd-zona{display:flex;align-items:center;gap:.6rem;margin:.2rem 0 .5rem}
+  .tkd-zona span:first-child{font-size:.66rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--accent)}
+  .tkd-zona i{flex:1;height:1px;background:var(--border)}
+  .tkd-zona-sub{font-size:.65rem;color:var(--ink3)}
+
+  .tkd-g{display:grid;gap:.75rem;margin-bottom:.75rem}
+  .tkd-panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;min-width:0}
+  .tkd-pt{font-size:.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;
+          margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .tkd-pt .der{margin-left:auto;font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);
+               font-size:.7rem;display:flex;align-items:center;gap:.4rem}
+  .tkd-fijo{font-size:.6rem;font-weight:600;letter-spacing:.03em;background:var(--surface2);color:var(--ink3);
+            padding:.13rem .45rem;border-radius:20px;white-space:nowrap}
+  .tkd-leg{display:flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--ink2)}
+  .tkd-leg i{width:9px;height:9px;border-radius:2px;display:block}
+
+  #tk-vista-dashboard svg .mk{cursor:pointer}
+  #tk-vista-dashboard svg .mk:hover{opacity:.82}
+  #tk-vista-dashboard svg .mk.off{opacity:.22}
+  #tk-vista-dashboard svg .ctr{transition:fill .12s}
+  #tk-vista-dashboard svg .ctr:hover{fill:rgba(28,26,22,.055);opacity:1}
+  #tk-vista-dashboard svg text{font-family:DM Sans,sans-serif}
+  .tkd-ax{font-size:9.5px;fill:var(--ink3)}
+  .tkd-val{font-size:10px;font-family:DM Mono,monospace}
+
+  .tkd-tres{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:.4rem;align-items:start}
+  .tkd-signo{font-family:DM Mono,monospace;font-size:1.5rem;color:var(--ink3);text-align:center;
+             padding-top:3.2rem;user-select:none}
+  .tkd-tres .col{border-radius:10px;padding:.5rem .3rem;transition:background .15s,box-shadow .15s}
+  .tkd-tres .col.act{background:var(--accent-light);box-shadow:inset 0 0 0 1px #E8C9BC}
+  .tkd-tres .col.act .tkd-dt{color:var(--accent)}
+  .tkd-dt{font-size:.7rem;font-weight:600;color:var(--ink2);text-align:center;margin-bottom:.3rem}
+  .tkd-dt span{font-family:DM Mono,monospace;color:var(--ink3);font-weight:500}
+  .tkd-eq{display:inline-flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+  .tkd-eq a{color:var(--ink3);text-decoration:none;border-bottom:1px dotted var(--border);cursor:pointer}
+  .tkd-eq a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .tkd-eq a b{color:var(--ink2)}
+  .tkd-eq a:hover b{color:var(--accent)}
+
+  .tkd-rank{display:flex;align-items:center;gap:.6rem;padding:.35rem 0;border-bottom:.5px solid var(--border);
+            cursor:pointer;border-radius:5px}
+  .tkd-rank:hover{background:var(--surface2)}
+  .tkd-rank.off{opacity:.35}
+  .tkd-rank .n{font-size:.65rem;color:var(--ink3);width:14px;text-align:right}
+  .tkd-rank .d{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+  .tkd-rank .l{font-size:.75rem;color:var(--ink);flex:1}
+  .tkd-rank .b{width:90px;background:var(--surface2);border-radius:3px;height:6px;flex-shrink:0}
+  .tkd-rank .b i{display:block;height:6px;border-radius:3px}
+  .tkd-rank .v{font-size:.75rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right}
+  .tkd-rank .p{font-size:.65rem;color:var(--ink3);min-width:30px;text-align:right}
+
+  .tkd-efi{margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--border)}
+  .tkd-efi-t{font-size:.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .tkd-efi-b{display:flex;align-items:center;gap:.75rem}
+  .tkd-efi-b .bar{flex:1;background:var(--surface2);border-radius:4px;height:10px;overflow:hidden}
+  .tkd-efi-b .bar i{display:block;height:10px;background:var(--green);border-radius:4px}
+  .tkd-efi-b .pct{font-size:.9rem;font-weight:600;color:var(--green);font-family:DM Mono,monospace}
+  .tkd-efi-s{font-size:.65rem;color:var(--ink3);margin-top:.3rem}
+
+  .tkd-tw{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  table.tkd-tk{width:100%;border-collapse:collapse;font-size:.78rem}
+  table.tkd-tk th{text-align:left;font-size:.62rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+                  color:var(--ink3);padding:.6rem .5rem;border-bottom:1px solid var(--border);
+                  background:var(--surface2);white-space:nowrap}
+  table.tkd-tk td{padding:.5rem;border-bottom:.5px solid var(--border);color:var(--ink2);vertical-align:top}
+  table.tkd-tk td.id,table.tkd-tk td.f{font-family:DM Mono,monospace;color:var(--ink3);white-space:nowrap;font-size:.72rem}
+  table.tkd-tk td.tarea{color:var(--ink)}
+  table.tkd-tk tr:hover td{background:var(--surface2)}
+  .tkd-bdg{font-size:.62rem;font-weight:600;padding:.12rem .45rem;border-radius:20px;white-space:nowrap;display:inline-block}
+  .tkd-pag{display:flex;justify-content:space-between;align-items:center;padding:.6rem .8rem;font-size:.72rem;
+           color:var(--ink3);border-top:1px solid var(--border);background:var(--surface2)}
+  .tkd-vacio{padding:2.5rem;text-align:center;color:var(--ink3);font-size:.85rem}
+  .tkd-scroll{max-height:440px;overflow-y:auto}
+  .tkd-scroll table.tkd-tk thead th{position:sticky;top:0;z-index:2}
+  table.tkd-tk tr.fila{cursor:pointer}
+
+  /* duracion, tambien en el listado de tickets */
+  .dur{font-family:DM Mono,monospace;font-size:.74rem;font-weight:600;white-space:nowrap}
+  .dur .ab{font-weight:400;color:var(--ink3)}
+
+  #tkd-tip{position:fixed;z-index:400;pointer-events:none;background:#1C1A16;color:#F5F2EC;border-radius:8px;
+           padding:.5rem .7rem;font-size:.75rem;line-height:1.45;opacity:0;transition:opacity .1s;
+           box-shadow:0 6px 20px rgba(0,0,0,.28);max-width:250px}
+  #tkd-tip b{color:#fff}
+  #tkd-tip .k{color:#C8C3BA}
+
+  /* ── impresion del dashboard de tickets ── */
+  .tkd-solo-print{display:none}
+  .tkd-pr-band{background:var(--ink);color:#F5F2EC;border-radius:8px;padding:7px 12px;display:flex;
+               align-items:center;justify-content:space-between;margin-bottom:7px}
+  .tkd-pr-band .t{font-size:12.5pt;font-weight:700;letter-spacing:.03em}
+  .tkd-pr-band .r{text-align:right;font-size:7pt;color:#E8A87C;line-height:1.45}
+  .tkd-pr-fil{display:flex;gap:12px;flex-wrap:wrap;font-size:7.5pt;color:var(--ink2);padding:0 2px 6px;
+              border-bottom:1px solid var(--border);margin-bottom:8px}
+  .tkd-pr-fil b{color:var(--ink)}
+  .tkd-pr-tit{font-size:8.5pt;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin:0 0 5px}
+  table.tkd-pr{width:100%;border-collapse:collapse;font-size:6.8pt}
+  table.tkd-pr th{text-align:left;font-size:5.8pt;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);
+                  font-weight:700;padding:0 5px 3px 0;border-bottom:1.2px solid var(--ink)}
+  table.tkd-pr td{padding:3.2px 5px 3.2px 0;border-bottom:.5px solid var(--border);color:var(--ink2);vertical-align:top}
+  table.tkd-pr td.n,table.tkd-pr td.d{font-family:DM Mono,monospace;color:var(--ink);white-space:nowrap}
+  table.tkd-pr td.d{text-align:right}
+  table.tkd-pr td.o{color:var(--ink3);font-size:6.2pt}
+  table.tkd-pr tr:nth-child(even) td{background:#FAF8F5}
+  .tkd-pr-pie{font-size:6.5pt;color:var(--ink3);border-top:.5px solid var(--border);padding-top:4px;margin-top:9px;
+              display:flex;justify-content:space-between}
+
+  @media print{
+    @page{ size:A4 landscape; margin:9mm; }
+    *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+    /* al imprimir el dashboard de tickets se esconde TODO lo demas */
+    /* La app vive en una pantalla fija (html y body con overflow:hidden y alto
+       100%). Al imprimir hay que soltarlos, si no sale una sola hoja recortada. */
+    html,body{height:auto !important;overflow:visible !important}
+    body.tkd-print{background:#fff !important}
+    body.tkd-print .sidebar,body.tkd-print .main-topbar,body.tkd-print .sb-overlay,
+    body.tkd-print .modulo:not(#mod-tickets),body.tkd-print .modulo-obras-wrap,
+    body.tkd-print #mod-tickets .modulo-inner > div:not(#tk-vista-dashboard),
+    body.tkd-print .tkd-barra,body.tkd-print .tkd-no-print,body.tkd-print .tkd-sel .acc,
+    body.tkd-print .tkd-pag,body.tkd-print .tkd-hint,body.tkd-print #tkd-tip,
+    body.tkd-print #tk-aviso-fechas,body.tkd-print .tkd-sel,
+    body.tkd-print .tkd-fijo,body.tkd-print .tkd-zona-sub,
+    body.tkd-print #tkd-bloque-listado{display:none !important}
+    body.tkd-print .app-layout,body.tkd-print .app-right,body.tkd-print #mod-tickets{
+      display:block !important;overflow:visible !important;height:auto !important;
+      min-height:0 !important;max-height:none !important;position:static !important}
+    body.tkd-print .modulo-inner{padding:0 !important;max-width:none !important}
+    body.tkd-print .tkd-solo-print{display:block}
+    body.tkd-print span.tkd-solo-print{display:inline !important}
+    body.tkd-print .tkd-pr-pie{display:flex !important}
+    body.tkd-print .tkd-panel,body.tkd-print .tkd-stat{box-shadow:none;break-inside:avoid;page-break-inside:avoid;
+                                                       background:#fff !important}
+    /* La hoja arma su propia grilla y no depende del ancho con que Chrome la
+       maquete: cinco recuadros en fila, el año en dos columnas y los tres
+       anillos uno al lado del otro. */
+    body.tkd-print .tkd-stats{grid-template-columns:repeat(5,1fr) !important}
+    body.tkd-print #tkd-g-anio{grid-template-columns:1.05fr 1fr !important}
+    body.tkd-print .tkd-tres{grid-template-columns:1fr auto 1fr auto 1fr !important}
+    body.tkd-print .tkd-signo{display:block !important}
+    body.tkd-print .tkd-g{gap:5px;margin-bottom:5px}
+    body.tkd-print .tkd-stats{gap:4px;margin-bottom:5px}
+    body.tkd-print .tkd-stat{padding:4px 5px}
+    body.tkd-print .tkd-sv{font-size:13.5pt}
+    body.tkd-print .tkd-sl{font-size:5.6pt;min-height:2em}
+    body.tkd-print .tkd-ss{font-size:5.6pt}
+    body.tkd-print .tkd-panel{padding:4px 7px 4px}
+    /* Un solo renglon por titulo, pase lo que pase con el ancho. */
+    body.tkd-print .tkd-pt{font-size:5.8pt;margin-bottom:4px;flex-wrap:nowrap;white-space:nowrap}
+    body.tkd-print .tkd-pt .der{min-width:0;overflow:hidden}
+    body.tkd-print .tkd-sl{min-height:1.5em}
+    body.tkd-print .tkd-zona{margin:2px 0 3px;break-after:avoid;page-break-after:avoid}
+    body.tkd-print .tkd-zona span:first-child{font-size:5.6pt}
+    body.tkd-print .tkd-zona-sub{font-size:5pt}
+    body.tkd-print .tkd-rank{padding:2px 0}
+    body.tkd-print .tkd-rank .l,body.tkd-print .tkd-rank .v{font-size:6.5pt}
+    body.tkd-print .tkd-rank .p{font-size:5.8pt}
+    body.tkd-print .tkd-efi{margin-top:6px;padding-top:5px}
+    body.tkd-print .tkd-efi-t{font-size:5.6pt;margin-bottom:3px}
+    body.tkd-print .tkd-efi-b .pct{font-size:8pt}
+    body.tkd-print .tkd-efi-s{font-size:5.6pt}
+    body.tkd-print .tkd-tres{gap:2px}
+    body.tkd-print .tkd-signo{font-size:9pt;padding-top:1.1rem}
+    body.tkd-print .tkd-tres .col{padding:2px}
+    body.tkd-print .tkd-tres .col.act{box-shadow:inset 0 0 0 .5pt #C4572A}
+    body.tkd-print .tkd-dt{font-size:6pt;margin-bottom:1px}
+    body.tkd-print .tkd-fijo{font-size:5pt;padding:.08rem .3rem}
+    body.tkd-print .tkd-leg{font-size:6pt}
+    body.tkd-print .tkd-eq a{border:0}
+    body.tkd-print #tkd-anexo{display:block !important;break-before:page;page-break-before:always}
+    body.tkd-print table.tkd-pr thead{display:table-header-group}
+    body.tkd-print table.tkd-pr tr{break-inside:avoid;page-break-inside:avoid}
+    body.tkd-print .tkd-pr-pie{break-before:avoid;page-break-before:avoid}
+  }
+  /* Acomodo para pantallas chicas. Va con "screen" a proposito: sin eso la regla
+     tambien corria al imprimir, y como Chrome maqueta la hoja con un ancho que
+     depende de la escala y los margenes del usuario, el informe salia con los
+     recuadros de a dos y un panel por hoja en vez de la hoja 1 completa. */
+  @media screen and (max-width:900px){
+    .tkd-stats{grid-template-columns:repeat(2,1fr)}
+    .tkd-g{grid-template-columns:1fr !important}
+    .tkd-tres{grid-template-columns:1fr;gap:1rem}
+    .tkd-signo{display:none}
+  }
 </style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
 <!-- OVERLAYS DE SESION -->
@@ -1567,6 +1786,7 @@
             <th>Fecha</th>
             <th>Prioridad</th>
             <th>F. Terminada</th>
+            <th style="text-align:right">Duración</th>
             <th>Estado</th>
             <th>Tipo</th>
             <th>Observaciones</th>
@@ -1574,7 +1794,7 @@
           </tr>
         </thead>
         <tbody id="ticket-tbody">
-          <tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink3)">Cargando...</td></tr>
+          <tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--ink3)">Cargando...</td></tr>
         </tbody>
       </table>
       <!-- Paginado: rango a la izquierda, cuantos por hoja y flechas a la derecha -->
@@ -1585,76 +1805,119 @@
 
     <!-- Vista Dashboard -->
     <div id="tk-vista-dashboard" style="display:none">
-      <div class="ticket-stats" id="tk-dash-stats"></div>
       <div id="tk-aviso-fechas"></div>
-      <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:0.75rem;margin-bottom:0.85rem">
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
-          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Acciones anuales — distribución por tipo</div>
-          <div style="position:relative;height:200px"><canvas id="tk-pie-anual" role="img" aria-label="Torta anual por tipo"></canvas></div>
-          <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem;justify-content:center" id="tk-pie-legend"></div>
+
+      <!-- barra: año + acciones -->
+      <div class="tkd-barra">
+        <span class="tkd-hint">tocá cualquier gráfico para filtrar</span>
+        <span style="margin-left:auto;display:flex;gap:.45rem">
+          <button class="tkd-btn" onclick="tkdLimpiar()">Ver todo</button>
+          <button class="tkd-btn pri" onclick="tkdImprimir()"
+                  title="Abre el diálogo de impresión: elegí «Guardar como PDF»">↓ Descargar PDF</button>
+        </span>
+      </div>
+
+      <!-- cabecera que solo se ve al imprimir -->
+      <div class="tkd-solo-print">
+        <div class="tkd-pr-band">
+          <div class="t">TICKETS — INFORME DEL PERÍODO</div>
+          <div class="r">Universidad de San Andrés · Campus Victoria<br><span id="tkd-pr-gen"></span></div>
         </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
-          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.6rem">Ranking por tipo — total anual</div>
-          <div id="tk-ranking"></div>
-          <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">
-            <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem">Eficiencia de resolución</div>
-            <div style="display:flex;align-items:center;gap:0.75rem">
-              <div style="flex:1;background:var(--surface2);border-radius:4px;height:10px;overflow:hidden">
-                <div id="tk-eficiencia-bar" style="height:10px;background:var(--green);border-radius:4px;width:0%"></div>
-              </div>
-              <span id="tk-eficiencia-pct" style="font-size:0.9rem;font-weight:600;color:var(--green);font-family:DM Mono,monospace">0%</span>
+        <div class="tkd-pr-fil" id="tkd-pr-fil"></div>
+      </div>
+
+      <!-- franja de selección activa -->
+      <div class="tkd-sel" id="tkd-sel">
+        <span class="t">Viendo</span>
+        <span id="tkd-chips" style="display:flex;gap:.4rem;flex-wrap:wrap"></span>
+        <span class="acc">
+          <button class="tkd-btn" id="tkd-btn-ver" onclick="tkdVerTodo(true)">Ver los tickets</button>
+          <button class="tkd-btn" onclick="tkdLimpiar()">Ver todo</button>
+        </span>
+      </div>
+
+      <div class="tkd-stats" id="tkd-stats"></div>
+
+      <div class="tkd-zona"><span>El año</span><i></i><span class="tkd-zona-sub">se mueve solo con los recuadros de arriba</span></div>
+      <div class="tkd-g" id="tkd-g-anio" style="grid-template-columns:1.05fr 1fr">
+        <div class="tkd-panel">
+          <div class="tkd-pt">Acciones anuales — distribución por tipo
+            <span class="der"><span id="tkd-aro" style="font-size:.7rem"></span>
+            <span class="tkd-fijo">las porciones no cambian</span></span></div>
+          <div id="tkd-ch-anual"></div>
+        </div>
+        <div class="tkd-panel">
+          <div class="tkd-pt">Ranking por tipo — total anual
+            <span class="der"><span class="tkd-fijo">no cambia con los filtros</span></span></div>
+          <div id="tkd-ranking"></div>
+          <div class="tkd-efi">
+            <div class="tkd-efi-t">Eficiencia de resolución — año</div>
+            <div class="tkd-efi-b"><div class="bar"><i id="tkd-efi-bar" style="width:0%"></i></div>
+              <span class="pct" id="tkd-efi-pct">0%</span></div>
+            <div class="tkd-efi-s" id="tkd-efi-sub"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tkd-g">
+        <div class="tkd-panel">
+          <div class="tkd-pt">Trabajos, terminados y backlog — por mes
+            <span class="der"><span class="tkd-fijo">no cambia con los filtros</span></span></div>
+          <div id="tkd-ch-meses"></div>
+          <div style="display:flex;gap:.9rem;flex-wrap:wrap;margin-top:.5rem">
+            <span class="tkd-leg"><i style="background:#2a78d6"></i>Trabajos</span>
+            <span class="tkd-leg"><i style="background:#e34948"></i>Terminados</span>
+            <span class="tkd-leg"><i style="background:#1baf7a"></i>Backlog</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tkd-zona"><span>El mes</span><i></i><span class="tkd-zona-sub">tiene su propio mes y no toca los números del año</span></div>
+      <div class="tkd-g">
+        <div class="tkd-panel">
+          <div class="tkd-pt">Distribución mensual por tipo
+            <span class="der">
+              <span id="tkd-mes-resumen"></span>
+              <span class="tkd-no-print" style="color:var(--ink2)">Mes:</span>
+              <select id="tkd-mes-sel" class="tkd-no-print" onchange="tkdCambiarMes(this.value)"
+                      style="font-family:inherit;font-size:.75rem;padding:.25rem .5rem;border-radius:6px;
+                             border:1px solid var(--border);background:var(--surface2);color:var(--ink);cursor:pointer"></select>
+              <span class="tkd-solo-print" id="tkd-mes-print" style="display:none;font-weight:600;color:var(--ink)"></span>
+            </span></div>
+          <div class="tkd-tres">
+            <div class="col" id="tkd-col-tra">
+              <div class="tkd-dt">Todo el mes <span id="tkd-n-tra"></span></div>
+              <div id="tkd-ch-tra"></div>
             </div>
-            <div id="tk-eficiencia-sub" style="font-size:0.65rem;color:var(--ink3);margin-top:0.3rem"></div>
+            <div class="tkd-signo">=</div>
+            <div class="col" id="tkd-col-ter">
+              <div class="tkd-dt">Resueltos en el mes <span id="tkd-n-ter"></span></div>
+              <div id="tkd-ch-ter"></div>
+            </div>
+            <div class="tkd-signo">+</div>
+            <div class="col" id="tkd-col-bk">
+              <div class="tkd-dt">Pendientes al cierre <span id="tkd-n-bk"></span></div>
+              <div id="tkd-ch-bk"></div>
+            </div>
           </div>
+          <div id="tkd-leyenda" style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:.5rem"></div>
         </div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.85rem">
-        <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Trabajos, terminados y backlog — por mes</div>
-        <div style="position:relative;height:175px"><canvas id="tk-barras" role="img" aria-label="Barras mensuales"></canvas></div>
-        <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem">
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#2a78d6"></div>Trabajos</div>
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#e34948"></div>Terminados</div>
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#1baf7a"></div>Backlog</div>
+
+      <div class="tkd-g" id="tkd-bloque-listado" style="margin-bottom:0">
+        <div class="tkd-panel" style="padding:1rem 1rem .5rem">
+          <div class="tkd-pt">Tickets del recorte <span class="der" id="tkd-lst-n"></span></div>
+          <div id="tkd-tabla"></div>
         </div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.85rem">
-        <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem">Tendencia mensual</div>
-        <div style="position:relative;height:160px"><canvas id="tk-linea" role="img" aria-label="Línea de tendencia mensual"></canvas></div>
-        <div style="display:flex;flex-wrap:wrap;gap:0.35rem 0.75rem;margin-top:0.6rem">
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#2a78d6"></div>Trabajos</div>
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#e34948"></div>Terminados</div>
-          <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.68rem;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#1baf7a"></div>Backlog</div>
-        </div>
+
+      <!-- hoja 2 en adelante del informe impreso -->
+      <div class="tkd-solo-print" id="tkd-anexo">
+        <div class="tkd-pr-tit" id="tkd-pr-tit"></div>
+        <div id="tkd-pr-tabla"></div>
+        <div class="tkd-pr-pie"><span id="tkd-pr-pie-l"></span><span>Intendencia UdeSA · Memorias de Obra</span></div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem">
-          <div style="font-size:0.65rem;font-weight:600;color:var(--ink3);text-transform:uppercase;letter-spacing:0.05em">Distribución mensual por tipo</div>
-          <div style="display:flex;align-items:center;gap:0.5rem">
-            <span style="font-size:0.68rem;color:var(--ink3)">o tocá una barra del gráfico de arriba</span>
-            <span style="font-size:0.72rem;color:var(--ink2)">Mes:</span>
-            <select id="tk-mes-sel" onchange="renderDashboardTicketsMes()" style="font-size:0.75rem;padding:0.25rem 0.5rem;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--ink)">
-              <option value="0">Enero</option><option value="1">Febrero</option><option value="2">Marzo</option>
-              <option value="3">Abril</option><option value="4">Mayo</option><option value="5">Junio</option>
-              <option value="6">Julio</option><option value="7">Agosto</option><option value="8">Septiembre</option>
-              <option value="9">Octubre</option><option value="10">Noviembre</option><option value="11">Diciembre</option>
-            </select>
-          </div>
-        </div>
-        <div id="tk-mes-resumen" style="font-size:0.75rem;color:var(--ink2);margin-bottom:0.85rem;font-weight:500"></div>
-        <!-- Dos tortas pegadas: todo el mes / solo lo resuelto en el mes -->
-        <div class="tk-mes-tortas">
-          <div>
-            <div class="tk-mes-tit">Todo el mes <span id="tk-mes-tot" class="tk-mes-n"></span></div>
-            <div style="position:relative;height:158px"><canvas id="tk-pie-mes" role="img" aria-label="Torta del mes por tipo"></canvas></div>
-            <div id="tk-mes-desglose" style="margin-top:0.6rem"></div>
-          </div>
-          <div>
-            <div class="tk-mes-tit">Resueltos en el mes <span id="tk-mes-res-n" class="tk-mes-n"></span></div>
-            <div style="position:relative;height:158px"><canvas id="tk-pie-mes-res" role="img" aria-label="Torta de resueltos del mes por tipo"></canvas></div>
-            <div id="tk-mes-desglose-res" style="margin-top:0.6rem"></div>
-          </div>
-        </div>
-      </div>
+
     </div><!-- fin tk-vista-dashboard -->
 
   </div>
@@ -5817,7 +6080,11 @@ window.generarPDF = function() {
        terminada?C.verde:(est.pendiente?C.ink2:C.ambar), 7.5);
   y+=5.5;
   let bajada;
-  if(terminada&&o.info.inicio&&o.info.fin) bajada='Obra finalizada · del '+formatFecha(o.info.inicio)+' al '+formatFecha(o.info.fin);
+  // v64: "del 11/09/2026 al 11/09/2026" quedaba torpe cuando la obra dura un dia.
+  if(terminada&&o.info.inicio&&o.info.fin)
+    bajada = (o.info.fin===o.info.inicio)
+      ? 'Obra finalizada el '+formatFecha(o.info.fin)+' · '+txtDias(dias||1)
+      : 'Obra finalizada · del '+formatFecha(o.info.inicio)+' al '+formatFecha(o.info.fin);
   else if(o.info.inicio)                   bajada='Obra en curso · comenzada el '+formatFecha(o.info.inicio);
   else if(conLicit)                        bajada='Compra en gestión · todavía sin fecha de inicio de obra';
   else                                     bajada='Todavía sin fecha de inicio';
@@ -5869,18 +6136,37 @@ window.generarPDF = function() {
   }
 
   // ─── LÍNEA DE TIEMPO ───
+  // v64: la barra sigue siendo PROPORCIONAL de verdad, pero:
+  //   - ningun tramo baja de 3 mm y entre tramo y tramo hay una ranura blanca,
+  //     asi una ejecucion de 1 dia sobre 37 se ve (antes medía 4,7 mm y salía
+  //     pegada al borde, sin etiqueta y sin separarse de la espera);
+  //   - los milimetros que se le regalan al tramo mas chico se le DESCUENTAN al
+  //     mas largo, asi la barra no miente;
+  //   - debajo va una leyenda con los dias exactos, que no depende de que el
+  //     texto entre adentro del tramo;
+  //   - las fechas vuelven a estar ancladas al punto real de cada hito (en la
+  //     v63 iban repartidas en columnas iguales y quedaban corridas hasta 76 mm)
+  //     y, si dos se pisan, la segunda baja un renglon en vez de moverse;
+  //   - si la obra arranca y termina el mismo dia, los dos hitos son uno solo.
   const segs=[];
-  if(diasLic)  segs.push({lab:'Licitación',d:diasLic,col:C.azul,txt:C.papel});
-  if(diasEsp)  segs.push({lab:'Espera',    d:diasEsp,col:C.ambar,txt:C.papel});
-  if(diasEjec) segs.push({lab:'Ejecución', d:diasEjec,
+  if(diasLic)  segs.push({key:'lic', lab:'Licitación',d:diasLic,col:C.azul,txt:C.papel});
+  if(diasEsp)  segs.push({key:'esp', lab:'Espera',    d:diasEsp,col:C.ambar,txt:C.papel});
+  if(diasEjec) segs.push({key:'ejec',lab:'Ejecución', d:diasEjec,
                           col:terminada?C.acc:C.accClaro, txt:terminada?C.papel:C.acc, curso:!terminada});
   if(segs.length){
     rotulo(conLicit?'LÍNEA DE TIEMPO DEL PROYECTO':'LÍNEA DE TIEMPO DE LA OBRA');
     const totalDias=segs.reduce((a,s)=>a+s.d,0);
-    espacio(30);
-    const alto=9;let x=M;
-    segs.forEach(s=>{
-      const w=CW*s.d/totalDias;
+    espacio(50);
+
+    const RANURA=0.8, MINW=3;
+    const util=CW-RANURA*(segs.length-1);
+    const ws=segs.map(s=>Math.max(MINW,util*s.d/totalDias));
+    const sobra=ws.reduce((a,b)=>a+b,0)-util;
+    if(sobra>0){ let iM=0; ws.forEach((w,k)=>{ if(w>ws[iM]) iM=k; }); ws[iM]=Math.max(MINW,ws[iM]-sobra); }
+
+    const alto=9; let x=M; const bordes=[M];
+    segs.forEach((s,i)=>{
+      const w=ws[i];
       doc.setFillColor(...s.col);doc.rect(x,y,w,alto,'F');
       if(s.curso){                        // en curso: borde punteado, no macizo
         doc.setDrawColor(...C.acc);doc.setLineWidth(.4);
@@ -5889,29 +6175,71 @@ window.generarPDF = function() {
         doc.setLineDashPattern([],0);
       }
       const etq=s.lab+' · '+txtDias(s.d)+(s.curso?' (en curso)':'');
-      if(anchoDe(etq,7.5,'bold')<w-3) T(etq,x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
-      else if(w>=7 && anchoDe(s.d,7.5,'bold')<w-2) T(String(s.d),x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
-      x+=w;
+      const corto=s.d+' d';
+      // v65: tres escalones. Si no entra "Ejecución · 1 día", entra "1 d"; si
+      // tampoco, va el numero solo. Que diga cuantos dias son lo aclara la
+      // leyenda de abajo, asi que con el numero alcanza y el tramo deja de
+      // estar mudo. Solo queda en blanco si ni el numero entra.
+      const solo=String(s.d);
+      if(anchoDe(etq,7.5,'bold')<w-3)            T(etq,  x+w/2,y+alto/2+1.4,7.5,'bold',s.txt,{align:'center'});
+      else if(anchoDe(corto,7,'bold')<w-1.5)     T(corto,x+w/2,y+alto/2+1.3,7,  'bold',s.txt,{align:'center'});
+      else if(anchoDe(solo,6.5,'bold')<w-1)      T(solo, x+w/2,y+alto/2+1.2,6.5,'bold',s.txt,{align:'center'});
+      bordes.push(x+w);
+      x+=w+RANURA;
     });
-    // hitos debajo de cada borde
+
+    // ── hitos, cada fecha anclada al punto de la barra que le corresponde ──
+    const iEjec=segs.findIndex(s=>s.key==='ejec');
     const hitos=[];
-    if(conLicit) hitos.push([comp.inicio,'Inicio gestión de compras']);
-    if(conLicit&&comp.fin) hitos.push([comp.fin,'Adjudicación']);
-    if(o.info.inicio) hitos.push([o.info.inicio, esDirecta?'Inicio de obra':'Inicio de obra']);
-    if(terminada&&o.info.fin) hitos.push([o.info.fin,'Obra finalizada']);
-    else if(o.info.inicio) hitos.push([null,'Hoy, en curso']);
-    // v63: los hitos van repartidos parejo, NO pegados al borde de su tramo.
-    // Con una espera de 2 dias sobre 32 el tramo queda de 10 mm y las dos
-    // fechas se pisaban una arriba de la otra.
+    if(conLicit) hitos.push({f:comp.inicio,lab:'Inicio gestión de compras',at:0});
+    if(conLicit&&comp.fin) hitos.push({f:comp.fin,lab:'Adjudicación',at:1});
+    if(o.info.inicio){
+      const mismoDia = terminada && o.info.fin && o.info.fin===o.info.inicio;
+      if(mismoDia){
+        hitos.push({f:o.info.inicio,lab:'Inicio y fin de obra',at:segs.length});
+      }else{
+        if(iEjec>=0) hitos.push({f:o.info.inicio,lab:'Inicio de obra',at:iEjec});
+        if(terminada&&o.info.fin) hitos.push({f:o.info.fin,lab:'Obra finalizada',at:segs.length});
+        else hitos.push({f:null,lab:'Hoy, en curso',at:segs.length});
+      }
+    }else if(conLicit){
+      hitos.push({f:null,lab:'Hoy, sin iniciar',at:segs.length});
+    }
+
     y+=alto+4;
-    const nh=hitos.length, anchoCol=CW/nh;
-    hitos.forEach((h,i)=>{
-      const al = i===0?'left':(i===nh-1?'right':'center');
-      const px = i===0?M:(i===nh-1?W-M:M+anchoCol*i+anchoCol/2);
-      T(h[0]?formatFecha(h[0]):hoyTxt,px,y,7.5,'bold',C.ink,{align:al});
-      T(h[1],px,y+3.4,7,'normal',C.ink2,{align:al});
+    const yH=y, ocupado=[[],[]]; let dosFilas=false;
+    hitos.forEach(h=>{
+      const fx=h.f?formatFecha(h.f):hoyTxt;
+      const al = h.at===0?'left':(h.at===segs.length?'right':'center');
+      const anc=Math.max(anchoDe(fx,7.5,'bold'),anchoDe(h.lab,7,'normal'));
+      let px=bordes[h.at];
+      if(al==='center') px=Math.min(Math.max(px,M+anc/2),W-M-anc/2);   // que no se salga de la hoja
+      const izq = al==='left'?px:(al==='right'?px-anc:px-anc/2);
+      let fila=0;
+      while(fila<2 && ocupado[fila].some(r=>!(izq>r[1]+6 || izq+anc<r[0]-6))) fila++;
+      if(fila>1) fila=1;
+      ocupado[fila].push([izq,izq+anc]);
+      if(fila) dosFilas=true;
+      const yy=yH+fila*9;
+      T(fx,px,yy,7.5,'bold',C.ink,{align:al});
+      T(h.lab,px,yy+3.4,7,'normal',C.ink2,{align:al});
     });
-    y+=8;
+    y=yH+(dosFilas?9:0)+9;
+
+    // ── leyenda: los dias exactos siempre escritos, entren o no en la barra ──
+    let lx=M;
+    segs.forEach(s=>{
+      doc.setFillColor(...s.col);doc.roundedRect(lx,y-2.5,3,3,.7,.7,'F');
+      if(s.curso){doc.setDrawColor(...C.acc);doc.setLineWidth(.3);
+                  doc.setLineDashPattern([.6,.6],0);doc.roundedRect(lx,y-2.5,3,3,.7,.7,'S');
+                  doc.setLineDashPattern([],0);}
+      const t1=s.lab+' ', t2=txtDias(s.d)+(s.curso?' (en curso)':'');
+      T(t1,lx+4.5,y,7.5,'normal',C.ink2);
+      T(t2,lx+4.5+anchoDe(t1,7.5,'normal'),y,7.5,'bold',C.ink);
+      lx+=4.5+anchoDe(t1,7.5,'normal')+anchoDe(t2,7.5,'bold')+7;
+    });
+    y+=6;
+
     doc.setFillColor(...C.surf2);doc.roundedRect(M,y,CW,8.5,1.5,1.5,'F');
     T(conLicit?'Total del proyecto, de la gestión de compras al cierre':'Total de la obra',
       M+4,y+5.8,8.5,'normal',C.ink2);
@@ -6729,11 +7057,6 @@ const TK_CORES  = ['#eb6834','#1baf7a','#2a78d6','#eda100','#6250d6'];
 const MESES_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
                     'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-let tkPieAnualChart = null;
-let tkBarrasChart   = null;
-let tkLineaChart    = null;
-let tkPieMesChart   = null;
-let tkPieMesResChart = null;
 
 window.switchTicketTab = function(tab, el) {
   document.querySelectorAll('.tk-tab').forEach(t => {
@@ -6745,6 +7068,10 @@ window.switchTicketTab = function(tab, el) {
   document.getElementById('tk-vista-listado').style.display  = tab === 'listado'   ? 'block' : 'none';
   document.getElementById('tk-vista-dashboard').style.display = tab === 'dashboard' ? 'block' : 'none';
   document.getElementById('btn-nuevo-ticket').style.display   = tab === 'listado'   ? 'inline-block' : 'none';
+  // En el Dashboard el PDF lo saca su propio boton "Descargar PDF", asi que el
+  // de arriba se esconde para no tener dos botones que hacen lo mismo.
+  const bpdf = document.getElementById('btn-pdf-tickets');
+  if (bpdf) bpdf.style.display = tab === 'listado' ? 'inline-block' : 'none';
   tkTabActiva = tab;          // el boton de PDF saca lo que se esta viendo
   if (tab === 'dashboard') renderDashboardTickets();
 };
@@ -6859,271 +7186,569 @@ function anioDashboardTickets() {
   return +keys.sort()[keys.length-1].slice(0,4);
 }
 
-window.renderDashboardTickets = function() {
-  const axisC = '#898781';
-  const gridC = 'rgba(140,138,130,0.12)';
+/* ═══════════════════════════════════════════════════════════════════════
+   v66 · DASHBOARD DE TICKETS
+   Reemplaza la pestaña Dashboard anterior (torta anual + ranking + barras +
+   linea de tendencia + dos tortas del mes). Se fue solo la linea de tendencia,
+   que repetia exactamente las barras de arriba; el resto esta todo, mejor
+   ordenado y ahora interactivo.
 
-  // Calcular datos desde ticketsData
-  const totalT    = ticketsData.length;
-  // Se cuenta con el estado normalizado, para que los recuadros coincidan con
-  // lo que muestra la tabla en los tickets sin estado o con el estado viejo.
-  const est       = t => normalizarEstadoTicket(t.estado);
-  const resueltos = ticketsData.filter(t => est(t) === 'resuelto').length;
-  const enCurso   = ticketsData.filter(t => est(t) === 'en-curso').length;
-  const enEspera  = ticketsData.filter(t => est(t) === 'en-espera').length;
-  const eficiencia = totalT > 0 ? Math.round(resueltos / totalT * 100) : 0;
+   DOS ZONAS CON SU PROPIO ESTADO, que es lo que evita la confusion:
+     tkdA  = la zona del AÑO  (los recuadros + la dona anual)
+     tkdM  = la zona del MES  (su propio selector + los tres anillos)
+   tkdORIG dice cual manda sobre el listado. Tocar una zona apaga la otra:
+   nunca hay dos recortes peleando por la misma tabla.
 
-  // Stats del dashboard
-  const statsEl = document.getElementById('tk-dash-stats');
-  if (statsEl) statsEl.innerHTML = `
-    <div class="ticket-stat"><div class="ticket-stat-val">${totalT}</div><div class="ticket-stat-lbl">Total</div></div>
-    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--green)">${resueltos}</div><div class="ticket-stat-lbl">Resueltos</div></div>
-    <div class="ticket-stat"><div class="ticket-stat-val" style="color:#2a78d6">${enCurso}</div><div class="ticket-stat-lbl">En curso</div></div>
-    <div class="ticket-stat"><div class="ticket-stat-val" style="color:var(--amber)">${enEspera}</div><div class="ticket-stat-lbl">En espera</div></div>
-  `;
+   Lo que NO se mueve nunca: las porciones de la dona anual, el ranking, la
+   eficiencia y el grafico de barras. Son la foto del año, la referencia contra
+   la que se lee el recorte.
 
-  // Eficiencia
-  const bar = document.getElementById('tk-eficiencia-bar');
-  const pct = document.getElementById('tk-eficiencia-pct');
-  const sub = document.getElementById('tk-eficiencia-sub');
-  if (bar) bar.style.width = eficiencia + '%';
-  if (pct) pct.textContent = eficiencia + '%';
-  if (sub) sub.textContent = resueltos + ' de ' + totalT + ' trabajos resueltos';
+   Los graficos se dibujan con SVG a mano en vez de Chart.js: asi se pueden
+   hacer clickeables gajo por gajo, y salen vectoriales al imprimir.
+   ═══════════════════════════════════════════════════════════════════════ */
+let tkdA = {estado:'', tipo:''};
+let tkdM = {flujo:'', tipo:''};
+let tkdMES = null;                 // el mes que mira el bloque de abajo
+let tkdORIG = '';                  // '' | 'anual' | 'mes'
+let tkdPR = false;                 // true mientras se imprime
+let tkdAbierta = false;            // la tabla del recorte, desplegada o no
 
-  // Contar por tipo
-  const porTipo = TK_TIPOS.map(t => ticketsData.filter(x => x.tipo === t).length);
-  const totalTipo = porTipo.reduce((a,b) => a+b, 0);
+const TKD_FLUJOS = {tra:['Trabajos del mes','#2a78d6'], ter:['Resueltos en el mes','#e34948'],
+                    bk:['Backlog al cierre','#1baf7a']};
+const TKD_EST = [['resuelto','Resuelto','#2E6B4A'],['en-curso','En curso','#2a78d6'],
+                 ['en-espera','En espera','#A07020'],['abiertos','Backlog del año','#1baf7a']];
+const tkdEL = e => (TKD_EST.find(x=>x[0]===e) || [0,e,'#6B6456']);
+const TKD_C = {ink:'#1C1A16',ink2:'#6B6456',ink3:'#A09890',surf2:'#EDE9E0',surf3:'#F7F5F1',
+               bord:'#D8D2C8',azul:'#2a78d6',rojo:'#e34948',verde:'#1baf7a',acc:'#C4572A',
+               red:'#9B2B2B',amber:'#A07020',green:'#2E6B4A',papel:'#F5F2EC'};
 
-  // Ranking
-  const rankEl = document.getElementById('tk-ranking');
-  if (rankEl) {
-    const sorted = TK_TIPOS.map((t,i) => ({t,v:porTipo[i],c:TK_CORES[i]}))
-      .sort((a,b) => b.v - a.v);
-    const maxV = sorted[0]?.v || 1;
-    rankEl.innerHTML = sorted.map((s,i) => `
-      <div style="display:flex;align-items:center;gap:0.6rem;padding:0.35rem 0;border-bottom:0.5px solid var(--border)">
-        <span style="font-size:0.65rem;color:var(--ink3);width:14px;text-align:right">${i+1}</span>
-        <div style="width:8px;height:8px;border-radius:2px;background:${s.c};flex-shrink:0"></div>
-        <span style="font-size:0.75rem;color:var(--ink);flex:1">${s.t}</span>
-        <div style="width:90px;background:var(--surface2);border-radius:3px;height:6px;flex-shrink:0">
-          <div style="width:${maxV>0?Math.round(s.v/maxV*100):0}%;height:6px;background:${s.c};border-radius:3px"></div>
-        </div>
-        <span style="font-size:0.75rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${s.v}</span>
-        <span style="font-size:0.65rem;color:var(--ink3);min-width:30px;text-align:right">${totalTipo>0?Math.round(s.v/totalTipo*100):0}%</span>
-      </div>`).join('');
+/* ── datos ── */
+const tkdEst = t => normalizarEstadoTicket(t.estado);
+// "Abierto" es lo mismo que el atajo "Abiertos (sin resolver)" del listado: todo
+// lo que no esta resuelto. Se mide por el estado, no por la fecha de cierre, para
+// que el numero del recuadro y el del listado sean siempre el mismo numero.
+const tkdAbierto = t => tkdEst(t) !== 'resuelto';
+// Duracion: desde la fecha solicitada hasta el cierre, o hasta hoy si sigue
+// abierto. Sin fecha de solicitud no hay duracion posible. Y un ticket que figura
+// resuelto pero no tiene fecha de cierre tampoco: contar los dias hasta hoy
+// inventaria una demora que nadie tuvo, asi que se muestra el guion.
+function tkdDur(t){
+  if (!t.fechaSol) return null;
+  if (!t.fechaFin && tkdEst(t) === 'resuelto') return null;
+  const a = _fechaLocal(t.fechaSol); if (!a) return null;
+  const b = t.fechaFin ? _fechaLocal(t.fechaFin) : new Date();
+  if (!b) return null;
+  const d = Math.round((b - a) / 86400000);
+  return d >= 0 ? d : null;
+}
+const tkdAnio = () => anioDashboardTickets();
+function tkdListaMes(k, mes){
+  const a = tkdAnio();
+  if (k === 'ter') return ticketsCerradosEnMes(a, mes, ticketsData);
+  const todos = ticketsDelMes(a, mes, ticketsData);
+  if (k === 'tra') return todos;
+  const cerr = new Set(ticketsCerradosEnMes(a, mes, ticketsData).map(t=>t.id));
+  return todos.filter(t => !cerr.has(t.id));          // backlog = todos − cerrados
+}
+// el ultimo mes con movimiento, para abrir el bloque mensual ahi
+// Con que mes arranca el bloque mensual: SIEMPRE el mes en curso. Sin vueltas y
+// sin buscar "el ultimo mes con movimiento": esa busqueda arrancaba en diciembre
+// y, como un ticket abierto y sin cerrar arrastra hasta fin de año, diciembre
+// siempre daba positivo y el tablero abria ahi. Si el año que se mira no es el
+// actual, arranca en diciembre (ya pasado) o en enero (todavia no empezo).
+function tkdUltimoMes(){
+  const a = tkdAnio(), hoy = new Date();
+  return a < hoy.getFullYear() ? 11 : (a > hoy.getFullYear() ? 0 : hoy.getMonth());
+}
+const tkdMesActual = () => (tkdMES === null ? tkdUltimoMes() : tkdMES);
+const tkdPorEstado = (t,e) => e === 'abiertos' ? tkdAbierto(t) : tkdEst(t) === e;
+
+// el recorte que va al listado
+function tkdRec(){
+  if (tkdORIG === 'anual')
+    return ticketsData.filter(t => (!tkdA.estado || tkdPorEstado(t, tkdA.estado)) &&
+                                   (!tkdA.tipo   || t.tipo === tkdA.tipo));
+  if (tkdORIG === 'mes'){
+    const L = tkdListaMes(tkdM.flujo || 'tra', tkdMesActual());
+    return tkdM.tipo ? L.filter(t => t.tipo === tkdM.tipo) : L;
   }
+  return ticketsData.slice();
+}
+window.tkdRec = tkdRec;
 
-  // Leyenda torta anual
-  const legEl = document.getElementById('tk-pie-legend');
-  if (legEl) legEl.innerHTML = TK_TIPOS.map((t,i) => `
-    <div style="display:flex;align-items:center;gap:0.3rem;font-size:0.65rem;color:var(--ink2)">
-      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]}"></div>${t}
-    </div>`).join('');
+/* ── tooltip ── */
+function tkdTip(e, html){
+  let el = document.getElementById('tkd-tip');
+  if (!el) { el = document.createElement('div'); el.id = 'tkd-tip'; document.body.appendChild(el); }
+  el.innerHTML = html; el.style.opacity = 1;
+  const r = el.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY - r.height - 10;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y < 8) y = e.clientY + 18;
+  el.style.left = x + 'px'; el.style.top = y + 'px';
+}
+function tkdSinTip(){ const el = document.getElementById('tkd-tip'); if (el) el.style.opacity = 0; }
+window.tkdTip = tkdTip; window.tkdSinTip = tkdSinTip;
 
-  // Torta anual
-  if (tkPieAnualChart) tkPieAnualChart.destroy();
-  tkPieAnualChart = new Chart(document.getElementById('tk-pie-anual'), {
-    type: 'doughnut',
-    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth: 0, hoverOffset: 8 }] },
-    options: { responsive:true, maintainAspectRatio:false, cutout:'52%',
-      plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} (${totalTipo>0?Math.round(c.raw/totalTipo*100):0}%)`}} }
-    }
+/* ── helpers svg ── */
+// El alto va CLAVADO en pixeles. Antes el svg iba con width:100% y el viewBox le
+// fijaba la proporcion, asi que el alto crecia con el ancho de la pantalla: la
+// torta anual medía 223 px en un monitor de 1280 y 380 px en uno de 1920, y al
+// imprimir pasaba lo mismo porque la hoja es mas ancha que lo que se diseño.
+// Con max-height + preserveAspectRatio el dibujo nunca pasa del alto pensado: en
+// pantallas angostas se achica solo, en anchas queda en su tamaño y centrado.
+const tkdSVG = (w,h) => `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet"
+  style="display:block;width:100%;height:auto;max-height:${h}px;overflow:visible" role="img">`;
+function tkdBarra(x,y,w,h,r){
+  if (h <= 0) return ''; r = Math.min(r||3, w/2, h);
+  return `M${x},${y+h} L${x},${y+r} Q${x},${y} ${x+r},${y} L${x+w-r},${y} Q${x+w},${y} ${x+w},${y+r} L${x+w},${y+h} Z`;
+}
+function tkdArco(cx,cy,r1,r2,a0,a1){
+  const p = (r,a) => [cx + r*Math.cos(a), cy + r*Math.sin(a)];
+  const g = (a1-a0) > Math.PI ? 1 : 0;
+  const [x1,y1]=p(r2,a0),[x2,y2]=p(r2,a1),[x3,y3]=p(r1,a1),[x4,y4]=p(r1,a0);
+  return `M${x1},${y1} A${r2},${r2} 0 ${g} 1 ${x2},${y2} L${x3},${y3} A${r1},${r1} 0 ${g} 0 ${x4},${y4} Z`;
+}
+
+/* ── acciones ── */
+window.tkdLimpiar = function(){ tkdA={estado:'',tipo:''}; tkdM={flujo:'',tipo:''}; tkdORIG=''; renderDashboardTickets(); };
+window.tkdEstado = function(v){
+  if (tkdORIG==='anual' && tkdA.estado===v) tkdA.estado='';
+  else { tkdA.estado=v; tkdM={flujo:'',tipo:''}; tkdORIG='anual'; }
+  if (!tkdA.estado && !tkdA.tipo) tkdORIG='';
+  renderDashboardTickets();
+};
+window.tkdTipo = function(t){
+  if (tkdORIG==='anual' && tkdA.tipo===t) tkdA.tipo='';
+  else { tkdA.tipo=t; tkdM={flujo:'',tipo:''}; tkdORIG='anual'; }
+  if (!tkdA.estado && !tkdA.tipo) tkdORIG='';
+  renderDashboardTickets();
+};
+window.tkdTodoElAnio = function(){ tkdLimpiar(); };
+window.tkdGajo = function(k,t){
+  if (tkdORIG==='mes' && tkdM.flujo===k && tkdM.tipo===t) { tkdM={flujo:'',tipo:''}; tkdORIG=''; }
+  else { tkdM={flujo:k,tipo:t}; tkdA={estado:'',tipo:''}; tkdORIG='mes'; }
+  renderDashboardTickets();
+};
+// Un atajo por anillo, porque el gajo del SVG solo puede pasar el tipo.
+window.tkdGajoTra = t => tkdGajo('tra', t);
+window.tkdGajoTer = t => tkdGajo('ter', t);
+window.tkdGajoBk  = t => tkdGajo('bk',  t);
+window.tkdUniverso = function(k){
+  if (tkdORIG==='mes' && tkdM.flujo===k && !tkdM.tipo) { tkdLimpiar(); return; }
+  tkdM={flujo:k,tipo:''}; tkdA={estado:'',tipo:''}; tkdORIG='mes';
+  renderDashboardTickets();
+};
+window.tkdQuitar = function(z){
+  if (z==='anual') tkdA={estado:'',tipo:''}; else tkdM={flujo:'',tipo:''};
+  tkdORIG=''; renderDashboardTickets();
+};
+window.tkdCambiarMes = function(v){ tkdMES = +v; if (tkdORIG==='mes') tkdM.tipo=''; renderDashboardTickets(); };
+
+// El recorte se ve ACA ABAJO, desplegando la misma tabla. No se salta a la
+// pestaña Listado: el backlog de un mes es "los vigentes menos los que cerraron
+// en ese mes", y el listado no tiene ningun filtro que exprese esa resta, asi que
+// el salto siempre terminaba mostrando otra cantidad. Para trabajar un ticket se
+// toca su fila y se abre igual que en el listado.
+window.tkdVerTodo = function(ab){
+  tkdAbierta = (ab === undefined) ? !tkdAbierta : !!ab;
+  renderDashboardTickets();
+  if (tkdAbierta) {
+    const el = document.getElementById('tkd-bloque-listado');
+    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+};
+
+/* ── dona generica ── */
+function tkdDona(el, lista, o){
+  if (!el) return;
+  const d = TK_TIPOS.map((t,i)=>({t, c:TK_CORES[i], n:lista.filter(x=>x.tipo===t).length})).filter(x=>x.n);
+  const tot = d.reduce((a,x)=>a+x.n,0);
+  const R = o.rad, W = o.ancho || 440, H = o.alto, cx = W/2, cy = R.cy;
+  let s = tkdSVG(W,H), a = -Math.PI/2;
+  if (!tot){
+    s += `<circle cx="${cx}" cy="${cy}" r="${(R.r1+R.r2)/2}" fill="none" stroke="${TKD_C.surf2}" stroke-width="${R.r2-R.r1}"/>
+          <text x="${cx}" y="${cy+5}" text-anchor="middle" class="tkd-ax" style="font-size:11px">sin datos</text></svg>`;
+    el.innerHTML = s; return;
+  }
+  if (o.aro && o.aro.frac < 0.999){
+    const ra = R.r2 + (tkdPR?3:4), gr = tkdPR?2:3;
+    s += `<circle cx="${cx}" cy="${cy}" r="${ra+gr/2}" fill="none" stroke="${TKD_C.surf2}" stroke-width="${gr}"/>`;
+    if (o.aro.frac > 0)
+      s += `<path d="${tkdArco(cx,cy,ra,ra+gr,-Math.PI/2,-Math.PI/2+2*Math.PI*o.aro.frac)}" fill="${TKD_C.acc}"/>`;
+  }
+  d.forEach(x => {
+    const ang = 2*Math.PI*x.n/tot, gap = Math.min(.02, ang/6);
+    const off = o.resalta && o.resalta !== x.t ? ' off' : '';
+    const acc = o.click ? `onclick="${o.click}('${x.t}')"` : '';
+    s += `<path class="mk${off}" d="${tkdArco(cx,cy,R.r1,R.r2,a+gap/2,a+ang-gap/2)}" fill="${x.c}" ${acc}
+          onmousemove="tkdTip(event,'<b>${escHtml(x.t)}</b><br><span class=k>${x.n} de ${tot} &middot; ${Math.round(100*x.n/tot)}%</span>${o.pista?'<br><span class=k>'+o.pista+'</span>':''}')"
+          onmouseleave="tkdSinTip()"/>`;
+    a += ang;
   });
+  const fs = R.fs, ctr = o.centro;
+  if (ctr.click && !tkdPR)
+    s += `<circle class="mk ctr" cx="${cx}" cy="${cy}" r="${R.r1-2}" fill="transparent" onclick="${ctr.click}"
+            onmousemove="tkdTip(event,'${ctr.pista}')" onmouseleave="tkdSinTip()"/>`;
+  s += `<text x="${cx}" y="${cy+fs*0.16}" text-anchor="middle" pointer-events="none"
+          style="font-size:${fs}px;font-weight:600;fill:${ctr.color||TKD_C.ink};font-family:DM Mono,monospace">${ctr.n}</text>
+        <text x="${cx}" y="${cy+fs*0.16+(tkdPR?10:15)}" text-anchor="middle" class="tkd-ax" pointer-events="none"
+          style="font-size:${tkdPR?7:9}px">${ctr.sub}</text>`;
+  if (o.leyenda){
+    const ly = H - (tkdPR?7:9), an = t => 13 + t.length*5.4;
+    let lx = Math.max(4, (W - d.reduce((a,x)=>a+an(x.t)+10,0))/2);
+    d.forEach(x => {
+      const off = o.resalta && o.resalta !== x.t ? ' off' : '';
+      const acc = o.click ? `onclick="${o.click}('${x.t}')"` : '';
+      s += `<g class="mk${off}" ${acc}>
+        <rect x="${lx-3}" y="${ly-9}" width="${an(x.t)+8}" height="14" fill="transparent"/>
+        <rect x="${lx}" y="${ly-6}" width="8" height="8" rx="2" fill="${x.c}"/>
+        <text x="${lx+12}" y="${ly+1}" style="font-size:9.5px;fill:${TKD_C.ink2}">${escHtml(x.t)}</text></g>`;
+      lx += an(x.t)+10;
+    });
+  }
+  s += '</svg>';
+  el.innerHTML = s;
+}
 
-  // Datos mensuales con el modelo de stock y flujo (ver calcularMensualTickets)
-  const anioTk   = anioDashboardTickets();
-  const calc     = calcularMensualTickets(anioTk, ticketsData);
-  const mesesData = calc.meses.map(m => ({
-    trabajos: m.total, terminados: m.resueltos, backlog: m.backlog
-  }));
+/* ═══════════ el render completo ═══════════ */
+window.renderDashboardTickets = function(){
+  const anio = tkdAnio();
+  const TODOS = ticketsData;
+  const delTipo = tkdA.tipo ? TODOS.filter(t=>t.tipo===tkdA.tipo) : TODOS;
+  const mes = tkdMesActual();
 
-  // Aviso de datos faltantes: preferimos avisar antes que inventar un mes.
+  /* ── aviso de datos faltantes (se conserva tal cual estaba) ── */
+  const calc = calcularMensualTickets(anio, ticketsData);
   const avisoEl = document.getElementById('tk-aviso-fechas');
-  if (avisoEl) {
+  if (avisoEl){
     const partes = [];
     if (calc.sinFechaSol)
       partes.push(`<b>${calc.sinFechaSol}</b> de <b>${ticketsData.length}</b> tickets no tienen <strong>Fecha solicitada</strong>, así que no entran en el cálculo mensual.`);
     if (calc.resueltosSinFechaFin)
-      partes.push(`<b>${calc.resueltosSinFechaFin}</b> figuran resueltos pero sin <strong>Fecha terminada</strong>: cuentan como abiertos en el backlog hasta que les cargues la fecha de cierre.`);
-    if (calc.arrastreInicial)
-      partes.push(`Enero arranca con <b>${calc.arrastreInicial}</b> arrastrados de ${anioTk-1}.`);
+      partes.push(`<b>${calc.resueltosSinFechaFin}</b> figuran como resueltos pero sin <strong>Fecha terminada</strong>: no se pueden ubicar en un mes.`);
     avisoEl.innerHTML = partes.length
-      ? `<div class="tk-aviso">⚠️ ${partes.join(' ')}</div>` : '';
+      ? `<div style="font-size:0.78rem;color:var(--amber);background:var(--amber-light);border-radius:6px;padding:0.5rem 0.8rem;margin-bottom:0.85rem;line-height:1.5">${partes.join(' ')}</div>`
+      : '';
   }
 
-  const mesesLabels = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const dataTrab = mesesData.map(m => m.trabajos);
-  const dataTerm = mesesData.map(m => m.terminados);
-  const dataBack = mesesData.map(m => m.backlog);
-  // En la linea, los meses que no pasaron van como null: la linea se CORTA en
-  // el mes en curso. Con cero se veria una caida a cero, que se lee como "se
-  // resolvio todo de golpe" — justo lo contrario de lo que pasa.
-  const hastaMes = calc.ultimoMes;
-  const corta = arr => arr.map((v,i) => i > hastaMes ? null : v);
-  const lineTrab = corta(dataTrab), lineTerm = corta(dataTerm), lineBack = corta(dataBack);
+  /* ── recuadros: SIEMPRE del año ── */
+  const nEst = e => delTipo.filter(t=>tkdPorEstado(t,e)).length;
+  // El tiempo medio se mide sobre los que tienen fecha de cierre; la antiguedad,
+  // sobre los que siguen abiertos de verdad.
+  const cerr = delTipo.filter(t=>t.fechaFin), abi = delTipo.filter(t=>tkdAbierto(t) && !t.fechaFin);
+  const conDur = l => l.map(tkdDur).filter(d=>d!==null);
+  const prom = l => l.length ? Math.round(l.reduce((a,b)=>a+b,0)/l.length) : null;
+  const mtr = prom(conDur(cerr)), ant = prom(conDur(abi));
+  const mini = (v,txt) => `<a onclick="event.stopPropagation();tkdEstado('${v}')"
+     style="color:${tkdORIG==='anual'&&tkdA.estado===v?'var(--accent)':'var(--ink3)'};text-decoration:none;
+     border-bottom:1px dotted var(--border);cursor:pointer;font-weight:${tkdORIG==='anual'&&tkdA.estado===v?'600':'400'}">${txt}</a>`;
+  const T = [
+    {v:'',         n:delTipo.length,  l:'Total',     c:TKD_C.ink,   s:'en el año'},
+    {v:'resuelto', n:nEst('resuelto'),l:'Resueltos', c:TKD_C.green, s:'cerrados'},
+    {v:'abiertos', n:nEst('abiertos'),l:'Backlog',   c:TKD_C.verde,
+     s: mini('en-curso', nEst('en-curso')+' en curso') + ' · ' + mini('en-espera', nEst('en-espera')+' en espera')},
+    {ro:1, n: mtr===null?'—':mtr+' d', l:'Tiempo medio<br>de resolución', c:TKD_C.ink,
+     s: conDur(cerr).length ? 'sobre '+conDur(cerr).length+' con fechas' : 'faltan fechas'},
+    {ro:1, n: ant===null?'—':ant+' d', l:'Antigüedad<br>de lo pendiente', c:TKD_C.ink,
+     s: conDur(abi).length ? 'sobre '+conDur(abi).length+' con fechas' : 'faltan fechas'}
+  ];
+  const stEl = document.getElementById('tkd-stats');
+  if (stEl) stEl.innerHTML = T.map(t => {
+    const act = !t.ro && tkdORIG==='anual' && tkdA.estado===t.v && (t.v!=='' || !tkdA.tipo);
+    return `<div class="tkd-stat${t.ro?' ro':''}${act?' act':''}"${t.ro?'':
+      ` tabindex="0" role="button" onclick="tkdEstado('${t.v}')"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();tkdEstado('${t.v}')}"`}>
+      <div class="tkd-sv" style="color:${t.c}">${t.n}</div>
+      <div class="tkd-sl">${t.l}</div>
+      <div class="tkd-ss">${t.s||''}</div></div>`;
+  }).join('');
 
-  // Fondo gris suave sobre los meses que todavia no llegaron, para que se
-  // entienda que estan vacios porque no pasaron, no porque no hubo trabajo.
-  const futuroPlugin = { id:'futuro', beforeDatasetsDraw(chart) {
-    const desde = hastaMes + 1;
-    if (desde > 11 || desde < 0) return;
-    const ca = chart.chartArea; if (!ca) return;
-    const x0 = ca.left + (ca.right - ca.left) * (desde / 12);
-    const ctx = chart.ctx; ctx.save();
-    ctx.fillStyle = 'rgba(160,152,144,0.10)';
-    ctx.fillRect(x0, ca.top, ca.right - x0, ca.bottom - ca.top);
-    ctx.fillStyle = 'rgba(122,116,106,0.55)';
-    ctx.font = '600 8px system-ui'; ctx.textAlign = 'center';
-    ctx.fillText('todavía no', (x0 + ca.right)/2, ca.top + 10);
-    ctx.restore();
-  }};
+  /* ── la dona anual: porciones fijas, centro vivo ── */
+  const actA = tkdORIG === 'anual';
+  const nRec = tkdRec().length;
+  tkdDona(document.getElementById('tkd-ch-anual'), TODOS, {
+    alto: tkdPR?150:212,
+    rad:  {cy:tkdPR?68:100, r1:tkdPR?36:52, r2:tkdPR?57:82, fs:tkdPR?23:32},
+    leyenda:true, click:'tkdTipo', resalta:tkdA.tipo, pista:'tocá para filtrar el año',
+    aro: actA ? {frac: nRec/Math.max(1,TODOS.length)} : null,
+    centro: actA
+      ? {n:nRec, sub:'de '+TODOS.length+' en '+anio, color:TKD_C.acc, click:'tkdTodoElAnio()',
+         pista:'<b>Ver los '+TODOS.length+' del año</b><br><span class=k>limpia la selección</span>'}
+      : {n:TODOS.length, sub:'tickets en '+anio, click:'tkdTodoElAnio()',
+         pista:'<b>Ver los '+TODOS.length+' del año</b>'}
+  });
+  const aroEl = document.getElementById('tkd-aro');
+  if (aroEl) aroEl.innerHTML = actA
+    ? `<span style="color:var(--accent);font-weight:600">${Math.round(100*nRec/Math.max(1,TODOS.length))}%</span> del año` : '';
 
-  // Plugin labels
-  const lblPlugin = { id:'lbl', afterDraw(chart) {
-    const ctx = chart.ctx; ctx.save();
-    chart.data.datasets.forEach((ds,di) => {
-      const meta = chart.getDatasetMeta(di);
-      ctx.font = '700 8px system-ui'; ctx.textAlign = 'center';
-      ctx.fillStyle = ds.borderColor || ds.backgroundColor;
-      meta.data.forEach((el,i) => { if(ds.data[i]>0 && el && !el.skip) ctx.fillText(ds.data[i], el.x, el.y-5); });
+  /* ── ranking y eficiencia: del año, fijos ── */
+  const rk = TK_TIPOS.map((t,i)=>({t, c:TK_CORES[i], n:TODOS.filter(x=>x.tipo===t).length})).sort((a,b)=>b.n-a.n);
+  const maxRk = rk[0] ? rk[0].n : 1, totRk = TODOS.length || 1;
+  const rkEl = document.getElementById('tkd-ranking');
+  if (rkEl) rkEl.innerHTML = rk.map((s,i)=>{
+    const off = tkdA.tipo && tkdA.tipo!==s.t ? ' off' : '';
+    return `<div class="tkd-rank${off}" onclick="tkdTipo('${s.t}')"
+      onmousemove="tkdTip(event,'<b>${escHtml(s.t)}</b><br><span class=k>${s.n} en el año &middot; tocá para filtrar</span>')"
+      onmouseleave="tkdSinTip()">
+      <span class="n">${i+1}</span><div class="d" style="background:${s.c}"></div>
+      <span class="l">${escHtml(s.t)}</span>
+      <div class="b"><i style="width:${Math.round(s.n/maxRk*100)}%;background:${s.c}"></i></div>
+      <span class="v">${s.n}</span><span class="p">${Math.round(s.n/totRk*100)}%</span></div>`;
+  }).join('');
+  const res = TODOS.filter(t=>tkdEst(t)==='resuelto').length;
+  const efi = TODOS.length ? Math.round(res/TODOS.length*100) : 0;
+  const eb = document.getElementById('tkd-efi-bar'); if (eb) eb.style.width = efi+'%';
+  const ep = document.getElementById('tkd-efi-pct'); if (ep) ep.textContent = efi+'%';
+  const es = document.getElementById('tkd-efi-sub');
+  if (es) es.textContent = res+' de '+TODOS.length+' trabajos resueltos en el año';
+
+  /* ── barras por mes: fijas, el año completo ── */
+  tkdBarrasMes();
+
+  /* ── los tres anillos del mes ── */
+  const selMes = document.getElementById('tkd-mes-sel');
+  if (selMes && !selMes.options.length){
+    selMes.innerHTML = MESES_FULL.map((m,i)=>`<option value="${i}">${m}</option>`).join('');
+  }
+  if (selMes) selMes.value = mes;
+  const mp = document.getElementById('tkd-mes-print'); if (mp) mp.textContent = MESES_FULL[mes]+' '+anio;
+
+  const L = {tra:tkdListaMes('tra',mes), ter:tkdListaMes('ter',mes), bk:tkdListaMes('bk',mes)};
+  const rad = {cy:tkdPR?42:84, r1:tkdPR?22:40, r2:tkdPR?36:68, fs:tkdPR?16:26};
+  const alto = tkdPR?82:184, ancho = 340;
+  const sub = {tra:'del mes', ter:'resueltos', bk:'pendientes'};
+  const quePl = {tra:'trabajos de', ter:'resueltos de', bk:'pendientes de'};
+  ['tra','ter','bk'].forEach(k=>{
+    const act  = tkdORIG==='mes' && (tkdM.flujo||'tra')===k;
+    const conT = act && !!tkdM.tipo;
+    const nSel = L[k].filter(t=>t.tipo===tkdM.tipo).length;
+    const col = TK_CORES[TK_TIPOS.indexOf(tkdM.tipo)] || TKD_C.ink;
+    const pista = '<b>Ver los '+L[k].length+' '+quePl[k]+' '+MESES_FULL[mes]+'</b>' +
+      (conT ? '<br><span class=k>quita el filtro de '+escHtml(tkdM.tipo)+'</span>' : '') +
+      ((act && !tkdM.tipo) ? '<br><span class=k>volvés a tocar y ves los '+TODOS.length+' del año</span>' : '');
+    tkdDona(document.getElementById('tkd-ch-'+k), L[k], {
+      alto, rad, ancho, leyenda:false, click:'tkdGajo'+k[0].toUpperCase()+k.slice(1),
+      resalta: act?tkdM.tipo:'',
+      pista:'tocá para ver esos tickets',
+      centro: conT ? {n:nSel, sub:'de '+L[k].length+' '+sub[k], color:col,
+                      click:"tkdUniverso('"+k+"')", pista}
+                   : {n:L[k].length, sub:sub[k], click:"tkdUniverso('"+k+"')", pista}
     });
-    ctx.restore();
-  }};
-
-  const baseScales = {
-    x: { ticks:{color:axisC,font:{size:8},maxRotation:0}, grid:{display:false}, border:{display:false} },
-    y: { ticks:{color:axisC,font:{size:8},maxTicksLimit:5}, grid:{color:gridC}, border:{display:false} }
-  };
-
-  // Barras
-  if (tkBarrasChart) tkBarrasChart.destroy();
-  tkBarrasChart = new Chart(document.getElementById('tk-barras'), {
-    type: 'bar',
-    data: { labels: mesesLabels, datasets: [
-      { label:'Trabajos',   data: dataTrab, backgroundColor:'#2a78d6' },
-      { label:'Terminados', data: dataTerm, backgroundColor:'#e34948' },
-      { label:'Backlog',    data: dataBack, backgroundColor:'#1baf7a' },
-    ]},
-    options: { responsive:true, maintainAspectRatio:false, layout:{padding:{top:18,right:6}},
-      plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false} },
-      scales: baseScales,
-      // Tocar una barra selecciona ese mes y actualiza las dos tortas de abajo.
-      onClick: (evt, els, chart) => {
-        let i = els && els.length ? els[0].index : null;
-        if (i === null) {
-          const pts = chart.getElementsAtEventForMode(evt, 'index', {intersect:false}, true);
-          if (pts && pts.length) i = pts[0].index;
-        }
-        if (i === null) return;
-        const s = document.getElementById('tk-mes-sel');
-        if (s) { s.value = i; renderDashboardTicketsMes(); }
-      },
-      onHover: (evt, els, chart) => {
-        if (chart && chart.canvas) chart.canvas.style.cursor = 'pointer';
-      }
-    },
-    plugins: [lblPlugin, futuroPlugin]
+    const cEl = document.getElementById('tkd-col-'+k); if (cEl) cEl.classList.toggle('act', act);
+    const nEl = document.getElementById('tkd-n-'+k);   if (nEl) nEl.textContent = L[k].length;
   });
+  const leyEl = document.getElementById('tkd-leyenda');
+  if (leyEl) leyEl.innerHTML = TK_TIPOS.map((t,i)=>{
+    const off = tkdORIG==='mes' && tkdM.tipo && tkdM.tipo!==t ? ';opacity:.3' : '';
+    return `<span class="tkd-leg" style="${off}"><i style="background:${TK_CORES[i]}"></i>${escHtml(t)}</span>`;
+  }).join('');
+  const rsEl = document.getElementById('tkd-mes-resumen');
+  if (rsEl) rsEl.innerHTML = '<span class="tkd-eq">' +
+    [['tra',L.tra.length,'trabajos'],['ter',L.ter.length,'resueltos'],['bk',L.bk.length,'pendientes']]
+      .map(x=>`<a onclick="tkdUniverso('${x[0]}')"><b>${x[1]}</b> ${x[2]}</a>`).join('<span>·</span>') +
+    '</span>';
 
-  // El gráfico de barras usa bandas (offset) y el de línea, por defecto, no:
-  // el mismo mes caía en una x distinta en cada uno y las dos bandas grises
-  // no coincidían al verlas una arriba de la otra.
-  const scalesLinea = { ...baseScales, x: { ...baseScales.x, offset:true } };
+  /* ── franja de selección ── */
+  tkdPintarSel();
 
-  // Línea
-  if (tkLineaChart) tkLineaChart.destroy();
-  tkLineaChart = new Chart(document.getElementById('tk-linea'), {
-    type: 'line',
-    data: { labels: mesesLabels, datasets: [
-      { label:'Trabajos',   data:lineTrab, borderColor:'#2a78d6', backgroundColor:'rgba(42,120,214,0.07)', borderWidth:2, pointRadius:4, pointBackgroundColor:'#2a78d6', tension:.35, fill:true, spanGaps:false },
-      { label:'Terminados', data:lineTerm, borderColor:'#e34948', backgroundColor:'transparent', borderWidth:2, pointRadius:4, pointBackgroundColor:'#e34948', tension:.35, fill:false, spanGaps:false },
-      { label:'Backlog',    data:lineBack, borderColor:'#1baf7a', backgroundColor:'transparent', borderWidth:2, pointRadius:4, pointBackgroundColor:'#1baf7a', tension:.35, fill:false, spanGaps:false },
-    ]},
-    options: { responsive:true, maintainAspectRatio:false, layout:{padding:{top:18}},
-      plugins: { legend:{display:false},
-        tooltip:{mode:'index',intersect:false,
-          // Sin esto, los meses que no pasaron muestran un globo vacio.
-          filter: item => item.raw !== null && item.raw !== undefined} },
-      scales: scalesLinea
-    },
-    plugins: [lblPlugin, futuroPlugin]
-  });
-
-  // Filtro de mes: arranca en el mes actual, pero si ese mes no tiene nada y si
-  // hay datos en otro, va al ultimo mes con movimiento para no abrir en blanco.
-  const sel = document.getElementById('tk-mes-sel');
-  if (sel) {
-    let mIni = new Date().getMonth();
-    if (!calc.meses[mIni].total) {
-      for (let m = 11; m >= 0; m--) { if (calc.meses[m].total) { mIni = m; break; } }
-    }
-    sel.value = mIni;
-    renderDashboardTicketsMes();
-  }
+  /* ── listado del recorte ── */
+  const R = tkdRec();
+  const ln = document.getElementById('tkd-lst-n');
+  if (ln) ln.textContent = R.length + ' ticket' + (R.length===1?'':'s');
+  const tb = document.getElementById('tkd-tabla');
+  if (tb) tb.innerHTML = tkdTabla(R, 6);
 };
 
-// Desglose por tipo (lista de barritas debajo de cada torta)
-function desgloseTipos(porTipo, total) {
-  const filas = TK_TIPOS.map((t,i) => porTipo[i] > 0 ? `
-    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.26rem 0;border-bottom:0.5px solid var(--border)">
-      <div style="width:8px;height:8px;border-radius:2px;background:${TK_CORES[i]};flex-shrink:0"></div>
-      <span style="font-size:0.72rem;color:var(--ink2);flex:1;min-width:0">${t}</span>
-      <span style="font-size:0.78rem;font-weight:500;color:var(--ink);min-width:18px;text-align:right">${porTipo[i]}</span>
-      <span style="font-size:0.65rem;color:var(--ink3);min-width:32px;text-align:right">${total>0?Math.round(porTipo[i]/total*100):0}%</span>
-    </div>` : '').join('');
-  return filas || '<div style="font-size:0.72rem;color:var(--ink3);padding:0.4rem 0">Sin tickets en el período</div>';
+/* ── barras por mes: no se tocan, no se filtran ── */
+function tkdBarrasMes(){
+  const el = document.getElementById('tkd-ch-meses'); if (!el) return;
+  const anio = tkdAnio(), hoyMes = (anio === new Date().getFullYear()) ? new Date().getMonth() : 11;
+  const datos = [];
+  for (let m = 0; m <= 11; m++){
+    const tra = ticketsDelMes(anio,m,ticketsData).length;
+    const ter = ticketsCerradosEnMes(anio,m,ticketsData).length;
+    datos.push({m, tra, ter, bk: tra-ter, futuro: m > hoyMes});
+  }
+  const max = Math.max(4, ...datos.map(d=>Math.max(d.tra,d.ter,d.bk)));
+  const paso = Math.ceil(max/4)*4;
+  // El viewBox toma el ancho real del panel, asi el dibujo va 1 a 1 con los
+  // pixeles y no queda aire a los costados en monitores anchos. Al imprimir se
+  // usa el ancho de la hoja A4 apaisada, que el navegador todavia no midio.
+  const W = tkdPR ? 1030 : Math.max(640, Math.round(el.clientWidth || 1120));
+  const H = tkdPR?100:230, pL = 26, pR = 8, pT = tkdPR?9:16, pB = tkdPR?17:26;
+  const gw = (W-pL-pR)/12, bw = Math.min(16,(gw-10)/3);
+  const Y = v => pT + (H-pT-pB)*(1 - v/paso);
+  let s = tkdSVG(W,H);
+  for (let i=0;i<=4;i++){ const v = paso*i/4, y = Y(v);
+    s += `<line x1="${pL}" y1="${y}" x2="${W-pR}" y2="${y}" stroke="${TKD_C.bord}" stroke-width="1" opacity=".45"/>
+          <text x="${pL-5}" y="${y+3}" class="tkd-ax" text-anchor="end">${v}</text>`; }
+  const prim = datos.findIndex(d=>d.futuro);
+  if (prim >= 0){
+    const xF = pL + gw*prim;
+    s += `<rect x="${xF}" y="${pT}" width="${W-pR-xF}" height="${Y(0)-pT}" fill="${TKD_C.surf3}"/>
+          <text x="${(xF+W-pR)/2}" y="${pT+14}" class="tkd-ax" text-anchor="middle">todavía no</text>`;
+  }
+  datos.forEach(d=>{
+    const cx = pL+gw*d.m+gw/2, x0 = cx-bw*1.5-2;
+    // Los rotulos son los de la leyenda de abajo, no los de los anillos.
+    if (!d.futuro) [['Trabajos',d.tra,TKD_C.azul],['Terminados',d.ter,TKD_C.rojo],['Backlog',d.bk,TKD_C.verde]].forEach((b,k)=>{
+      s += `<path d="${tkdBarra(x0+k*(bw+2),Y(b[1]),bw,Y(0)-Y(b[1]),3)}" fill="${b[2]}" style="cursor:default"
+            onmousemove="tkdTip(event,'<b>${MESES_FULL[d.m]}</b><br><span class=k>${b[0]}</span> <b>${b[1]}</b>')"
+            onmouseleave="tkdSinTip()"/>`;
+      if (b[1]) s += `<text x="${x0+k*(bw+2)+bw/2}" y="${Y(b[1])-3}" class="tkd-val" text-anchor="middle"
+            style="fill:${b[2]};font-size:${tkdPR?8:9}px;font-weight:600">${b[1]}</text>`;
+    });
+    s += `<text x="${cx}" y="${H-pB+14}" class="tkd-ax" text-anchor="middle"${d.futuro?' opacity=".5"':''}>${MESES_FULL[d.m].slice(0,3)}</text>`;
+  });
+  s += '</svg>';
+  el.innerHTML = s;
 }
 
-// Dos tortas del mes elegido: TODO lo del mes (arrastrado + nuevo) y, al lado,
-// solo lo que CERRO en ese mes. Misma escala de colores por tipo en las dos.
-window.renderDashboardTicketsMes = function() {
-  const idx   = +(document.getElementById('tk-mes-sel')?.value || 0);
-  const anio  = anioDashboardTickets();
-  const delMes    = ticketsDelMes(anio, idx, ticketsData);
-  const cerrados  = ticketsCerradosEnMes(anio, idx, ticketsData);
+/* ── franja de selección ── */
+function tkdPintarSel(){
+  const s = document.getElementById('tkd-sel'); if (!s) return;
+  const chipsEl = document.getElementById('tkd-chips');
+  if (!tkdORIG){ s.classList.remove('on'); if (chipsEl) chipsEl.innerHTML=''; return; }
+  s.classList.add('on');
+  const anio = tkdAnio(), mes = tkdMesActual(), ch = [];
+  if (tkdORIG==='anual'){
+    ch.push(['anual','','Año '+anio]);
+    if (tkdA.estado) ch.push(['anual', tkdEL(tkdA.estado)[2], tkdEL(tkdA.estado)[1]]);
+    if (tkdA.tipo)   ch.push(['anual', TK_CORES[TK_TIPOS.indexOf(tkdA.tipo)], tkdA.tipo]);
+  } else {
+    ch.push(['mes','',MESES_FULL[mes]+' '+anio]);
+    ch.push(['mes', TKD_FLUJOS[tkdM.flujo||'tra'][1], TKD_FLUJOS[tkdM.flujo||'tra'][0]]);
+    if (tkdM.tipo) ch.push(['mes', TK_CORES[TK_TIPOS.indexOf(tkdM.tipo)], tkdM.tipo]);
+  }
+  if (chipsEl) chipsEl.innerHTML = ch.map(c=>
+    `<span class="tkd-chip">${c[1]?`<i style="background:${c[1]}"></i>`:''}${escHtml(c[2])}
+      <button onclick="tkdQuitar('${c[0]}')" title="Quitar" aria-label="Quitar">✕</button></span>`).join('');
+  const bv = document.getElementById('tkd-btn-ver');
+  if (bv) bv.textContent = 'Ver los '+tkdRec().length+' tickets';
+  if (bv) bv.setAttribute('onclick','tkdVerTodo(true)');
+}
 
-  const total    = delMes.length;
-  const totalRes = cerrados.length;
-  const porTipo    = TK_TIPOS.map(t => delMes.filter(x => x.tipo === t).length);
-  const porTipoRes = TK_TIPOS.map(t => cerrados.filter(x => x.tipo === t).length);
-  const backlog  = total - totalRes;
+/* ── la duración, también usada por el listado ── */
+function tkdChipDur(t){
+  const d = tkdDur(t);
+  if (d === null) return '<span style="color:var(--ink3)">—</span>';
+  if (t.fechaFin) return `<span class="dur" style="color:var(--green)">${d} d</span>`;
+  return `<span class="dur" style="color:var(--ink2)">${d} d <span class="ab">abierto</span></span>`;
+}
+window.tkdChipDur = tkdChipDur;
 
-  const resumen = document.getElementById('tk-mes-resumen');
-  if (resumen) resumen.innerHTML =
-    `${MESES_FULL[idx]} ${anio} — <b style="font-family:DM Mono,monospace">${total}</b> trabajo${total!==1?'s':''} · ` +
-    `<b style="font-family:DM Mono,monospace;color:var(--green)">${totalRes}</b> resuelto${totalRes!==1?'s':''} · ` +
-    `<b style="font-family:DM Mono,monospace;color:var(--accent)">${backlog}</b> de backlog`;
+function tkdTabla(lista, tope){
+  const L0 = [...lista].sort((a,b)=>(b.numero||0)-(a.numero||0));
+  if (!L0.length) return '<div class="tkd-vacio">No hay tickets con este filtro.<br><span style="font-size:.78rem">Tocá «Ver todo» para volver a la vista general.</span></div>';
+  const abierta = tkdAbierta || !tope || L0.length <= tope;
+  const L = abierta ? L0 : L0.slice(0,tope);
+  const pr = p => p==='Alta' ? ['var(--red-light)','var(--red)'] : p==='Media' ? ['var(--amber-light)','var(--amber)'] : ['var(--surface2)','var(--ink2)'];
+  const filas = L.map(t=>{
+    const e = tkdEL(tkdEst(t)), ci = TK_CORES[TK_TIPOS.indexOf(t.tipo)] || '#A09890';
+    const c = pr(t.prioridad);
+    return `<tr class="fila" onclick="editarTicket('${t.id}')" title="Abrir el ticket">
+      <td class="id">#${t.numero||'—'}</td>
+      <td class="tarea">${escHtml(t.nombre||'')}</td>
+      <td>${escHtml(t.pedidoA||'—')}</td>
+      <td class="f">${formatFecha(t.fechaSol)}</td>
+      <td><span class="tkd-bdg" style="background:${c[0]};color:${c[1]}">${escHtml(t.prioridad||'—')}</span></td>
+      <td class="f">${formatFecha(t.fechaFin)}</td>
+      <td><span class="tkd-bdg" style="background:${e[2]}1a;color:${e[2]}">${e[1]}</span></td>
+      <td><span class="tkd-bdg" style="background:${ci}1a;color:${ci}">${escHtml(t.tipo||'—')}</span></td>
+      <td style="text-align:right">${tkdChipDur(t)}</td></tr>`;
+  }).join('');
+  const cab = `<table class="tkd-tk"><thead><tr>
+      <th>ID</th><th>Tarea</th><th>Pedido a</th><th>Fecha</th><th>Prioridad</th>
+      <th>F. terminada</th><th>Estado</th><th>Tipo</th><th style="text-align:right">Duración</th>
+    </tr></thead><tbody>${filas}</tbody></table>`;
+  // Desplegada, la tabla scrollea dentro de su propio recuadro: asi no empuja la
+  // pagina 3.000 px hacia abajo cuando el recorte son 100 tickets.
+  const cuerpo = abierta && L0.length > (tope||0)
+    ? `<div class="tkd-scroll">${cab}</div>` : cab;
+  const pie = (tope && L0.length > tope)
+    ? (abierta
+        ? `<div class="tkd-pag"><span>Los <b style="color:var(--ink2)">${L0.length}</b> del recorte · tocá una fila para abrir el ticket</span>
+           <button class="tkd-btn" onclick="tkdVerTodo(false)">Ver menos</button></div>`
+        : `<div class="tkd-pag"><span>Mostrando <b style="color:var(--ink2)">${tope}</b> de <b style="color:var(--ink2)">${L0.length}</b></span>
+           <button class="tkd-btn pri" onclick="tkdVerTodo(true)">Ver los ${L0.length} acá</button></div>`)
+    : `<div class="tkd-pag"><span>${L0.length} ticket${L0.length===1?'':'s'} · tocá una fila para abrir el ticket</span><span>Duración: hasta el cierre, o hasta hoy si sigue abierto</span></div>`;
+  return `<div class="tkd-tw">${cuerpo}${pie}</div>`;
+}
 
-  const nTot = document.getElementById('tk-mes-tot');
-  const nRes = document.getElementById('tk-mes-res-n');
-  if (nTot) nTot.textContent = total;
-  if (nRes) nRes.textContent = totalRes;
-
-  const opcionesTorta = (t) => ({
-    responsive:true, maintainAspectRatio:false, cutout:'55%',
-    plugins: { legend:{display:false},
-      tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw}${t>0?' ('+Math.round(c.raw/t*100)+'%)':''}`}} }
-  });
-
-  if (tkPieMesChart) tkPieMesChart.destroy();
-  tkPieMesChart = new Chart(document.getElementById('tk-pie-mes'), {
-    type: 'doughnut',
-    data: { labels: TK_TIPOS, datasets: [{ data: porTipo, backgroundColor: TK_CORES, borderWidth:0, hoverOffset:5 }] },
-    options: opcionesTorta(total)
-  });
-
-  if (tkPieMesResChart) tkPieMesResChart.destroy();
-  tkPieMesResChart = new Chart(document.getElementById('tk-pie-mes-res'), {
-    type: 'doughnut',
-    data: { labels: TK_TIPOS, datasets: [{ data: porTipoRes, backgroundColor: TK_CORES, borderWidth:0, hoverOffset:5 }] },
-    options: opcionesTorta(totalRes)
-  });
-
-  const d1 = document.getElementById('tk-mes-desglose');
-  const d2 = document.getElementById('tk-mes-desglose-res');
-  if (d1) d1.innerHTML = desgloseTipos(porTipo, total);
-  if (d2) d2.innerHTML = desgloseTipos(porTipoRes, totalRes);
+/* ── impresión ── */
+function tkdQueVeo(){
+  const anio = tkdAnio();
+  if (tkdORIG==='anual') return 'Año '+anio + (tkdA.estado?' · '+tkdEL(tkdA.estado)[1]:'') + (tkdA.tipo?' · '+tkdA.tipo:'');
+  if (tkdORIG==='mes')   return MESES_FULL[tkdMesActual()]+' '+anio+' · '+TKD_FLUJOS[tkdM.flujo||'tra'][0] + (tkdM.tipo?' · '+tkdM.tipo:'');
+  return 'Todo '+anio;
+}
+function tkdTablaPrint(lista){
+  const L = [...lista].sort((a,b)=>(b.numero||0)-(a.numero||0));
+  if (!L.length) return '<p style="font-size:8pt;color:#A09890">No hay tickets con este filtro.</p>';
+  return `<table class="tkd-pr"><thead><tr>
+      <th style="width:22px">#</th><th style="width:26%">Tarea</th><th style="width:66px">Pedido a</th>
+      <th style="width:56px">Tipo</th><th style="width:34px">Prior.</th><th style="width:46px">Estado</th>
+      <th style="width:44px">Fecha</th><th style="width:44px">Terminada</th>
+      <th style="width:50px;text-align:right">Duración</th><th>Observaciones</th>
+    </tr></thead><tbody>` + L.map(t=>{
+      const d = tkdDur(t);
+      return `<tr><td class="n">${t.numero||''}</td><td>${escHtml(t.nombre||'')}</td><td>${escHtml(t.pedidoA||'—')}</td>
+        <td>${escHtml(t.tipo||'—')}</td><td>${escHtml(t.prioridad||'—')}</td><td>${tkdEL(tkdEst(t))[1]}</td>
+        <td class="n">${formatFecha(t.fechaSol)}</td><td class="n">${formatFecha(t.fechaFin)}</td>
+        <td class="d">${d===null?'—':d+' d'+(t.fechaFin?'':' abierto')}</td>
+        <td class="o">${escHtml(t.obs||'')}</td></tr>`;
+    }).join('') + '</tbody></table>';
+}
+// Deja la pagina lista para imprimir. No llama a print(): eso lo hace el boton.
+function tkdPrepararImpresion(){
+  const L = tkdRec();
+  tkdPR = true; renderDashboardTickets();
+  const h = new Date();
+  const f = String(h.getDate()).padStart(2,'0')+'/'+String(h.getMonth()+1).padStart(2,'0')+'/'+h.getFullYear();
+  const quien = (typeof usuarioActual==='function' ? usuarioActual() : '') || '';
+  const set = (id,txt,html) => { const e=document.getElementById(id); if(e){ if(html) e.innerHTML=txt; else e.textContent=txt; } };
+  set('tkd-pr-gen','Generado el '+f+(quien?' por '+quien:''));
+  // El aviso de fechas faltantes no se imprime como cartel: entra como un dato
+  // mas de la linea de arriba, para que quien lee el informe sepa que quedo afuera.
+  const cal = calcularMensualTickets(tkdAnio(), ticketsData);
+  const fil = [['Recorte',tkdQueVeo()],['Mes del bloque mensual',MESES_FULL[tkdMesActual()]+' '+tkdAnio()],
+               ['Tickets del informe',L.length]];
+  if (cal.sinFechaSol) fil.push(['Sin fecha de solicitud (fuera del cálculo mensual)', cal.sinFechaSol]);
+  if (cal.resueltosSinFechaFin) fil.push(['Resueltos sin fecha de cierre', cal.resueltosSinFechaFin]);
+  set('tkd-pr-fil', fil.map(x=>`<span>${x[0]}: <b>${escHtml(String(x[1]))}</b></span>`).join(''), true);
+  set('tkd-pr-tit','Detalle de tickets · '+tkdQueVeo()+' · '+L.length+' tickets');
+  set('tkd-pr-tabla', tkdTablaPrint(L), true);
+  set('tkd-pr-pie-l','Tickets · informe generado el '+f);
+  tkdSinTip();
+  document.body.classList.add('tkd-print');
+}
+window.tkdImprimir = function(){
+  tkdPrepararImpresion();
+  // El respiro deja que el navegador repinte los graficos en tamaño de hoja
+  // antes de abrir el diálogo; si no, la primera vista previa sale con los
+  // gráficos de pantalla.
+  setTimeout(()=>window.print(), 140);
 };
+// Si se cambia el tamaño de la ventana hay que rehacer los graficos: el ancho
+// del viewBox se calcula al dibujar.
+let tkdResizeT = null;
+addEventListener('resize', ()=>{
+  if (tkdPR) return;
+  const vd = document.getElementById('tk-vista-dashboard');
+  if (!vd || vd.style.display === 'none' || moduloActual !== 'tickets') return;
+  clearTimeout(tkdResizeT);
+  tkdResizeT = setTimeout(()=>renderDashboardTickets(), 180);
+});
+addEventListener('beforeprint', ()=>{
+  // Ctrl+P estando en el dashboard prepara la hoja igual que el botón. Aca NO se
+  // vuelve a llamar a print(): el diálogo ya se esta abriendo solo.
+  const vd = document.getElementById('tk-vista-dashboard');
+  if (!tkdPR && moduloActual === 'tickets' && vd && vd.style.display !== 'none') tkdPrepararImpresion();
+});
+addEventListener('afterprint', ()=>{
+  if (tkdPR){ tkdPR = false; document.body.classList.remove('tkd-print'); renderDashboardTickets(); }
+});
 
 // ============================================================
 // TICKETS
@@ -7145,7 +7770,13 @@ function aplicarSnapTickets(snap) {
   ticketContador = ticketsData.length
     ? Math.max(0, ...ticketsData.map(t => t.numero || 0))
     : 0;
-  if (moduloActual === 'tickets') renderTickets();
+  if (moduloActual === 'tickets') {
+    renderTickets();
+    // Si el usuario esta parado en el Dashboard, tambien se redibuja: antes
+    // quedaba con los numeros viejos hasta cambiar de pestaña.
+    const vd = document.getElementById('tk-vista-dashboard');
+    if (vd && vd.style.display !== 'none') renderDashboardTickets();
+  }
   renderTicketsBadge();
 }
 
@@ -7366,7 +7997,7 @@ window.renderTickets = function() {
   if (!tbody) return;
 
   if (!lista.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:2rem;color:var(--ink3)">No hay tickets que coincidan</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--ink3)">No hay tickets que coincidan</td></tr>';
     return;
   }
 
@@ -7390,6 +8021,7 @@ window.renderTickets = function() {
       <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${t.fechaSol?formatFecha(t.fechaSol):'—'}</td>
       <td><span class="badge-prioridad ${escHtml(prioCls)}">${escHtml(t.prioridad||'—')}</span></td>
       <td style="font-size:0.78rem;font-family:DM Mono,monospace;white-space:nowrap;color:var(--ink2)">${t.fechaFin?formatFecha(t.fechaFin):'—'}</td>
+      <td style="text-align:right">${tkdChipDur(t)}</td>
       <td><span class="badge-estado ${estCls}">${estadoLabels[estCls]||estCls}</span></td>
       <td><span class="badge-tipo">${escHtml(t.tipo||'—')}</span></td>
       <td><div class="ticket-obs" title="${escHtml(t.obs||'')}">${escHtml(t.obs||'—')}</div></td>
@@ -7448,6 +8080,17 @@ window.editarTicket = function(id) {
 window.guardarTicket = async function() {
   const nombre = document.getElementById('tk-nombre').value.trim();
   if (!nombre) { alert('La tarea es obligatoria'); return; }
+  // Un ticket resuelto SIN fecha de terminado no se puede ubicar en ningun mes:
+  // no entra en "resueltos del mes", no tiene duracion y no suma al tiempo medio
+  // de resolucion. La fecha es obligatoria SOLO al cargar un ticket nuevo. Los que
+  // ya existen se editan y se guardan como siempre, aunque esten resueltos sin
+  // fecha: son los 84 historicos y frenarlos rompia el trabajo de todos los dias.
+  if (!ticketEditandoId
+      && document.getElementById('tk-estado').value === 'resuelto'
+      && !document.getElementById('tk-fecha-fin').value) {
+    marcarError('tk-fecha-fin', 'Si el ticket está resuelto, poné la fecha en que se terminó.');
+    return;
+  }
   const data = {
     nombre,
     pedidoA:   document.getElementById('tk-pedido-a').value.trim(),
@@ -8026,28 +8669,30 @@ let tkTabActiva = 'listado';
 
 const TK_COLS = [
   { t:'ID',            w:14 },
-  { t:'TAREA',         w:84 },
+  { t:'TAREA',         w:72 },
   { t:'PEDIDO A',      w:32 },
   { t:'SOLICITADA',    w:23 },
   { t:'TERMINADA',     w:23 },
+  { t:'DURACION',      w:17 },
   { t:'PRIORIDAD',     w:22 },
   { t:'ESTADO',        w:22 },
-  { t:'OBSERVACIONES', w:53 }
+  { t:'OBSERVACIONES', w:48 }
 ];
 const C_TK_EST = { 'en-curso':[26,79,122], 'en-espera':[160,112,32], 'resuelto':[23,135,90] };
 const C_TK_PRI = { 'Alta':[155,43,43], 'Media':[160,112,32], 'Baja':[23,135,90] };
 
 window.exportarTicketsPDF = function() {
+  // En el Dashboard el PDF lo hace la impresion del navegador: sale vectorial,
+  // con el texto seleccionable, respeta el recorte que este puesto y ademas
+  // agrega el detalle de los tickets desde la hoja 2. Ya no se copian canvas.
+  if (tkTabActiva === 'dashboard') { tkdImprimir(); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({orientation:'l', unit:'mm', format:'a4'});
-  if (tkTabActiva === 'dashboard') pdfTicketsDashboard(doc);
-  else {
-    if (!tkVisible || !tkVisible.lista.length) {
-      alert('No hay tickets para exportar con los filtros actuales.'); return;
-    }
-    pdfTicketsListado(doc);
+  if (!tkVisible || !tkVisible.lista.length) {
+    alert('No hay tickets para exportar con los filtros actuales.'); return;
   }
-  doc.save('tickets-' + (tkTabActiva==='dashboard'?'dashboard':'listado') + '-' + isoLocal() + '.pdf');
+  pdfTicketsListado(doc);
+  doc.save('tickets-listado-' + isoLocal() + '.pdf');
 };
 
 function ctxTickets() {
@@ -8106,10 +8751,13 @@ function pdfTicketsListado(doc) {
       celda(t.pedidoA || '—', TK_COLS[2]);
       celda(t.fechaSol ? formatFecha(t.fechaSol) : '—', TK_COLS[3], 'normal', C_INK2, 6.4);
       celda(t.fechaFin ? formatFecha(t.fechaFin) : '—', TK_COLS[4], 'normal', C_INK2, 6.4);
-      celda(t.prioridad || '—', TK_COLS[5], 'bold', C_TK_PRI[t.prioridad] || C_INK3, 6.2);
+      const dd = tkdDur(t);
+      celda(dd === null ? '—' : dd + ' d' + (t.fechaFin ? '' : ' ab.'),
+            TK_COLS[5], 'normal', t.fechaFin ? C_INK2 : C_INK3, 6.2);
+      celda(t.prioridad || '—', TK_COLS[6], 'bold', C_TK_PRI[t.prioridad] || C_INK3, 6.2);
       celda({'en-curso':'En curso','en-espera':'En espera','resuelto':'Resuelto'}[est],
-            TK_COLS[6], 'bold', C_TK_EST[est] || C_INK3, 6.2);
-      celda(t.obs || '—', TK_COLS[7], 'normal', C_INK3, 6.2);
+            TK_COLS[7], 'bold', C_TK_EST[est] || C_INK3, 6.2);
+      celda(t.obs || '—', TK_COLS[8], 'normal', C_INK3, 6.2);
       doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.1);
       doc.line(PDF_M, y+ALTO, PDF_W-PDF_M, y+ALTO);
       y += ALTO;
@@ -8130,111 +8778,6 @@ function pdfTicketsListado(doc) {
   }
 }
 
-// Los graficos se copian del canvas tal como se ven en pantalla.
-function pdfImagenCanvas(doc, id, x, y, w, hMax) {
-  const cv = document.getElementById(id);
-  if (!cv || !cv.width) return y;
-  const prop = cv.height / cv.width;
-  let alto = w * prop;
-  let ancho = w;
-  if (alto > hMax) { alto = hMax; ancho = hMax / prop; }
-  try {
-    const tmp = document.createElement('canvas');
-    tmp.width = cv.width; tmp.height = cv.height;
-    const c2 = tmp.getContext('2d');
-    c2.fillStyle = '#FDFBF7';               // el canvas es transparente
-    c2.fillRect(0, 0, tmp.width, tmp.height);
-    c2.drawImage(cv, 0, 0);
-    doc.addImage(tmp.toDataURL('image/jpeg', 0.92), 'JPEG', x + (w-ancho)/2, y, ancho, alto);
-  } catch(e) { pdfTxt(doc, '(no se pudo copiar el gráfico)', x, y+6, 7, 'normal', C_INK3); }
-  return y + alto;
-}
-function pdfTituloBloque(doc, t, x, y) {
-  pdfTxt(doc, t.toUpperCase(), x, y, 6.5, 'bold', C_INK3);
-  return y + 3;
-}
-
-function pdfTicketsDashboard(doc) {
-  const ctx = ctxTickets();
-  const anio = anioDashboardTickets();
-  const calc = calcularMensualTickets(anio, ticketsData);
-  const total = ticketsData.length;
-  const res   = ticketsData.filter(t => normalizarEstadoTicket(t.estado)==='resuelto').length;
-  const ctxD = { meta: 'Emitido ' + formatFecha(isoLocal()) + ' · año ' + anio + ' · ' + total + ' tickets',
-    kpis: [ {v:total, l:'tickets'}, {sep:true},
-            {v:res, l:'resueltos', c:C_TERM},
-            {v:total-res, l:'sin resolver', c:C_AMB},
-            {sep:true},
-            {v: total ? Math.round(res/total*100)+'%' : '—', l:'eficiencia de resolución', c:C_TERM} ] };
-
-  // ── hoja 1: el año — distribución, ranking y los dos gráficos mensuales ──
-  pdfCabecera(doc, 'Tickets — panel del año ' + anio, ctxD);
-  pdfTira(doc, 28, ctxD);
-  const mitad = (PDF_W - PDF_M*2 - 8) / 2;
-  let y = pdfTituloBloque(doc, 'Acciones anuales — distribución por tipo', PDF_M, 42);
-  pdfImagenCanvas(doc, 'tk-pie-anual', PDF_M, y, mitad, 34);
-
-  let y2 = pdfTituloBloque(doc, 'Ranking por tipo — total anual', PDF_M + mitad + 8, 42);
-  const porTipo = TK_TIPOS.map(t => ticketsData.filter(x => x.tipo === t).length);
-  const orden = TK_TIPOS.map((t,i) => ({t, n:porTipo[i]})).sort((a,b) => b.n - a.n);
-  const tot = porTipo.reduce((a,b)=>a+b,0) || 1;
-  orden.forEach((o,i) => {
-    const yy = y2 + 5 + i*6;
-    pdfTxt(doc, String(i+1), PDF_M+mitad+8, yy, 7, 'normal', C_INK3);
-    pdfTxt(doc, o.t, PDF_M+mitad+14, yy, 8, 'normal', C_INK);
-    const bx = PDF_M+mitad+62, bw = mitad-90;
-    doc.setFillColor(...C_BORDE); doc.rect(bx, yy-2, bw, 1.6, 'F');
-    const c = TK_CORES[TK_TIPOS.indexOf(o.t)] || '#888';
-    doc.setFillColor(parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16));
-    doc.rect(bx, yy-2, Math.max(0.6, bw*o.n/tot), 1.6, 'F');
-    pdfTxt(doc, String(o.n), PDF_M+mitad+8+mitad-22, yy, 8, 'bold', C_INK, 'right');
-    pdfTxt(doc, Math.round(o.n/tot*100)+'%', PDF_M+mitad+8+mitad, yy, 7, 'normal', C_INK3, 'right');
-  });
-
-  // Los dos gráficos mensuales van uno debajo del otro en la misma hoja: los
-  // canvas son anchos y bajos, así que separados dejaban media hoja vacía.
-  y = pdfTituloBloque(doc, 'Trabajos, terminados y backlog — por mes', PDF_M, 92);
-  const fin1 = pdfImagenCanvas(doc, 'tk-barras', PDF_M, y, PDF_W-PDF_M*2, 46);
-  y = pdfTituloBloque(doc, 'Tendencia mensual', PDF_M, Math.max(fin1 + 7, 140));
-  pdfImagenCanvas(doc, 'tk-linea', PDF_M, y, PDF_W-PDF_M*2, 46);
-  pdfPie(doc, 1, 2);
-
-  // ── hoja 2: el mes elegido ──
-  doc.addPage();
-  pdfCabecera(doc, 'Tickets — ' + MESES_FULL[(document.getElementById('tk-mes-sel')||{value:new Date().getMonth()}).value] + ' ' + anio, ctxD);
-  const sel = document.getElementById('tk-mes-sel');
-  const mes = sel ? +sel.value : new Date().getMonth();
-  const m = calc.meses[mes] || {total:0,resueltos:0,backlog:0};
-  pdfTxt(doc, m.total + ' trabajos  ·  ' + m.resueltos + ' resueltos  ·  ' + m.backlog + ' de backlog',
-         PDF_M, 34, 10, 'normal', C_INK2);
-  pdfTxt(doc, 'TODO EL MES', PDF_M, 44, 6.5, 'bold', C_INK3);
-  pdfTxt(doc, 'RESUELTOS EN EL MES', PDF_M+mitad+8, 44, 6.5, 'bold', C_INK3);
-  const f1 = pdfImagenCanvas(doc, 'tk-pie-mes',     PDF_M,         47, mitad, 58);
-  const f2 = pdfImagenCanvas(doc, 'tk-pie-mes-res', PDF_M+mitad+8, 47, mitad, 58);
-  // desglose por tipo, debajo de cada torta
-  const desglose = (lista, x, yy) => {
-    const t = lista.reduce((a,b)=>a+b,0) || 1;
-    TK_TIPOS.forEach((nom,i) => {
-      if (!lista[i]) return;
-      const c = TK_CORES[i];
-      doc.setFillColor(parseInt(c.slice(1,3),16), parseInt(c.slice(3,5),16), parseInt(c.slice(5,7),16));
-      doc.rect(x, yy-1.6, 2, 2, 'F');
-      pdfTxt(doc, nom, x+4, yy, 8, 'normal', C_INK2);
-      pdfTxt(doc, String(lista[i]), x+mitad-14, yy, 8, 'bold', C_INK, 'right');
-      pdfTxt(doc, Math.round(lista[i]/t*100)+'%', x+mitad, yy, 7, 'normal', C_INK3, 'right');
-      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.1);
-      doc.line(x, yy+1.8, x+mitad, yy+1.8);
-      yy += 6;
-    });
-  };
-  const delMes = ticketsDelMes(anio, mes, ticketsData);
-  const cerr   = ticketsCerradosEnMes(anio, mes, ticketsData);
-  desglose(TK_TIPOS.map(t => delMes.filter(x=>x.tipo===t).length), PDF_M,         Math.max(f1,f2)+8);
-  desglose(TK_TIPOS.map(t => cerr.filter(x=>x.tipo===t).length),   PDF_M+mitad+8, Math.max(f1,f2)+8);
-  doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
-  doc.line(PDF_M+mitad+4, 42, PDF_M+mitad+4, Math.max(f1,f2)+8+34);
-  pdfPie(doc, 2, 2);
-}
 
 </script>
 </body>
