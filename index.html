@@ -2608,6 +2608,7 @@ function pdfContexto() {
         {v:p.carga.ejec,             l:'ya arrancaron'}
       ] : [])
     ],
+    carga: p.carga || null,
     grupos: [
       {t:'En curso',   c:C_AMB,  obras:p.enCurso},
       {t:'Pendiente',  c:C_LIC,  obras:p.pendientes},
@@ -2675,35 +2676,111 @@ function pdfVistaGantt(doc, ctx) {
   const NOM = 44, NUM = 40;
   const X0  = PDF_M + NOM, P = PDF_W-PDF_M*2 - NOM - NUM, XN = X0 + P;
   const px  = f => X0 + cl(dia(f))/DIAS*P;
+  const pxd = d => X0 + cl(d)/DIAS*P;              // por numero de dia del año
   const MES = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
   const hoy = isoLocal(), hoyEnAnio = +hoy.slice(0,4) === A;
-  const FILA = 7;
+  const FILA = 7, CAB = 11;                        // la cabecera crece: meses + semanas
+  const carga = ctx.carga || null;
+  const C_PICO = [26,95,138];                      // azul del pico, el mismo de la pantalla
 
-  // cuantas paginas: filas de obra + titulos de grupo
   const bloques = ctx.grupos.filter(g => g.obras.length);
-  const totalFilas = bloques.reduce((n,g)=>n+g.obras.length+1, 0);
-  const yTope = PDF_H - 11 - 8;                       // deja lugar a leyenda
-  let pag = 1, y = 0;
+  const yTope = PDF_H - 11 - 8;
+  let pag = 1, y = 0, yGrilla = 0;
 
+  // ── regla de tiempo: meses arriba, semanas abajo ──
   const cabGrilla = () => {
-    doc.setFillColor(...C_CAB); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 8, 'F');
-    pdfTxt(doc,'OBRA', PDF_M+2, y+5.6, 6, 'bold', C_INK3);
+    doc.setFillColor(...C_CAB); doc.rect(PDF_M, y, PDF_W-PDF_M*2, CAB, 'F');
+    pdfTxt(doc,'OBRA', PDF_M+2, y+4.6, 6, 'bold', C_INK3);
+    pdfTxt(doc,'semanas', PDF_M+2, y+9.4, 4.6, 'normal', C_INK3);
     for (let m=0;m<12;m++) {
-      const x = X0 + Math.round((new Date(A,m,1)-d0)/86400000)/DIAS*P;
-      pdfTxt(doc, MES[m], x+1, y+5.6, 6, 'bold', C_INK2);
-      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.15); doc.line(x, y, x, y+8);
+      const x = pxd(Math.round((new Date(A,m,1)-d0)/86400000));
+      pdfTxt(doc, MES[m], x+1, y+4.6, 6, 'bold', C_INK2);
+      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.15); doc.line(x, y, x, y+CAB);
+    }
+    // marquita por semana; el numero cada 4, que es lo que se puede leer sin amontonar
+    for (let w=0; w*7<=DIAS; w++) {
+      const x = pxd(w*7), q = w%4===0;
+      doc.setDrawColor(...(q?C_INK3:C_BORDE)); doc.setLineWidth(q?0.18:0.1);
+      doc.line(x, y+CAB-(q?3.4:1.8), x, y+CAB);
+      if (q) pdfTxt(doc, 'S'+(w+1), x+0.8, y+9.4, 4.6, 'normal', C_INK3);
     }
     ['LIC.','ESP.','OBRA','TOTAL'].forEach((t,i)=>
-      pdfTxt(doc, t, XN+(i+1)*(NUM/4)-1.5, y+5.6, 5.5, 'bold', C_INK3, 'right'));
+      pdfTxt(doc, t, XN+(i+1)*(NUM/4)-1.5, y+4.6, 5.5, 'bold', C_INK3, 'right'));
     doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.2);
-    doc.line(PDF_M, y+8, PDF_W-PDF_M, y+8);
-    y += 8;
+    doc.line(PDF_M, y+CAB, PDF_W-PDF_M, y+CAB);
+    y += CAB; yGrilla = y;
+  };
+
+  // ── la leyenda, al pie de cada hoja: con varias obras la hoja 1 se quedaba sin ella ──
+  const leyenda = (yy) => {
+    const ley = [
+      [C_AMB,'solido','obra en curso'], [C_TERM,'solido','obra terminada'],
+      [C_GRIS,'solido','licitación previa'], [[150,142,132],'rayado','espera hasta el inicio'],
+      [C_LIC,'solido','licitación pendiente']
+    ];
+    let lx = PDF_M;
+    ley.forEach(([c,tipo,t]) => {
+      if (tipo==='rayado') pdfRayado(doc, lx, yy, 6, 2.6, c); else { doc.setFillColor(...c); doc.rect(lx,yy,6,2.6,'F'); }
+      pdfTxt(doc, t, lx+7.5, yy+2.4, 6, 'normal', C_INK2);
+      lx += 7.5 + doc.getTextWidth(t) + 5;
+    });
+    // las dos marcas verticales, explicadas
+    if (hoyEnAnio) {
+      doc.setDrawColor(...C_ACC); doc.setLineWidth(0.4); doc.setLineDashPattern([0.8,0.8],0);
+      doc.line(lx+2, yy-0.4, lx+2, yy+3); doc.setLineDashPattern([],0);
+      pdfTxt(doc, 'hoy', lx+4.5, yy+2.4, 6, 'normal', C_INK2); lx += 4.5 + doc.getTextWidth('hoy') + 5;
+    }
+    if (carga && carga.picoSem) {
+      doc.setFillColor(214,230,241); doc.rect(lx+1, yy, 5, 2.6, 'F'); lx += 6.5;
+      const t = 'semana de mayor carga (S'+carga.picoSem+')';
+      pdfTxt(doc, t, lx, yy+2.4, 6, 'normal', C_INK2); lx += doc.getTextWidth(t) + 5;
+    }
+    pdfTxt(doc,'números = días · total del proceso · “+” sigue abierta',
+           PDF_W-PDF_M, yy+2.4, 6, 'normal', C_INK3, 'right');
+  };
+
+  // ── la banda o la linea del pico, de fondo, detras de las barras ──
+  const marcaPico = (y1, y2) => {
+    if (!carga || !carga.picoSem) return;
+    const a = pxd(carga.picoA), b = pxd(carga.picoB+1);
+    doc.setFillColor(214,230,241); doc.rect(a, y1, b-a, y2-y1, 'F');
+  };
+  // Las etiquetas, sobre la regla. Si el pico cae en la semana de hoy las dos
+  // pastillas se pisan, asi que en ese caso el pico sube un renglon.
+  const ALTO_ROT = 8.4;
+  const rotuloMarcas = (yy) => {
+    doc.setFontSize(5); doc.setFont('helvetica','bold');
+    const caja = (cx, t) => { const w = doc.getTextWidth(t)+3;
+      return { w, x: Math.max(X0, Math.min(cx - w/2, XN - w)), t }; };
+    const cP = (carga && carga.picoSem)
+      ? caja((pxd(carga.picoA)+pxd(carga.picoB+1))/2, 'PICO '+carga.max+' · S'+carga.picoSem) : null;
+    const cH = hoyEnAnio ? caja(px(hoy), 'HOY '+formatFecha(hoy).slice(0,5)) : null;
+    const chocan = cP && cH && (cP.x < cH.x + cH.w + 1) && (cH.x < cP.x + cP.w + 1);
+    const pinta = (c, col, fila) => {
+      if (!c) return;
+      const yb = yy - 0.8 - fila*4.2;
+      doc.setFillColor(...col); doc.roundedRect(c.x, yb-3.6, c.w, 3.6, 0.6, 0.6, 'F');
+      pdfTxt(doc, c.t, c.x+c.w/2, yb-1, 5, 'bold', [255,255,255], 'center');
+    };
+    pinta(cP, C_PICO, chocan ? 1 : 0);
+    pinta(cH, C_ACC, 0);
+  };
+
+  const cerrarHoja = () => {
+    // las dos verticales, de punta a punta de la grilla y no fila por fila
+    if (hoyEnAnio) {
+      doc.setDrawColor(...C_ACC); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8,0.8],0);
+      doc.line(px(hoy), yGrilla, px(hoy), y); doc.setLineDashPattern([],0);
+    }
+    leyenda(PDF_H - 17);
   };
   const nuevaHoja = (primera) => {
-    if (!primera) { doc.addPage(); pag++; }
+    if (!primera) { cerrarHoja(); doc.addPage(); pag++; }
     pdfCabecera(doc, 'Gantt anual de obras — '+A, ctx);
     y = 28;
     if (primera) { pdfTira(doc, y, ctx); y += 12; } else { y += 2; }
+    y += ALTO_ROT;               // lugar para las etiquetas HOY / PICO
+    rotuloMarcas(y);
     cabGrilla();
   };
   nuevaHoja(true);
@@ -2711,6 +2788,7 @@ function pdfVistaGantt(doc, ctx) {
   bloques.forEach(g => {
     if (y + FILA*2 > yTope) nuevaHoja(false);
     doc.setFillColor(253,252,250); doc.rect(PDF_M, y, PDF_W-PDF_M*2, 5.5, 'F');
+    marcaPico(y, y+5.5);
     doc.setFillColor(...g.c); doc.circle(PDF_M+3, y+2.9, 0.9, 'F');
     pdfTxt(doc, g.t.toUpperCase(), PDF_M+5.5, y+4, 6, 'bold', g.c);
     y += 5.5;
@@ -2718,35 +2796,28 @@ function pdfVistaGantt(doc, ctx) {
     g.obras.forEach(o => {
       if (y + FILA > yTope) { nuevaHoja(false); }
       const d = gDatosObra(o), e = pdfEtapas(d);
-      // franjas de meses, tenues
       for (let m=0;m<12;m+=2) {
-        const a = X0 + Math.round((new Date(A,m,1)-d0)/86400000)/DIAS*P;
-        const b = X0 + Math.round((new Date(A,m+1,1)-d0)/86400000)/DIAS*P;
+        const a = pxd(Math.round((new Date(A,m,1)-d0)/86400000));
+        const b = pxd(Math.round((new Date(A,m+1,1)-d0)/86400000));
         doc.setFillColor(...C_SUAVE); doc.rect(a, y, b-a, FILA, 'F');
       }
+      marcaPico(y, y+FILA);
       const dentro = (a,b) => a && b && dia(b) > 0 && dia(a) < DIAS;
       const by = y + 2, bh = 3.2;
-      // licitacion (gris) — violeta si la obra todavia es pendiente
       if (e.lic && dentro(e.lic[0], e.lic[1])) {
         const x1 = px(e.lic[0]), x2 = px(e.lic[1]);
         doc.setFillColor(...(e.pend ? C_LIC : C_GRIS));
         doc.rect(x1, by, Math.max(0.6, x2-x1), bh, 'F');
       }
-      // espera (rayado)
       if (e.esp && dentro(e.esp[0], e.esp[1])) {
         const x1 = px(e.esp[0]), x2 = px(e.esp[1]);
         if (x2 > x1) pdfRayado(doc, x1, by, x2-x1, bh, e.pend ? C_LIC : [150,142,132]);
       }
-      // la obra
       if (e.obra && dentro(e.obra[0], e.obra[1])) {
         const x1 = px(e.obra[0]), x2 = px(e.obra[1]);
         doc.setFillColor(...(d.estado === 'terminado' ? C_TERM : C_AMB));
         doc.rect(x1, by, Math.max(0.6, x2-x1), bh, 'F');
       }
-      if (hoyEnAnio) { doc.setDrawColor(...C_ACC); doc.setLineWidth(0.3);
-        doc.setLineDashPattern([0.8,0.8],0); doc.line(px(hoy), y, px(hoy), y+FILA);
-        doc.setLineDashPattern([],0); }
-
       const enEsteAnio = (e.arranca && dia(e.hasta) > 0 && dia(e.arranca) < DIAS);
       pdfTxt(doc, pdfCorta(doc, d.nombre, 7.5, 'normal', NOM-4), PDF_M+2, y+3.4, 7.5,
              'normal', enEsteAnio ? C_INK : C_INK3);
@@ -2762,24 +2833,55 @@ function pdfVistaGantt(doc, ctx) {
       y += FILA;
     });
   });
+  cerrarHoja();
 
-  // leyenda + avisos en la ultima hoja
-  y += 3;
-  const ley = [
-    [C_AMB,'sólido','obra en curso'], [C_TERM,'sólido','obra terminada'],
-    [C_GRIS,'sólido','licitación previa'], [[150,142,132],'rayado','espera hasta el inicio'],
-    [C_LIC,'sólido','licitación pendiente']
-  ];
-  let lx = PDF_M;
-  ley.forEach(([c,tipo,t]) => {
-    if (tipo==='rayado') pdfRayado(doc, lx, y, 6, 2.6, c); else { doc.setFillColor(...c); doc.rect(lx,y,6,2.6,'F'); }
-    pdfTxt(doc, t, lx+7.5, y+2.4, 6.5, 'normal', C_INK2);
-    lx += 7.5 + doc.getTextWidth(t) + 6;
-  });
-  pdfTxt(doc,'números = días · total del proceso · “+” sigue abierta',
-         PDF_W-PDF_M, y+2.4, 6.5, 'normal', C_INK3, 'right');
-  y += 6;
-  if (ctx.avisos.length) y = pdfAvisos(doc, y, ctx.avisos);
+  // ══ SIEMPRE AL FINAL: la banda de obras simultaneas, con la misma regla de arriba ══
+  // Solo si hay obras que YA arrancaron, igual que en pantalla: con todo en
+  // licitacion el grafico serian 52 columnas en cero y no dice nada.
+  if (carga && carga.ejec && carga.sem && carga.sem.length) {
+    const ALTO = 34, NECESITA = ALTO + 24 + ALTO_ROT;
+    if (y + NECESITA > PDF_H - 24) { doc.addPage(); pag++;
+      pdfCabecera(doc, 'Gantt anual de obras — '+A, ctx); y = 30; } else { y += 8; }
+    pdfTxt(doc, 'OBRAS EN EJECUCIÓN SIMULTÁNEA', PDF_M, y, 7, 'bold', C_INK);
+    pdfTxt(doc, 'Cuántas obras hubo abiertas a la vez, semana a semana. Solo cuentan las que ya arrancaron: una obra en licitación no suma.',
+           PDF_M, y+4, 6, 'normal', C_INK3);
+    y += 4 + ALTO_ROT;
+    rotuloMarcas(y);
+    const base = y + ALTO, MAXC = Math.max(1, carga.max);
+    // rejilla y eje
+    for (let v=0; v<=MAXC; v++) {
+      if (MAXC > 6 && v % Math.ceil(MAXC/5)) continue;
+      const yy = base - (v/MAXC)*ALTO;
+      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.1); doc.line(X0, yy, XN, yy);
+      pdfTxt(doc, String(v), X0-1.5, yy+1, 5.5, 'normal', C_INK3, 'right');
+    }
+    // la marca del pico tambien aca, para que se lea de un vistazo con el Gantt
+    if (carga.picoSem) {
+      const a = pxd(carga.picoA), b = pxd(carga.picoB+1);
+      doc.setFillColor(214,230,241); doc.rect(a, y, b-a, ALTO, 'F');
+    }
+    carga.sem.forEach(w => {
+      const a = pxd(w.a), b = pxd(w.b+1), an = Math.max(0.5, b-a-0.25);
+      if (w.fut) { pdfRayado(doc, a, base-1.6, an, 1.6, [214,209,199]); return; }
+      const h = (w.n/MAXC)*ALTO;
+      const esPico = carga.picoSem && w.a === carga.picoA;
+      doc.setFillColor(...(esPico ? C_ACC : C_PICO));
+      if (w.n) doc.rect(a, base-h, an, h, 'F');
+    });
+    doc.setDrawColor(...C_INK3); doc.setLineWidth(0.2); doc.line(X0, base, XN, base);
+    if (hoyEnAnio) { doc.setDrawColor(...C_ACC); doc.setLineWidth(0.3); doc.setLineDashPattern([0.8,0.8],0);
+      doc.line(px(hoy), y, px(hoy), base); doc.setLineDashPattern([],0); }
+    // la regla de meses/semanas repetida abajo, para leer la banda sin subir la vista
+    for (let m=0;m<12;m++) {
+      const x = pxd(Math.round((new Date(A,m,1)-d0)/86400000));
+      pdfTxt(doc, MES[m], x+1, base+3.6, 5, 'normal', C_INK3);
+      doc.setDrawColor(...C_BORDE); doc.setLineWidth(0.1); doc.line(x, base, x, base+1.2);
+    }
+    for (let w=0; w*7<=DIAS; w+=4) pdfTxt(doc, 'S'+(w+1), pxd(w*7)+1, base+7, 4.6, 'normal', C_INK3);
+    y = base + 9;
+  }
+
+  if (ctx.avisos.length) { y += 3; y = pdfAvisos(doc, y, ctx.avisos); }
   for (let i=1;i<=pag;i++){ doc.setPage(i); pdfPie(doc, i, pag); }
 }
 
@@ -3299,7 +3401,12 @@ window.renderGantt = function(lista) {
   }
   const pas  = SEM.filter(w => !w.fut);
   const MAX  = Math.max(1, ...pas.map(w => w.act.length));
+  // Si ninguna semana ya transcurrida tuvo obra abierta no hay pico que mostrar.
+  // Antes, con todas las obras todavia por venir, MAX quedaba en 1 por el
+  // Math.max, findIndex no encontraba nada y el pico se dibujaba en la semana 1
+  // con valor 1: una semana en la que no habia pasado nada.
   const iPico= pas.findIndex(w => w.act.length === MAX);
+  const hayPico = iPico >= 0 && pas.some(w => w.act.length > 0);
   const conO = pas.filter(w => w.act.length > 0).length;
   const prom = pas.length ? pas.reduce((t,w)=>t+w.act.length,0)/pas.length : 0;
   const mesDe= d => new Date(d0.getTime()+d*86400000).getMonth();
@@ -3471,20 +3578,25 @@ window.renderGantt = function(lista) {
   SEM.forEach((w,i) => {
     const n=w.act.length, L=pct(w.a), W=pct(7)-0.12;
     const h = w.fut ? 6 : (n/MAX)*H;
-    const cls = w.fut ? 'fut' : (i===iPico ? 'pico' : (n>0 ? 'on' : ''));
+    const cls = w.fut ? 'fut' : ((hayPico && i===iPico) ? 'pico' : (n>0 ? 'on' : ''));
     const lista_ = n ? '<ul>'+w.act.map(x=>`<li>${esc(x.nombre)}</li>`).join('')+'</ul>' : '';
     const t = w.fut
       ? `<b>Semana ${w.s+1}</b><span class="k">Todavía no ocurrió.</span>`
       : `<b>Semana ${w.s+1} · ${gMES_L[mesDe(w.a)]}</b><span class="k">Obras en ejecución:</span> ${n}${lista_}`;
     cols += `<div class="gcol ${cls}" style="left:${L}%;width:${W}%;height:${Math.max(h,2)}px" data-gtip="${esc(t)}"></div>`;
   });
-  const wPico = SEM[iPico] || SEM[0];
+  const wPico = hayPico ? SEM[iPico] : null;
   // el PDF necesita estos numeros y solo se calculan aca
   if (panelVisible) panelVisible.carga = {
-    max: MAX, prom, conO, semanas: pas.length, ejec: ejec.length,
-    picoDesc: MAX ? `pico simultáneo · sem ${wPico.s+1}` : 'pico simultáneo'
+    max: hayPico ? MAX : 0, prom, conO, semanas: pas.length, ejec: ejec.length,
+    picoDesc: hayPico ? `pico simultáneo · sem ${wPico.s+1}` : 'pico simultáneo',
+    // la serie completa y donde cae el pico: la hoja dibuja la misma banda
+    sem: SEM.map(w => ({ a:w.a, b:w.b, n:w.act.length, fut:w.fut })),
+    picoSem: hayPico ? wPico.s+1 : null,
+    picoA:   hayPico ? wPico.a   : null,
+    picoB:   hayPico ? wPico.b   : null
   };
-  const picoLbl = MAX>0 ? `<div class="gpico-lbl" style="left:${pct(wPico.a+3.5)}%;top:${base-H-15}px">pico ${MAX}</div>` : '';
+  const picoLbl = hayPico ? `<div class="gpico-lbl" style="left:${pct(wPico.a+3.5)}%;top:${base-H-15}px">pico ${MAX}</div>` : '';
 
   const banda = ejec.length ? `
     <div class="gfila"><div class="gtit"><b>Obras en ejecución simultánea</b>
@@ -3532,8 +3644,8 @@ window.renderGantt = function(lista) {
   cont.innerHTML = `
     <div class="gantt-top">
       <div class="gantt-tiles">
-        <div class="gt pico"><div class="v">${MAX}</div><div class="l">Pico simultáneo</div>
-          <div class="d">${MAX?`semana ${wPico.s+1}, ${gMES_L[mesDe(wPico.a)]}`:'—'}</div></div>
+        <div class="gt pico"><div class="v">${hayPico?MAX:'—'}</div><div class="l">Pico simultáneo</div>
+          <div class="d">${hayPico?`semana ${wPico.s+1}, ${gMES_L[mesDe(wPico.a)]}`:'—'}</div></div>
         <div class="gt"><div class="v">${prom.toFixed(1)}</div><div class="l">Promedio a la vez</div>
           <div class="d">sobre ${pas.length} semanas</div></div>
         <div class="gt"><div class="v">${conO}</div><div class="l">Semanas con obra</div>
